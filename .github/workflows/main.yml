@@ -72,6 +72,6 @@ jobs:
         env:
           BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
           CHANNEL: windows
-          ITCH_GAME: reverse-terminator
+          ITCH_GAME: ludum-dare-53
           ITCH_USER: fuseinabowl
           PACKAGE: build

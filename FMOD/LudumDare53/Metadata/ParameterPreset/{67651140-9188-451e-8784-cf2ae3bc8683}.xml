@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="ParameterPreset" id="{67651140-9188-451e-8784-cf2ae3bc8683}">
+		<property name="name">
+			<value>ShotDelay</value>
+		</property>
+		<relationship name="folder">
+			<destination>{f7be2f90-be5a-441e-ac54-b2419b1fcf1d}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{56fcf13d-5b52-44f8-99e3-e697f02d5dbe}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{56fcf13d-5b52-44f8-99e3-e697f02d5dbe}">
+		<property name="maximum">
+			<value>5</value>
+		</property>
+		<property name="initialValue">
+			<value>0</value>
+		</property>
+	</object>
+</objects>

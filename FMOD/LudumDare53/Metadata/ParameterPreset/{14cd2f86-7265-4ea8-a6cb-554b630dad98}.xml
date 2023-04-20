@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="ParameterPreset" id="{14cd2f86-7265-4ea8-a6cb-554b630dad98}">
+		<property name="name">
+			<value>ShotCount</value>
+		</property>
+		<relationship name="folder">
+			<destination>{f7be2f90-be5a-441e-ac54-b2419b1fcf1d}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{a0437567-fbc4-4582-8eda-87dd96a71f86}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{a0437567-fbc4-4582-8eda-87dd96a71f86}">
+		<property name="parameterType">
+			<value>1</value>
+		</property>
+		<property name="minimum">
+			<value>1</value>
+		</property>
+		<property name="maximum">
+			<value>11</value>
+		</property>
+		<property name="initialValue">
+			<value>1</value>
+		</property>
+	</object>
+</objects>

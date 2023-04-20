@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="ParameterPreset" id="{2c945789-0048-47cd-9a21-ba9a9f3ba598}">
+		<property name="name">
+			<value>ShotPeriod</value>
+		</property>
+		<relationship name="folder">
+			<destination>{f7be2f90-be5a-441e-ac54-b2419b1fcf1d}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{8667dc3c-3209-4d42-9b58-4abd54cf868e}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{8667dc3c-3209-4d42-9b58-4abd54cf868e}">
+		<property name="minimum">
+			<value>0.10000000000000001</value>
+		</property>
+		<property name="initialValue">
+			<value>0.10000000000000001</value>
+		</property>
+	</object>
+</objects>

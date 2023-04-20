@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="ParameterPreset" id="{0416cce4-5f99-46d4-bd97-0728a33a842b}">
+		<property name="name">
+			<value>StubParameter</value>
+		</property>
+		<relationship name="folder">
+			<destination>{f7be2f90-be5a-441e-ac54-b2419b1fcf1d}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{02cbc0a2-39bd-4a4d-baac-df6f3f2c09ee}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{02cbc0a2-39bd-4a4d-baac-df6f3f2c09ee}">
+		<property name="initialValue">
+			<value>0</value>
+		</property>
+	</object>
+</objects>

@@ -75,6 +75,7 @@ public class SFX
     {
         fmodInst.stop(stopMode);
         fmodInst.release();
+        fmodInst.clearHandle();
     }
 }
 

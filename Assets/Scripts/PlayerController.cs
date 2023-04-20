@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.anyKeyDown)
         {
-            fmodAutoGunInst = SFX.Start(fmodAutoGun, gameObject, "shotCount", 10, "shotPeriod", autoGunTime);
+            fmodAutoGunInst = SFX.Start(fmodAutoGun, gameObject, "shotPeriod", autoGunTime);
             Shoot();
             gunTimer = autoGunTime;
         }

@@ -136,6 +136,8 @@ GameObject:
   - component: {fileID: 490390283}
   - component: {fileID: 490390282}
   - component: {fileID: 490390281}
+  - component: {fileID: 490390286}
+  - component: {fileID: 490390287}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -155,16 +157,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f54598e7b13e844f29bc15cc11f9872f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fmodAutoGun:
-    Guid:
-      Data1: 1932313627
-      Data2: 1139538844
-      Data3: -607538272
-      Data4: -897733458
-    Path: event:/AutoGun
+  shotSfx: {fileID: 490390287}
   shotPrefab: {fileID: 6900791343246826446, guid: 1a78a3b90c40d4e03b9c8e1ae4cb01b5, type: 3}
   shotVelocity: 500
-  autoGunTime: 0.23
+  shotPeriod: 1
+  shotGracePeriod: 0.02
 --- !u!65 &490390282
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -251,6 +248,52 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &490390286
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 490390280}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60b4303e580364107bd2cadaf03648d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timerName: GunTimer
+  period: 1
+  autoStart: 0
+--- !u!114 &490390287
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 490390280}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 1932313627
+      Data2: 1139538844
+      Data3: -607538272
+      Data4: -897733458
+    Path: event:/AutoGun
+  Event: 
+  PlayEvent: 0
+  StopEvent: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 1
+  AllowNonRigidbodyDoppler: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0

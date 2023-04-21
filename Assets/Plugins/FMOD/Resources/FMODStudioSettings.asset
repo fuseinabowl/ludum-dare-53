@@ -366,7 +366,7 @@ MonoBehaviour:
   ShowBankRefreshWindow: 0
   AutomaticEventLoading: 1
   BankLoadType: 0
-  AutomaticSampleLoading: 0
+  AutomaticSampleLoading: 1
   EncryptionKey: 
   ImportType: 0
   TargetAssetPath: FMODBanks

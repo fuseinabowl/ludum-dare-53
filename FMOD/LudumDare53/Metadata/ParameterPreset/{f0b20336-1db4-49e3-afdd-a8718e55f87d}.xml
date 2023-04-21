@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="ParameterPreset" id="{f0b20336-1db4-49e3-afdd-a8718e55f87d}">
+		<property name="name">
+			<value>SpawnRate</value>
+		</property>
+		<relationship name="folder">
+			<destination>{f7be2f90-be5a-441e-ac54-b2419b1fcf1d}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{8238c215-b07b-4dc4-b824-b56e171914fd}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{8238c215-b07b-4dc4-b824-b56e171914fd}">
+		<property name="initialValue">
+			<value>0.10000000000000001</value>
+		</property>
+	</object>
+</objects>

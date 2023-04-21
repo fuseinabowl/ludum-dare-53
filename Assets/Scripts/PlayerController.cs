@@ -4,40 +4,65 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public FMODUnity.EventReference fmodAutoGun;
+    public FMODUnity.StudioEventEmitter shotSfx;
     public Rigidbody shotPrefab;
     public float shotVelocity = 100;
-    [Range(0.1f, 1f)] public float autoGunTime = 0.1f;
+    [Range(0.1f, 1f)] public float shotPeriod = 0.1f;
+    [Range(0, 0.1f)] public float shotGracePeriod = 0;
 
-    private FMOD.Studio.EventInstance fmodAutoGunInst;
-    private float gunTimer = 0;
+    private Timer shotTimer;
+    private bool stopShootingOnTimerTick = false;
+
+    private void Awake()
+    {
+        shotTimer = Timer.FindTimer(gameObject, "GunTimer");
+        shotTimer.period = shotPeriod;
+        // Set this in Awake because StudioEventEmitter applies the params in Start.
+        // Kind of an annoying API really... it's not designed to be used like this.
+        shotSfx.Params = new FMODUnity.ParamRef[]{
+            new FMODUnity.ParamRef{
+                Name = "SpawnRate",
+                // The gunshot event is set up so that a spawn rate of 100% is 100ms.
+                Value = 0.1f / shotPeriod,
+            }
+        };
+    }
 
     private void Update()
     {
         if (Input.anyKeyDown)
         {
-            fmodAutoGunInst = SFX.Start(fmodAutoGun, gameObject, "shotPeriod", autoGunTime);
-            Shoot();
-            gunTimer = autoGunTime;
+            StartShooting();
         }
-        else if (!Input.anyKey)
+        else if (!Input.anyKey && shotTimer.running && !stopShootingOnTimerTick)
         {
-            if (fmodAutoGunInst.isValid())
+            if (shotTimer.nextTick < shotGracePeriod)
             {
-                SFX.StopRelease(fmodAutoGunInst);
+                // Make sure there are the same number of sounds and bullets by waiting until the
+                // next tick (which fires a bullet) to stop. There is ultimately to account for
+                // the fact that the FMOD API isn't instantaneous.
+                Debug.LogFormat("About to shoot in {0} seconds, I will stop shooting then", shotTimer.nextTick);
+                stopShootingOnTimerTick = true;
             }
-            gunTimer = 0;
+            else
+            {
+                StopShooting();
+            }
         }
+    }
 
-        if (gunTimer != 0)
-        {
-            gunTimer -= Time.deltaTime;
-            if (gunTimer <= 0)
-            {
-                Shoot();
-                gunTimer += autoGunTime;
-            }
-        }
+    private void StartShooting()
+    {
+        shotTimer.StartTimer();
+        shotSfx.Play();
+        shotSfx.SetParameter("Stop", 0);
+        Shoot();
+    }
+
+    private void StopShooting()
+    {
+        shotTimer.StopTimer();
+        shotSfx.SetParameter("Stop", 1);
     }
 
     private void Shoot()
@@ -45,4 +70,16 @@ public class PlayerController : MonoBehaviour
         var shot = Instantiate(shotPrefab, transform.position, transform.rotation);
         shot.AddForce(shotVelocity * Vector3.up);
     }
+
+    private void OnTimerTick(Timer timer)
+    {
+        Shoot();
+
+        if (stopShootingOnTimerTick)
+        {
+            stopShootingOnTimerTick = false;
+            StopShooting();
+        }
+    }
+
 }

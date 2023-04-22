@@ -26,6 +26,10 @@ public class Timer : MonoBehaviour
         set { }
     }
 
+    private bool didUpdateThisFrame = false;
+
+    private bool didTickThisUpdate = false;
+
     /// <summary>
     /// Finds the Timer with name `timerName` on `gameObject`.
     /// This method should only be used to find an existing `Timer`, use `CreateTimer` to create a new one.
@@ -46,7 +50,7 @@ public class Timer : MonoBehaviour
     /// <summary>
     /// Creates a new `Timer` and adds it to `gameObject`. If `period` isn't given then uses the default period.
     /// </summary>
-    public static Timer CreateTimer(GameObject gameObject, string timerName, float period = -1f)
+    public static Timer CreateTimer(GameObject gameObject, string timerName = "", float period = -1f)
     {
         var newTimer = gameObject.AddComponent<Timer>();
         newTimer.timerName = timerName;
@@ -67,6 +71,18 @@ public class Timer : MonoBehaviour
         nextTick = float.PositiveInfinity;
     }
 
+    /// <summary>
+    /// Returns if this component will, or already has, called OnTimerTick this update.
+    /// </summary>
+    public bool WillTickThisFrame()
+    {
+        if (didUpdateThisFrame)
+        {
+            return didTickThisUpdate;
+        }
+        return nextTick - Time.deltaTime <= 0;
+    }
+
     private void Start()
     {
         if (autoStart)
@@ -77,14 +93,23 @@ public class Timer : MonoBehaviour
 
     private void Update()
     {
+        didTickThisUpdate = false;
+        didUpdateThisFrame = true;
+
         if (!float.IsPositiveInfinity(nextTick))
         {
             nextTick -= Time.deltaTime;
-            if (nextTick < 0)
+            if (nextTick <= 0)
             {
                 nextTick = Mathf.Max(nextTick + period, 0);
+                didTickThisUpdate = true;
                 SendMessage("OnTimerTick", this, SendMessageOptions.DontRequireReceiver);
             }
         }
+    }
+
+    private void LateUpdate()
+    {
+        didUpdateThisFrame = false;
     }
 }

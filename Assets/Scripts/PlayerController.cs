@@ -17,15 +17,7 @@ public class PlayerController : MonoBehaviour
     {
         shotTimer = Timer.FindTimer(gameObject, "GunTimer");
         shotTimer.period = shotPeriod;
-        // Set this in Awake because StudioEventEmitter applies the params in Start.
-        // Kind of an annoying API really... it's not designed to be used like this.
-        shotSfx.Params = new FMODUnity.ParamRef[]{
-            new FMODUnity.ParamRef{
-                Name = "SpawnRate",
-                // The gunshot event is set up so that a spawn rate of 100% is 100ms.
-                Value = 0.1f / shotPeriod,
-            }
-        };
+        FMODUtil.SetParam(shotSfx, "SpawnRate", 0.1f / shotPeriod);
     }
 
     private void Update()

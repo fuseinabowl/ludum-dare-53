@@ -119,6 +119,9 @@
 		<property name="delayType">
 			<value>0</value>
 		</property>
+		<property name="polyphony">
+			<value>8</value>
+		</property>
 		<property name="minimumTimeBetweenSounds">
 			<value>100</value>
 		</property>
@@ -130,6 +133,9 @@
 		</property>
 		<property name="maximumScatterDistance">
 			<value>0</value>
+		</property>
+		<property name="pitchRandomization">
+			<value>0.200000003</value>
 		</property>
 		<relationship name="automators">
 			<destination>{cd5f1ed8-271b-442b-8ccd-936a32e60d5d}</destination>
@@ -220,7 +226,7 @@
 			<value>2</value>
 		</property>
 		<relationship name="sounds">
-			<destination>{39bd5911-ed8d-4a0f-841f-8a9759e3bb70}</destination>
+			<destination>{f2fa96d0-e11e-4984-9f55-946850b80458}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusEffectChain" id="{bc4856db-3d97-4c7e-951e-9fc2c3c800f0}">
@@ -250,9 +256,9 @@
 			<destination>{2204f3c7-7bf5-4ca7-9687-e76f1aa7ff39}</destination>
 		</relationship>
 	</object>
-	<object class="SingleSound" id="{39bd5911-ed8d-4a0f-841f-8a9759e3bb70}">
-		<relationship name="audioFile">
-			<destination>{4831cfa1-a00c-4276-8d44-30a08def5267}</destination>
+	<object class="EventSound" id="{f2fa96d0-e11e-4984-9f55-946850b80458}">
+		<relationship name="event">
+			<destination>{2f12f7c7-97a8-43da-90a1-7cb6b2a06bbf}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusFader" id="{e45abdb9-2aaa-4c5a-a7ea-fceeb14ea31a}" />

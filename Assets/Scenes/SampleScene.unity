@@ -160,8 +160,8 @@ MonoBehaviour:
   shotSfx: {fileID: 490390287}
   shotPrefab: {fileID: 6900791343246826446, guid: 1a78a3b90c40d4e03b9c8e1ae4cb01b5, type: 3}
   shotVelocity: 500
-  shotPeriod: 1
-  shotGracePeriod: 0.02
+  shotPeriod: 0.166
+  shotGracePeriod: 0.0161
 --- !u!65 &490390282
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -263,6 +263,7 @@ MonoBehaviour:
   timerName: GunTimer
   period: 1
   autoStart: 0
+  oneShot: 0
 --- !u!114 &490390287
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -278,11 +279,11 @@ MonoBehaviour:
   CollisionTag: 
   EventReference:
     Guid:
-      Data1: 1932313627
-      Data2: 1139538844
-      Data3: -607538272
-      Data4: -897733458
-    Path: event:/AutoGun
+      Data1: -1276765800
+      Data2: 1279291351
+      Data3: 1886742666
+      Data4: 520028892
+    Path: event:/AutoGunDelayed
   Event: 
   PlayEvent: 0
   StopEvent: 0

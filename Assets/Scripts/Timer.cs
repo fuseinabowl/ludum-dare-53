@@ -18,6 +18,8 @@ public class Timer : MonoBehaviour
 
     public bool autoStart = false;
 
+    public bool oneShot = false;
+
     public float nextTick { get; private set; } = float.PositiveInfinity;
 
     public bool running
@@ -26,15 +28,27 @@ public class Timer : MonoBehaviour
         set { }
     }
 
-    private bool didUpdateThisFrame = false;
+    public float elapsed
+    {
+        get { return period - nextTick; }
+        set { }
+    }
 
+
+    /// <summary>
+    /// `event` interface to be notified on timer tick. Called at the same time as `OnTimerTick`.
+    /// </summary>
+    public event TickHandler tick;
+    public delegate void TickHandler(Timer timer);
+
+    private bool didUpdateThisFrame = false;
     private bool didTickThisUpdate = false;
 
     /// <summary>
     /// Finds the Timer with name `timerName` on `gameObject`.
     /// This method should only be used to find an existing `Timer`, use `CreateTimer` to create a new one.
     /// </summary>
-    public static Timer FindTimer(GameObject gameObject, string timerName)
+    public static Timer Find(GameObject gameObject, string timerName)
     {
         foreach (var timer in gameObject.GetComponents<Timer>())
         {
@@ -44,20 +58,32 @@ public class Timer : MonoBehaviour
             }
         }
         Debug.LogWarningFormat("Timer \"{0}\" not found on {1}, creating new Timer", timerName, gameObject.name);
-        return CreateTimer(gameObject, timerName);
+        return Create(gameObject, -1, timerName);
     }
 
     /// <summary>
-    /// Creates a new `Timer` and adds it to `gameObject`. If `period` isn't given then uses the default period.
+    /// Creates a new `Timer` and adds it to `gameObject`.
     /// </summary>
-    public static Timer CreateTimer(GameObject gameObject, string timerName = "", float period = -1f)
+    public static Timer Create(GameObject gameObject, float period, string timerName = null)
     {
         var newTimer = gameObject.AddComponent<Timer>();
-        newTimer.timerName = timerName;
-        if (period != -1f)
+        newTimer.period = Mathf.Clamp(period, 0.01f, 10f);
+        if (timerName != null)
         {
-            newTimer.period = Mathf.Clamp(period, 0.01f, 10f);
+            newTimer.timerName = timerName;
         }
+        return newTimer;
+    }
+
+    /// <summary>
+    /// Creates a new one-shot `Timer` and adds it to `gameObject`. One-shot timers fire once
+    /// then stop, but can be restarted again with Start.
+    /// </summary>
+    public static Timer OneShot(GameObject gameObject, float period, string timerName = null)
+    {
+        var newTimer = Create(gameObject, period, timerName);
+        newTimer.autoStart = true;
+        newTimer.oneShot = true;
         return newTimer;
     }
 
@@ -103,7 +129,13 @@ public class Timer : MonoBehaviour
             {
                 nextTick = Mathf.Max(nextTick + period, 0);
                 didTickThisUpdate = true;
+                if (oneShot)
+                {
+                    // Disable before ticking to give listeners a chance to restart the one shot.
+                    nextTick = float.PositiveInfinity;
+                }
                 SendMessage("OnTimerTick", this, SendMessageOptions.DontRequireReceiver);
+                tick?.Invoke(this);
             }
         }
     }

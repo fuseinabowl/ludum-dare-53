@@ -8,14 +8,13 @@ public class PlayerController : MonoBehaviour
     public Rigidbody shotPrefab;
     public float shotVelocity = 100;
     [Range(0.1f, 1f)] public float shotPeriod = 0.1f;
-    [Range(0, 0.1f)] public float shotGracePeriod = 0;
+    [Range(0, 0.1f)] public float shotAudioDelay = 0.02f;
 
     private Timer shotTimer;
-    private bool stopShootingOnTimerTick = false;
 
     private void Awake()
     {
-        shotTimer = Timer.FindTimer(gameObject, "GunTimer");
+        shotTimer = Timer.Find(gameObject, "GunTimer");
         shotTimer.period = shotPeriod;
         FMODUtil.SetParam(shotSfx, "SpawnRate", 0.1f / shotPeriod);
     }
@@ -26,20 +25,9 @@ public class PlayerController : MonoBehaviour
         {
             StartShooting();
         }
-        else if (!Input.anyKey && shotTimer.running && !stopShootingOnTimerTick)
+        else if (!Input.anyKey && shotTimer.running)
         {
-            if (shotTimer.nextTick < shotGracePeriod)
-            {
-                // Make sure there are the same number of sounds and bullets by waiting until the
-                // next tick (which fires a bullet) to stop. There is ultimately to account for
-                // the fact that the FMOD API isn't instantaneous.
-                Debug.LogFormat("About to shoot in {0} seconds, I will stop shooting then", shotTimer.nextTick);
-                stopShootingOnTimerTick = true;
-            }
-            else
-            {
-                StopShooting();
-            }
+            StopShooting();
         }
     }
 
@@ -53,7 +41,21 @@ public class PlayerController : MonoBehaviour
 
     private void StopShooting()
     {
+        if (shotTimer.elapsed < shotAudioDelay)
+        {
+            // If we shot < shotAudioDelay ago then wait a bit to tell FMOD to stop its audio,
+            // otherwise it might cut out too soon.
+            Timer.OneShot(gameObject, shotAudioDelay).tick += StopSFX;
+        }
+        else
+        {
+            StopSFX(null);
+        }
         shotTimer.StopTimer();
+    }
+
+    private void StopSFX(Timer timer)
+    {
         shotSfx.SetParameter("Stop", 1);
     }
 
@@ -65,13 +67,9 @@ public class PlayerController : MonoBehaviour
 
     private void OnTimerTick(Timer timer)
     {
-        Shoot();
-
-        if (stopShootingOnTimerTick)
+        if (timer == shotTimer)
         {
-            stopShootingOnTimerTick = false;
-            StopShooting();
+            Shoot();
         }
     }
-
 }

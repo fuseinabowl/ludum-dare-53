@@ -51,7 +51,10 @@ public class PlayerController : MonoBehaviour
         {
             StopSFX(null);
         }
+
         shotTimer.StopTimer();
+
+        SingletonProvider.Get<LevelLoader>().LoadNextLevel();
     }
 
     private void StopSFX(Timer timer)

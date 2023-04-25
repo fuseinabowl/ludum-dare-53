@@ -10,10 +10,7 @@ public class Lists
     /// <summary>
     /// Returns a List made up of `items`.
     /// 
-    /// <example>
-    /// List.Of(1, 2, 3);
-    /// List.Of("item");
-    /// </example>
+    /// For example: List.Of(1, 2, 3), List.Of("item").
     /// </summary>
     public static List<T> Of<T>(params T[] items)
     {

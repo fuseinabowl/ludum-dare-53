@@ -21,6 +21,10 @@ public class LevelLoader : MonoBehaviour
     [HideInInspector]
     public string[] levelPaths = new string[] { };
 
+    /// <summary>
+    /// Loads the next level Scene and returns true (for what it's worth). If there is no
+    /// next level then returns false and doesn't do anything.
+    /// </summary>
     public bool LoadNextLevel()
     {
         var currentScene = SceneManager.GetActiveScene();

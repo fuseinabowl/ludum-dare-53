@@ -11,7 +11,6 @@ public class PlayerController : MonoBehaviour
     [Range(0, 0.1f)] public float shotAudioDelay = 0.02f;
 
     private Timer shotTimer;
-    private int firedThisRound;
 
     private void Awake()
     {
@@ -37,7 +36,6 @@ public class PlayerController : MonoBehaviour
         shotSfx.Play();
         shotSfx.SetParameter("SpawnRate", 0.1f / shotPeriod);
         shotSfx.SetParameter("Stop", 0);
-        firedThisRound = 0;
         Shoot();
     }
 
@@ -55,13 +53,6 @@ public class PlayerController : MonoBehaviour
         }
 
         shotTimer.StopTimer();
-        Debug.LogFormat("Fired {0} shots", firedThisRound);
-
-        // Demo for SingletonProvider / LevelLoader.
-        if (firedThisRound >= 10)
-        {
-            SingletonProvider.Get<LevelLoader>().LoadNextLevel();
-        }
     }
 
     private void StopSFX(Timer timer)
@@ -73,7 +64,6 @@ public class PlayerController : MonoBehaviour
     {
         var shot = Instantiate(shotPrefab, transform.position, transform.rotation);
         shot.AddForce(shotVelocity * Vector3.up);
-        firedThisRound++;
     }
 
     private void OnTimerTick(Timer timer)

@@ -59,9 +59,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levels:
+  - {fileID: 102900000, guid: 0b8c608229e8f47398c01ec14afd13d6, type: 3}
   - {fileID: 102900000, guid: 9fc0d4010bbf28b4594072e72b8655ab, type: 3}
   - {fileID: 102900000, guid: 337f976bc67054ed1900ae72a4d72e25, type: 3}
   levelPaths:
+  - Assets/Scenes/Title.unity
   - Assets/Scenes/SampleScene.unity
   - Assets/Scenes/SampleSceneForTest.unity
 --- !u!114 &839490892177806600

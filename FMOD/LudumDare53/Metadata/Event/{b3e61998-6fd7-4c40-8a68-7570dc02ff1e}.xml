@@ -58,13 +58,16 @@
 			<destination>{ca7feb24-0239-4566-a9d5-2c523cdf947a}</destination>
 		</relationship>
 		<relationship name="output">
-			<destination>{df79a547-24e3-4526-81fc-fee3646dfc21}</destination>
+			<destination>{9f39730d-57b6-4647-8877-eb7791fed0d0}</destination>
 		</relationship>
 	</object>
 	<object class="EventAutomatableProperties" id="{c7fefc8a-754c-4972-a82e-7526b57d2fee}" />
 	<object class="MarkerTrack" id="{114a712d-b440-44a6-8a67-61c8d4115c05}" />
 	<object class="MarkerTrack" id="{01411a95-d0fa-40de-97de-016ca3eaff6b}" />
 	<object class="GroupTrack" id="{cd97e671-3cc9-434f-b4f6-52d224a5cae1}">
+		<relationship name="automationTracks">
+			<destination>{22b97027-36c8-41a7-a6a6-184928f29e52}</destination>
+		</relationship>
 		<relationship name="modules">
 			<destination>{441b0c74-fc31-4413-b946-ced6bdcea84d}</destination>
 		</relationship>
@@ -109,6 +112,11 @@
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{ca7feb24-0239-4566-a9d5-2c523cdf947a}" />
+	<object class="AutomationTrack" id="{22b97027-36c8-41a7-a6a6-184928f29e52}">
+		<relationship name="automator">
+			<destination>{b1cffbc5-0286-4b41-8402-ee3706a1b467}</destination>
+		</relationship>
+	</object>
 	<object class="SoundScatterer" id="{441b0c74-fc31-4413-b946-ced6bdcea84d}">
 		<property name="triggerProbability">
 			<value>72</value>

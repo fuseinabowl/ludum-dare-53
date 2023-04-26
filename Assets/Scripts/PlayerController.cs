@@ -11,12 +11,12 @@ public class PlayerController : MonoBehaviour
     [Range(0, 0.1f)] public float shotAudioDelay = 0.02f;
 
     private Timer shotTimer;
+    private int firedThisRound;
 
     private void Awake()
     {
         shotTimer = Timer.Find(gameObject, "GunTimer");
         shotTimer.period = shotPeriod;
-        FMODUtil.SetParam(shotSfx, "SpawnRate", 0.1f / shotPeriod);
     }
 
     private void Update()
@@ -35,17 +35,19 @@ public class PlayerController : MonoBehaviour
     {
         shotTimer.StartTimer();
         shotSfx.Play();
+        shotSfx.SetParameter("SpawnRate", 0.1f / shotPeriod);
         shotSfx.SetParameter("Stop", 0);
+        firedThisRound = 0;
         Shoot();
     }
 
     private void StopShooting()
     {
-        if (shotTimer.elapsed < shotAudioDelay)
+        // Multiply shotAudioDelay by 1.5 so that we set the FMOD parameter mid-cycle.
+        float audioDelayTime = shotAudioDelay * 1.5f - shotTimer.elapsed;
+        if (audioDelayTime > 0)
         {
-            // If we shot < shotAudioDelay ago then wait a bit to tell FMOD to stop its audio,
-            // otherwise it might cut out too soon.
-            Timer.OneShot(gameObject, shotAudioDelay).tick += StopSFX;
+            Timer.OneShot(gameObject, audioDelayTime).tick += StopSFX;
         }
         else
         {
@@ -53,8 +55,13 @@ public class PlayerController : MonoBehaviour
         }
 
         shotTimer.StopTimer();
+        Debug.LogFormat("Fired {0} shots", firedThisRound);
 
-        SingletonProvider.Get<LevelLoader>().LoadNextLevel();
+        // Demo for SingletonProvider / LevelLoader.
+        if (firedThisRound >= 10)
+        {
+            SingletonProvider.Get<LevelLoader>().LoadNextLevel();
+        }
     }
 
     private void StopSFX(Timer timer)
@@ -66,6 +73,7 @@ public class PlayerController : MonoBehaviour
     {
         var shot = Instantiate(shotPrefab, transform.position, transform.rotation);
         shot.AddForce(shotVelocity * Vector3.up);
+        firedThisRound++;
     }
 
     private void OnTimerTick(Timer timer)

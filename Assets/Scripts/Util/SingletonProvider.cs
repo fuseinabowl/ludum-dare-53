@@ -17,18 +17,29 @@ public class SingletonProvider : MonoBehaviour
 
     public static T Get<T>() where T : Component
     {
+        T result;
+        if (!TryGet<T>(out result))
+        {
+            Debug.LogWarningFormat("No singleton found, did you add a SingletonProvider component?");
+            return null;
+        }
+        return result;
+    }
+
+    public static bool TryGet<T>(out T result) where T : Component
+    {
         foreach (var entry in singletons)
         {
-            T result;
             if (entry.TryGetComponent<T>(out result))
             {
-                return result;
+                return true;
             }
         }
 
-        Debug.LogWarningFormat("No singleton found, did you add a SingletonProvider component?");
-        return default(T);
+        result = default(T);
+        return false;
     }
+
 
     private void Awake()
     {

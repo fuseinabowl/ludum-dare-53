@@ -43,6 +43,7 @@ public class Timer : MonoBehaviour
 
     private bool didUpdateThisFrame = false;
     private bool didTickThisUpdate = false;
+    private bool deleteAfterTick = false;
 
     /// <summary>
     /// Finds the Timer with name `timerName` on `gameObject`.
@@ -76,14 +77,15 @@ public class Timer : MonoBehaviour
     }
 
     /// <summary>
-    /// Creates a new one-shot `Timer` and adds it to `gameObject`. One-shot timers fire once
-    /// then stop, but can be restarted again with Start.
+    /// Creates a new one-shot `Timer` and adds it to `gameObject`. One-shot timers created this
+    /// way will fire once then delete themselves.
     /// </summary>
     public static Timer OneShot(GameObject gameObject, float period, string timerName = null)
     {
         var newTimer = Create(gameObject, period, timerName);
         newTimer.autoStart = true;
         newTimer.oneShot = true;
+        newTimer.deleteAfterTick = true;
         return newTimer;
     }
 
@@ -131,11 +133,17 @@ public class Timer : MonoBehaviour
                 didTickThisUpdate = true;
                 if (oneShot)
                 {
-                    // Disable before ticking to give listeners a chance to restart the one shot.
+                    // Disable before ticking to give listeners a chance to restart the one-shot.
                     nextTick = float.PositiveInfinity;
                 }
                 SendMessage("OnTimerTick", this, SendMessageOptions.DontRequireReceiver);
                 tick?.Invoke(this);
+                if (float.IsPositiveInfinity(nextTick) && deleteAfterTick)
+                {
+                    // Listener didn't restart the one-shot and the timer has been configured to
+                    // delete itself (i.e. it was created programmatically in Timer.OneShot).
+                    GameObject.Destroy(this);
+                }
             }
         }
     }

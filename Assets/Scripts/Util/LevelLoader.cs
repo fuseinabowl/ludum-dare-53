@@ -21,26 +21,36 @@ public class LevelLoader : MonoBehaviour
     [HideInInspector]
     public string[] levelPaths = new string[] { };
 
+    public bool LoadFirstLevel()
+    {
+        return LoadLevel(0);
+    }
+
     /// <summary>
     /// Loads the next level Scene and returns true (for what it's worth). If there is no
     /// next level then returns false and doesn't do anything.
     /// </summary>
     public bool LoadNextLevel()
     {
-        var currentScene = SceneManager.GetActiveScene();
-        int nextScene = 0;
+        var currentLevel = SceneManager.GetActiveScene();
+        int nextLevel = 0;
 
         for (int i = 0; i < levelPaths.Length; i++)
         {
-            if (levelPaths[i] == currentScene.path)
+            if (levelPaths[i] == currentLevel.path)
             {
-                nextScene = i + 1;
+                nextLevel = i + 1;
             }
         }
 
-        if (nextScene > 0 && nextScene < levelPaths.Length)
+        return LoadLevel(nextLevel);
+    }
+
+    private bool LoadLevel(int levelIndex)
+    {
+        if (levelIndex >= 0 && levelIndex < levelPaths.Length)
         {
-            var path = levelPaths[nextScene];
+            var path = levelPaths[levelIndex];
 #if UNITY_EDITOR
             EditorSceneManager.LoadSceneInPlayMode(
                 path,

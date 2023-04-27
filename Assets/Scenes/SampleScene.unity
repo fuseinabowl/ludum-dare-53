@@ -383,9 +383,13 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 960939533529426506, guid: 3023d932a3eae42d4b7843ada503300b, type: 3}
-      propertyPath: levelPaths.Array.data[1]
-      value: Assets/Scenes/SampleSceneForTest.unity
+    - target: {fileID: 1487169217843230670, guid: 3023d932a3eae42d4b7843ada503300b, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5102435407006151577, guid: 3023d932a3eae42d4b7843ada503300b, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5879547802644299674, guid: 3023d932a3eae42d4b7843ada503300b, type: 3}
       propertyPath: m_Name

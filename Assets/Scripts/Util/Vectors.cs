@@ -68,4 +68,20 @@ public class Vectors
     {
         return new Vector3(vector.x, vector.y, 0f);
     }
+
+    /// <summary>
+    /// Gets vector with the absolute value of each component of `vector`.
+    /// </summary>
+    public static Vector3 Abs(Vector3 vector)
+    {
+        return new Vector3(Mathf.Abs(vector.x), Mathf.Abs(vector.y), Mathf.Abs(vector.z));
+    }
+
+    /// <summary>
+    /// Gets vector with each component of `vector` rounded.
+    /// </summary>
+    public static Vector2 Round(Vector3 position)
+    {
+        return new Vector3(Mathf.Round(position.x), Mathf.Round(position.y), Mathf.Round(position.z));
+    }
 }

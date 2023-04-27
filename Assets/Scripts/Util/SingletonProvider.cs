@@ -40,7 +40,6 @@ public class SingletonProvider : MonoBehaviour
         return false;
     }
 
-
     private void Awake()
     {
         if (component == null)

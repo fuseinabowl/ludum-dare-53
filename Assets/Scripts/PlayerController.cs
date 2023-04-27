@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     [Range(0, 0.1f)] public float shotAudioDelay = 0.02f;
 
     private Timer shotTimer;
+    private int shotsFired;
 
     private void Awake()
     {
@@ -18,9 +19,16 @@ public class PlayerController : MonoBehaviour
         shotTimer.period = shotPeriod;
     }
 
+    private void Start()
+    {
+        var scoreTracker = SingletonProvider.Get<ScoreTracker>();
+        scoreTracker.Load();
+        scoreTracker.PrintDebug();
+    }
+
     private void Update()
     {
-        if (Input.anyKeyDown)
+        if (Input.anyKeyDown && Time.timeScale > 0)
         {
             StartShooting();
         }
@@ -36,6 +44,7 @@ public class PlayerController : MonoBehaviour
         shotSfx.Play();
         shotSfx.SetParameter("SpawnRate", 0.1f / shotPeriod);
         shotSfx.SetParameter("Stop", 0);
+        shotsFired = 0;
         Shoot();
     }
 
@@ -53,6 +62,8 @@ public class PlayerController : MonoBehaviour
         }
 
         shotTimer.StopTimer();
+
+        SingletonProvider.Get<ScoreTracker>().CommitScore(shotsFired, true);
     }
 
     private void StopSFX(Timer timer)
@@ -64,6 +75,7 @@ public class PlayerController : MonoBehaviour
     {
         var shot = Instantiate(shotPrefab, transform.position, transform.rotation);
         shot.AddForce(shotVelocity * Vector3.up);
+        shotsFired++;
     }
 
     private void OnTimerTick(Timer timer)

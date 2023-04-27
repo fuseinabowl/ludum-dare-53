@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 510725360712953255}
   - component: {fileID: 876926013688480894}
   - component: {fileID: 6900791343246826446}
+  - component: {fileID: 6732626100341522870}
   m_Layer: 0
   m_Name: Shot
   m_TagString: Untagged
@@ -33,7 +34,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &3524961742831724223
 MeshFilter:
@@ -133,3 +134,20 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &6732626100341522870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 830242584460788474}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5cc46ff93c554c8cb12b221531f207a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animation: 0
+  duration: 0.2
+  strength: 1.2
+  frequency: 1
+  animateOnStart: 1

@@ -28,7 +28,7 @@ public class TransformAnimator : MonoBehaviour
     [Range(0, 100)]
     public float frequency = 10f;
 
-    // public bool continuous = false;
+    public bool continuous = false;
 
     public bool animateOnStart = false;
 
@@ -88,8 +88,13 @@ public class TransformAnimator : MonoBehaviour
         float elapsed = 0;
         float prevScale = 1f;
 
-        while (elapsed < duration)
+        while (continuous || elapsed < duration)
         {
+            if (elapsed > duration)
+            {
+                elapsed -= duration;
+            }
+
             var currentScale = BiSmoothStep(1f, magnitude, elapsed / duration);
             transform.localScale *= 1 + currentScale - prevScale;
             prevScale = currentScale;
@@ -103,9 +108,11 @@ public class TransformAnimator : MonoBehaviour
         float elapsed = 0;
         float prevRotation = 0f;
 
-        while (elapsed < duration)
+        while (continuous || elapsed < duration)
         {
-            var currentRotation = Mathf.SmoothStep(0f, 360f, elapsed / duration);
+            float currentRotation = continuous
+                ? (360f * elapsed / duration) % 360f
+                : Mathf.SmoothStep(0f, 360f, elapsed / duration);
             transform.localRotation = Quaternion.Euler(
                 transform.localRotation.eulerAngles + (currentRotation - prevRotation) * Vector3.up
             );
@@ -123,13 +130,15 @@ public class TransformAnimator : MonoBehaviour
         var prevLocalPosition = Vector3.zero;
         var prevLocalRotation = Quaternion.identity.eulerAngles;
 
-        while (elapsed < duration)
+        while (continuous || elapsed < duration)
         {
-            var smoothMagnitude = BiSmoothStep(0, magnitude, elapsed / duration);
+            var magnitudeStep = continuous
+                ? magnitude
+                : BiSmoothStep(0, magnitude, elapsed / duration);
 
             if (shake)
             {
-                var currentLocalPosition = smoothMagnitude * new Vector3(
+                var currentLocalPosition = magnitudeStep * new Vector3(
                     Mathf.PerlinNoise(seed, elapsed * frequency) * 2 - 1,
                     Mathf.PerlinNoise(seed + 1, elapsed * frequency) * 2 - 1,
                     Mathf.PerlinNoise(seed + 2, elapsed * frequency) * 2 - 1
@@ -140,7 +149,7 @@ public class TransformAnimator : MonoBehaviour
 
             if (wiggle)
             {
-                var currentLocalRotation = 15f * smoothMagnitude * new Vector3(
+                var currentLocalRotation = 15f * magnitudeStep * new Vector3(
                     Mathf.PerlinNoise(seed + 3, elapsed * frequency) * 2 - 1,
                     Mathf.PerlinNoise(seed + 4, elapsed * frequency) * 2 - 1,
                     Mathf.PerlinNoise(seed + 5, elapsed * frequency) * 2 - 1

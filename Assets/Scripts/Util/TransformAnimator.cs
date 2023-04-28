@@ -25,8 +25,8 @@ public class TransformAnimator : MonoBehaviour
     [Range(0, 2)]
     public float magnitude = 2f;
 
-    [Range(0, 100)]
-    public float frequency = 10f;
+    [Range(0, 20)]
+    public float complexity = 10f;
 
     public Vector3 direction = Vector3.up;
 
@@ -146,9 +146,9 @@ public class TransformAnimator : MonoBehaviour
             if (shake)
             {
                 var currentLocalPosition = magnitudeStep * new Vector3(
-                    Mathf.PerlinNoise(seed, elapsed * frequency) * 2 - 1,
-                    Mathf.PerlinNoise(seed + 1, elapsed * frequency) * 2 - 1,
-                    Mathf.PerlinNoise(seed + 2, elapsed * frequency) * 2 - 1
+                    Mathf.PerlinNoise(seed, elapsed * complexity) * 2 - 1,
+                    Mathf.PerlinNoise(seed + 1, elapsed * complexity) * 2 - 1,
+                    Mathf.PerlinNoise(seed + 2, elapsed * complexity) * 2 - 1
                 );
                 transform.localPosition += currentLocalPosition - prevLocalPosition;
                 prevLocalPosition = currentLocalPosition;
@@ -157,9 +157,9 @@ public class TransformAnimator : MonoBehaviour
             if (wiggle)
             {
                 var currentLocalRotation = 15f * magnitudeStep * new Vector3(
-                    Mathf.PerlinNoise(seed + 3, elapsed * frequency) * 2 - 1,
-                    Mathf.PerlinNoise(seed + 4, elapsed * frequency) * 2 - 1,
-                    Mathf.PerlinNoise(seed + 5, elapsed * frequency) * 2 - 1
+                    Mathf.PerlinNoise(seed + 3, elapsed * complexity) * 2 - 1,
+                    Mathf.PerlinNoise(seed + 4, elapsed * complexity) * 2 - 1,
+                    Mathf.PerlinNoise(seed + 5, elapsed * complexity) * 2 - 1
                 );
                 transform.localRotation = Quaternion.Euler(
                     transform.localRotation.eulerAngles + currentLocalRotation - prevLocalRotation

@@ -15,7 +15,7 @@ using UnityEngine.UI;
 /// </summary>
 public class TransformAnimator : MonoBehaviour
 {
-    public enum Animation { PULSE, SPIN, SHAKE, WIGGLE }
+    public enum Animation { PULSE, SPIN, SHAKE, WIGGLE, NUDGE }
 
     public new Animation animation = Animation.PULSE;
 
@@ -27,6 +27,8 @@ public class TransformAnimator : MonoBehaviour
 
     [Range(0, 100)]
     public float frequency = 10f;
+
+    public Vector3 direction = Vector3.up;
 
     public bool continuous = false;
 
@@ -71,6 +73,9 @@ public class TransformAnimator : MonoBehaviour
             case Animation.WIGGLE:
                 yield return IShakeWiggle(false, true);
                 break;
+            case Animation.NUDGE:
+                yield return INudge();
+                break;
         }
 
         animationCount--;
@@ -113,9 +118,11 @@ public class TransformAnimator : MonoBehaviour
             float currentRotation = continuous
                 ? (360f * elapsed / duration) % 360f
                 : Mathf.SmoothStep(0f, 360f, elapsed / duration);
+
             transform.localRotation = Quaternion.Euler(
                 transform.localRotation.eulerAngles + (currentRotation - prevRotation) * Vector3.up
             );
+
             prevRotation = currentRotation;
             yield return null;
             elapsed += Time.deltaTime;
@@ -160,6 +167,27 @@ public class TransformAnimator : MonoBehaviour
                 prevLocalRotation = currentLocalRotation;
             }
 
+            yield return null;
+            elapsed += Time.deltaTime;
+        }
+    }
+
+    private IEnumerator INudge()
+    {
+        float elapsed = 0;
+        float prevExtent = 0;
+
+        while (continuous || elapsed < duration)
+        {
+            if (elapsed > duration)
+            {
+                elapsed -= duration;
+            }
+
+            var currentExtent = BiSmoothStep(0f, magnitude, elapsed / duration);
+            transform.localPosition += (currentExtent - prevExtent) * direction.normalized;
+
+            prevExtent = currentExtent;
             yield return null;
             elapsed += Time.deltaTime;
         }

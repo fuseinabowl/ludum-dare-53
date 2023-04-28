@@ -5,48 +5,57 @@ using UnityEngine.UI;
 
 /// <summary>
 /// A collection of animations that are programmed directly against the transform.
+/// Not all configuration options will apply to every animation.
 ///
 /// Pulse and spin are useful for objects.
 /// Shake is useful for cameras, though could be used on objects too.
 ///
-/// Multiple of these animations running together may interfere with each other, so
-/// they will sequence themselves to avoid that.
+/// These are all designed so that any number of animations can run concurrently, and
+/// by the end they will have converged to the original transform.
 /// </summary>
 public class TransformAnimator : MonoBehaviour
 {
-    public enum Animation { PULSE, SPIN, SHAKE, }
+    public enum Animation { PULSE, SPIN, SHAKE, WIGGLE }
 
     public new Animation animation = Animation.PULSE;
 
-    [Range(0, 1)]
-    public float duration = 0.1f;
+    [Range(0, 5)]
+    public float duration = 1f;
 
     [Range(0, 2)]
-    public float strength = 2f;
+    public float magnitude = 2f;
 
-    [Range(0, 1)]
-    public float frequency = 0.1f;
+    [Range(0, 100)]
+    public float frequency = 10f;
+
+    // public bool continuous = false;
 
     public bool animateOnStart = false;
 
-    // public bool loop = false;
-
-    private bool animating = false;
+    private Vector3 startLocalPosition;
+    private Vector3 startLocalScale;
+    private Quaternion startLocalRotation;
+    private TransformAnimator[] animators;
+    private int animationCount = 0;
 
     public void Animate()
     {
-        StartCoroutine(IAnimate());
+        if (enabled)
+        {
+            StartCoroutine(IAnimate());
+        }
     }
 
     public IEnumerator IAnimate()
     {
-        // Only allow a single animation at a time. This is a lazy solution.
-        while (AnyComponentIsAnimating())
+        if (!AnyComponentIsAnimating())
         {
-            yield return null;
+            startLocalPosition = transform.localPosition;
+            startLocalScale = transform.localScale;
+            startLocalRotation = transform.localRotation;
         }
 
-        animating = true;
+        animationCount++;
 
         switch (animation)
         {
@@ -54,40 +63,102 @@ public class TransformAnimator : MonoBehaviour
                 yield return IPulse();
                 break;
             case Animation.SPIN:
-                // yield return IShake();
+                yield return ISpin();
                 break;
             case Animation.SHAKE:
-                yield return IShake();
+                yield return IShakeWiggle(true, false);
+                break;
+            case Animation.WIGGLE:
+                yield return IShakeWiggle(false, true);
                 break;
         }
 
-        animating = false;
+        animationCount--;
+
+        if (!AnyComponentIsAnimating())
+        {
+            transform.localPosition = startLocalPosition;
+            transform.localScale = startLocalScale;
+            transform.localRotation = startLocalRotation;
+        }
     }
 
     private IEnumerator IPulse()
     {
-        var startLocalScale = transform.localScale;
-
         float elapsed = 0;
+        float prevScale = 1f;
 
         while (elapsed < duration)
         {
-            transform.localScale = ForwardBackStep(elapsed) * startLocalScale;
+            var currentScale = BiSmoothStep(1f, magnitude, elapsed / duration);
+            transform.localScale *= 1 + currentScale - prevScale;
+            prevScale = currentScale;
             yield return null;
             elapsed += Time.deltaTime;
         }
-
-        transform.localScale = startLocalScale;
     }
 
-    private float ForwardBackStep(float elapsed)
+    private IEnumerator ISpin()
     {
-        float progress = elapsed * 2f;
-        if (progress > duration)
+        float elapsed = 0;
+        float prevRotation = 0f;
+
+        while (elapsed < duration)
         {
-            progress = 2 * duration - progress;
+            var currentRotation = Mathf.SmoothStep(0f, 360f, elapsed / duration);
+            transform.localRotation = Quaternion.Euler(
+                transform.localRotation.eulerAngles + (currentRotation - prevRotation) * Vector3.up
+            );
+            prevRotation = currentRotation;
+            yield return null;
+            elapsed += Time.deltaTime;
         }
-        return Mathf.SmoothStep(1f, strength, progress / duration);
+    }
+
+    private IEnumerator IShakeWiggle(bool shake, bool wiggle)
+    {
+        var seed = UnityEngine.Random.value;
+
+        float elapsed = 0;
+        var prevLocalPosition = Vector3.zero;
+        var prevLocalRotation = Quaternion.identity.eulerAngles;
+
+        while (elapsed < duration)
+        {
+            var smoothMagnitude = BiSmoothStep(0, magnitude, elapsed / duration);
+
+            if (shake)
+            {
+                var currentLocalPosition = smoothMagnitude * new Vector3(
+                    Mathf.PerlinNoise(seed, elapsed * frequency) * 2 - 1,
+                    Mathf.PerlinNoise(seed + 1, elapsed * frequency) * 2 - 1,
+                    Mathf.PerlinNoise(seed + 2, elapsed * frequency) * 2 - 1
+                );
+                transform.localPosition += currentLocalPosition - prevLocalPosition;
+                prevLocalPosition = currentLocalPosition;
+            }
+
+            if (wiggle)
+            {
+                var currentLocalRotation = 15f * smoothMagnitude * new Vector3(
+                    Mathf.PerlinNoise(seed + 3, elapsed * frequency) * 2 - 1,
+                    Mathf.PerlinNoise(seed + 4, elapsed * frequency) * 2 - 1,
+                    Mathf.PerlinNoise(seed + 5, elapsed * frequency) * 2 - 1
+                );
+                transform.localRotation = Quaternion.Euler(
+                    transform.localRotation.eulerAngles + currentLocalRotation - prevLocalRotation
+                );
+                prevLocalRotation = currentLocalRotation;
+            }
+
+            yield return null;
+            elapsed += Time.deltaTime;
+        }
+    }
+
+    private void Awake()
+    {
+        animators = GetComponents<TransformAnimator>();
     }
 
     private void Start()
@@ -100,64 +171,23 @@ public class TransformAnimator : MonoBehaviour
 
     private bool AnyComponentIsAnimating()
     {
-        if (animating)
+        foreach (var anim in animators)
         {
-            return true;
-        }
-
-        var animators = GetComponents<TransformAnimator>();
-        if (animators.Length > 1)
-        {
-            foreach (var anim in animators)
+            if (anim.animationCount > 0)
             {
-                if (anim.animating)
-                {
-                    return true;
-                }
+                return true;
             }
         }
-
         return false;
     }
 
-    private IEnumerator IShake()
+    private float BiSmoothStep(float from, float to, float t)
     {
-        // This implementation doesn't make sense, I copied it from a previous LD and without the
-        // original context it's completely wrong. Need to actually read this and then fix it:
-        // https://docs.unity3d.com/ScriptReference/Mathf.PerlinNoise.html
-
-        var seed = UnityEngine.Random.value;
-        var startPosition = transform.localPosition;
-        var startRotation = transform.localRotation;
-
-        float elapsed = 0;
-
-        while (elapsed < duration)
+        float t2 = t * 2f;
+        if (t > 0.5f)
         {
-            var step = ForwardBackStep(elapsed);
-            transform.localPosition =
-                new Vector3(
-                    (Mathf.PerlinNoise(seed, Time.time * frequency) * 2 - 1),
-                    (Mathf.PerlinNoise(seed + 1, Time.time * frequency) * 2 - 1),
-                    (Mathf.PerlinNoise(seed + 2, Time.time * frequency) * 2 - 1)
-                )
-                * step
-                * 0.5f;
-            transform.localRotation = Quaternion.Euler(
-                new Vector3(
-                    (Mathf.PerlinNoise(seed + 3, Time.time * frequency) * 2 - 1),
-                    (Mathf.PerlinNoise(seed + 4, Time.time * frequency) * 2 - 1),
-                    (Mathf.PerlinNoise(seed + 5, Time.time * frequency) * 2 - 1)
-                )
-                    * step
-                    * 0.2f
-            );
-
-            yield return null;
-            elapsed += Time.deltaTime;
+            t2 = (1f - t) * 2f;
         }
-
-        transform.localPosition = startPosition;
-        transform.localRotation = startRotation;
+        return Mathf.SmoothStep(from, to, t2);
     }
 }

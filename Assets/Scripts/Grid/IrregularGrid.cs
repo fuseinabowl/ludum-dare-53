@@ -10,16 +10,7 @@ using Sylves;
 public class IrregularGrid : MonoBehaviour
 {
     [SerializeField]
-    private GameObject spawnedModel;
-
-    [SerializeField]
-    private int seed;
-
-    [SerializeField]
-    private int mapSize = 4;
-
-    [SerializeField]
-    private float cellSide = 0.5f;
+    private GridData gridData;
 
     [Serializable]
     public class PaletteOption
@@ -58,11 +49,11 @@ public class IrregularGrid : MonoBehaviour
 
     private void Generate()
     {
-        var triangleGrid = new TriangleGrid(cellSide, TriangleOrientation.FlatSides, bound: TriangleBound.Hexagon(mapSize));
+        var triangleGrid = new TriangleGrid(gridData.cellSide, TriangleOrientation.FlatSides, bound: TriangleBound.Hexagon(gridData.mapSize));
 
         var meshData = triangleGrid.ToMeshData();
 
-        var seededRng = new System.Random(seed);
+        var seededRng = new System.Random(gridData.seed);
 
         // change this to make a pairing that doesn't generate tris
         meshData = meshData.RandomPairing(() => seededRng.NextDouble());
@@ -116,7 +107,7 @@ public class IrregularGrid : MonoBehaviour
             );
 
             // spawn object
-            var spawnedObject = GameObject.Instantiate(spawnedModel, transform);
+            var spawnedObject = GameObject.Instantiate(gridData.defaultSpawnedModel, transform);
             spawnedObject.hideFlags = HideFlags.DontSave;
             // find mesh filter
             var meshFilter = spawnedObject.GetComponent<MeshFilter>();

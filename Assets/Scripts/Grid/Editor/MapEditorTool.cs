@@ -109,8 +109,21 @@ public class MapEditorTool : EditorTool
     private GameObject GetObjectUnderCursor()
     {
         var mousePosition = Event.current.mousePosition;
-        var clickedObject = HandleUtility.PickGameObject(mousePosition, out var materialIndex);
+        var clickedObject = HandleUtility.PickGameObject(mousePosition, selectPrefabRoot:false, ignore:null, filter:GetGridChildren());
+        Debug.Log($"Clicked object {clickedObject}");
         return clickedObject;
+    }
+
+    private GameObject[] GetGridChildren()
+    {
+        var children = new List<GameObject>(CastTarget.transform.childCount);
+
+        for (var childIndex = 0; childIndex < CastTarget.transform.childCount; ++childIndex)
+        {
+            children.Add(CastTarget.transform.GetChild(childIndex).gameObject);
+        }
+
+        return children.ToArray();
     }
 
     private void Click(Event evt)

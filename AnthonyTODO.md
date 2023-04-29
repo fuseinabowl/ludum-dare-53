@@ -57,7 +57,7 @@
 
 # Anthony's tasks
 
-- Create level editor
+- Create level editor - Done!
 - Create level
   - Create models
   - Create basic layout

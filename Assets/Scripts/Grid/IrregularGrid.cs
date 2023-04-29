@@ -73,6 +73,7 @@ public class IrregularGrid : MonoBehaviour
             // read mesh
             Assert.IsTrue(mesh.isReadable);
             var localVertices = mesh.vertices;
+            var localNormals = mesh.normals;
 
             // warp mesh
             for (var vertexIndex = 0; vertexIndex < localVertices.Length; ++vertexIndex)
@@ -82,6 +83,7 @@ public class IrregularGrid : MonoBehaviour
 
             // upload mesh back into mesh filter
             mesh.vertices = localVertices;
+            mesh.normals = localNormals;
         }
     }
 
@@ -130,15 +132,15 @@ public class IrregularGrid : MonoBehaviour
         // use +4-1 to avoid negative numbers in the modulo, which causes unintuitive behaviour
         var previousIndex = adjacentQuadStartIndex + ((referencedCornerIndex + 4 - 1) % 4);
 
-        if (nextIndex == adjacentVertexOnThisQuadIndex)
+        if (indices[nextIndex] == adjacentVertexOnThisQuadIndex)
         {
-            Assert.AreNotEqual(previousIndex, adjacentVertexOnThisQuadIndex);
-            return vertices[previousIndex];
+            Assert.AreNotEqual(indices[previousIndex], adjacentVertexOnThisQuadIndex);
+            return vertices[indices[previousIndex]];
         }
         else
         {
-            Assert.AreEqual(previousIndex, adjacentVertexOnThisQuadIndex);
-            return vertices[nextIndex];
+            Assert.AreEqual(indices[previousIndex], adjacentVertexOnThisQuadIndex, $"Next index {nextIndex} was not equal to {adjacentVertexOnThisQuadIndex}, so the previous index {previousIndex} should have been");
+            return vertices[indices[nextIndex]];
         }
     }
 

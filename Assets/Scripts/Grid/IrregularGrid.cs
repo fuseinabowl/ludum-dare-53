@@ -20,6 +20,9 @@ public class IrregularGrid : MonoBehaviour
     [SerializeField]
     private float cellSide = 0.5f;
 
+    [SerializeField]
+    public List<GameObject> mapEditorPalette = new List<GameObject>();
+
     private VertexNetwork vertexNetwork;
 
     private void Awake() {

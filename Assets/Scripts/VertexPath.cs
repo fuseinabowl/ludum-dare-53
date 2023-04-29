@@ -120,6 +120,32 @@ public class VertexPath : MonoBehaviour
         return false;
     }
 
+    public bool CanDeleteEdge(Edge edge) {
+        if (edges.Count == 1) {
+            // can't delete the last edge
+            return false;
+        }
+        if (distance > totalTrackLength - edge.length) {
+            // can't delete edge if the train is on it
+            return false;
+        }
+        return edges[edges.Count - 1].Equals(edge);
+    }
+
+    public bool EndsWith(Vector3 vertex) {
+        return vertices[vertices.Count - 1] == vertex;
+    }
+
+    public bool DeleteEdge(Edge edge) {
+        if (!CanDeleteEdge(edge)) {
+            return false;
+        }
+        edges.RemoveAt(edges.Count - 1);
+        vertices.RemoveAt(vertices.Count - 1);
+        totalTrackLength -= edge.length;
+        return true;
+    }
+
     public bool Connect(Edge edge)
     {
         if (!CanConnect(edge))

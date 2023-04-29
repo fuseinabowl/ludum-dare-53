@@ -13,6 +13,7 @@ public class VertexNetwork : MonoBehaviour
     private List<VertexPath> vertexPaths = new List<VertexPath>();
     private Edge closestEdge = null;
     private bool canPlaceClosestEdge = false;
+    private bool canDeleteClosestEdge = false;
     private Vector3 mouseHit;
 
     public void SetEdgeGraph(EdgeGraph eg)
@@ -32,28 +33,41 @@ public class VertexNetwork : MonoBehaviour
         mouseHit = Physics.Raycast(ray, out hit) ? hit.point : Vector3.zero;
         closestEdge = edgeGraph.ClosestEdge(mouseHit);
         canPlaceClosestEdge = CanPlaceEdge(closestEdge);
+        canDeleteClosestEdge = CanDeleteEdge(closestEdge);
 
-        if (canPlaceClosestEdge && Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && canPlaceClosestEdge)
         {
             PlaceEdge(closestEdge);
+        }
+        else if (Input.GetMouseButtonDown(1) && canDeleteClosestEdge)
+        {
+            DeleteEdge(closestEdge);
         }
     }
 
     private void PlaceEdge(Edge edge)
     {
+        Vector3 root;
+        bool isOnRoot = IsOnRoot(edge, out root);
+
         foreach (var path in vertexPaths)
         {
             if (path.CanConnect(edge))
             {
+                if (isOnRoot) {
+                    // either:
+                    // (1) player is connecting one root to another, in which case the path should be extended.
+                    // (2) the player is starting another path from the root, in which case a new path should be created.
+                    if (path.EndsWith(root)) {
+                        break;
+                    }
+                }
                 path.Connect(edge);
                 return;
             }
         }
 
-        Vector3 root;
-        bool isOnRoot = IsOnRoot(edge, out root);
         Debug.Assert(isOnRoot);
-        
         var vertexPath = Instantiate(vertexPathPrefab, transform);
         vertexPaths.Add(vertexPath);
         vertexPath.Init(root, edge, travelerScale);
@@ -78,7 +92,8 @@ public class VertexNetwork : MonoBehaviour
             {
                 return false;
             }
-            if (path.CompletesLoop(edge)) {
+            if (path.CompletesLoop(edge))
+            {
                 return false;
             }
             if (path.CanConnect(edge))
@@ -101,6 +116,29 @@ public class VertexNetwork : MonoBehaviour
 
         Vector3 root;
         return IsOnRoot(edge, out root);
+    }
+
+    private bool CanDeleteEdge(Edge edge)
+    {
+        foreach (var path in vertexPaths)
+        {
+            if (path.CanDeleteEdge(edge))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void DeleteEdge(Edge edge)
+    {
+        foreach (var path in vertexPaths)
+        {
+            if (path.DeleteEdge(edge))
+            {
+                return;
+            }
+        }
     }
 
     private bool IsOnRoot(Edge edge, out Vector3 root)
@@ -129,7 +167,7 @@ public class VertexNetwork : MonoBehaviour
 
             if (closestEdge != null)
             {
-                Gizmos.color = canPlaceClosestEdge ? Color.green : Color.red;
+                Gizmos.color = canPlaceClosestEdge ? Color.green : canDeleteClosestEdge ? Color.yellow : Color.red;
                 Gizmos.DrawLine(closestEdge.left, closestEdge.right);
             }
         }

@@ -18,19 +18,11 @@ public class CageWarper
         Vector3 v2plusZ, Vector3 v3minusZ
     )
     {
-        var lowerLeftTriX = v3 - v0;
-        var lowerLeftTriZ = v1 - v0;
-
-        var upperRightTriX = v2 - v1;
-        var upperRightTriZ = v2 - v3;
         return new CageWarper{
-            lowerLeftTriX = lowerLeftTriX,
-            lowerLeftTriZ = lowerLeftTriZ,
-            lowerLeftBias = v0,
-
-            upperRightTriX = upperRightTriX,
-            upperRightTriZ = upperRightTriZ,
-            upperRightBias = v2 - upperRightTriX - upperRightTriZ,
+            v0 = v0,
+            v1 = v1,
+            v2 = v2,
+            v3 = v3,
 
             v0xNormal = CalculateNormal(v0minusZ, v1),
             v1xNormal = CalculateNormal(v0, v1plusZ),
@@ -46,14 +38,7 @@ public class CageWarper
 
     public Vector3 WarpVertex(Vector3 vertex)
     {
-        if (vertex.x + vertex.z <= 1f)
-        {
-            return LowerLeftWarp(vertex);
-        }
-        else
-        {
-            return UpperRightWarp(vertex);
-        }
+        return BilinearBlend(vertex, v0, v1, v2, v3) + Vector3.up * vertex.y;
     }
 
     public Vector3 WarpNormal(Vector3 vertex, Vector3 normal)
@@ -71,16 +56,6 @@ public class CageWarper
         return Vector3.Lerp(leftValue, rightValue, vertex.x);
     }
 
-    private Vector3 LowerLeftWarp(Vector3 vertex)
-    {
-        return lowerLeftTriX * vertex.x + Vector3.up * vertex.y + lowerLeftTriZ * vertex.z + lowerLeftBias;
-    }
-
-    private Vector3 UpperRightWarp(Vector3 vertex)
-    {
-        return upperRightTriX * vertex.x + Vector3.up * vertex.y + upperRightTriZ * vertex.z + upperRightBias;
-    }
-
     private static Vector3 CalculateNormal(Vector3 tangent0, Vector3 tangent1)
     {
         var offset = tangent1 - tangent0;
@@ -88,12 +63,10 @@ public class CageWarper
         return offsetNormal;
     }
 
-    private Vector3 lowerLeftTriX;
-    private Vector3 lowerLeftTriZ;
-    private Vector3 lowerLeftBias;
-    private Vector3 upperRightTriX;
-    private Vector3 upperRightTriZ;
-    private Vector3 upperRightBias;
+    private Vector3 v0;
+    private Vector3 v1;
+    private Vector3 v2;
+    private Vector3 v3;
 
     private Vector3 v0xNormal;
     private Vector3 v1xNormal;

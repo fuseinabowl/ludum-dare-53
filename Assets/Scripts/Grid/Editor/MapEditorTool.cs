@@ -110,7 +110,6 @@ public class MapEditorTool : EditorTool
     {
         var mousePosition = Event.current.mousePosition;
         var clickedObject = HandleUtility.PickGameObject(mousePosition, selectPrefabRoot:false, ignore:null, filter:GetGridChildren());
-        Debug.Log($"Clicked object {clickedObject}");
         return clickedObject;
     }
 
@@ -132,11 +131,29 @@ public class MapEditorTool : EditorTool
         var hit = GetObjectUnderCursor();
         if (hit != null)
         {
-            // TODO save currently selected tile prefab to slot
-            // TODO delete current tile in slot
-            // TODO create new tile in slot
+            var quadIndex = hit.GetComponent<GridQuadIndexRegister>().quadIndex;
+            var toBePlaced = CastTarget.CurrentPaletteOption;
+
+            SavePrefabToSlot(toBePlaced, quadIndex);
+            GameObject.DestroyImmediate(hit);
+            CastTarget.CreatePrefabInSlot(toBePlaced, quadIndex);
         }
         clickPerfMarker.End();
+    }
+
+    private void SavePrefabToSlot(GameObject toBePlaced, int slot)
+    {
+        EnsurePrefabOverrideListSize(CastTarget.GridData.matchingOrderPrefabOverrides, slot);
+        CastTarget.GridData.matchingOrderPrefabOverrides[slot] = toBePlaced;
+    }
+
+    private void EnsurePrefabOverrideListSize(List<GameObject> prefabList, int requiredIndex)
+    {
+        var missingElements = requiredIndex + 1 - prefabList.Count;
+        if (missingElements > 0)
+        {
+            prefabList.AddRange(Enumerable.Repeat<GameObject>(null, missingElements));
+        }
     }
 
     public override void OnWillBeDeactivated()

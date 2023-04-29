@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -11,6 +12,7 @@ public class IrregularGrid : MonoBehaviour
 {
     [SerializeField]
     private GridData gridData;
+    public GridData GridData => gridData;
 
     [Serializable]
     public class PaletteOption
@@ -20,8 +22,13 @@ public class IrregularGrid : MonoBehaviour
     }
     [SerializeField]
     public List<PaletteOption> mapEditorPalette = new List<PaletteOption>();
+    public GameObject CurrentPaletteOption => mapEditorPalette.First(option => option.isSelected)?.prefab;
 
     private VertexNetwork vertexNetwork;
+
+    [SerializeField]
+    [HideInInspector]
+    private MeshData meshData;
 
     private void Awake() {
         vertexNetwork = GetComponent<VertexNetwork>();
@@ -49,6 +56,26 @@ public class IrregularGrid : MonoBehaviour
 
     private void Generate()
     {
+        meshData = GenerateMeshData();
+
+        if (vertexNetwork) {
+            vertexNetwork.SetEdgeGraph(CreateEdgeGraph(meshData.vertices, meshData.indices[0]));
+        }
+
+        Assert.AreEqual(meshData.topologies.Length, 1);
+        Assert.AreEqual(meshData.topologies[0], Sylves.MeshTopology.Quads);
+        Assert.AreEqual(meshData.indices[0].Length % 4, 0, "Topology was quads but indices array didn't have a multiple of 4 elements");
+
+        var indices = meshData.indices[0];
+
+        for (var quadIndex = 0; quadIndex < indices.Length / 4; ++quadIndex)
+        {
+            CreatePrefabInSlot(gridData.defaultSpawnedModel, quadIndex);
+        }
+    }
+
+    private MeshData GenerateMeshData()
+    {
         var triangleGrid = new TriangleGrid(gridData.cellSide, TriangleOrientation.FlatSides, bound: TriangleBound.Hexagon(gridData.mapSize));
 
         var meshData = triangleGrid.ToMeshData();
@@ -64,78 +91,72 @@ public class IrregularGrid : MonoBehaviour
 
         meshData = meshData.Relax();
 
-        meshData = Matrix4x4.Rotate(Quaternion.Euler(-90f, 0f, 0f)) * meshData;
+        return Matrix4x4.Rotate(Quaternion.Euler(-90f, 0f, 0f)) * meshData;
+    }
 
-        if (vertexNetwork) {
-            vertexNetwork.SetEdgeGraph(CreateEdgeGraph(meshData.vertices, meshData.indices[0]));
-        }
-
-        Assert.AreEqual(meshData.topologies.Length, 1);
-        Assert.AreEqual(meshData.topologies[0], Sylves.MeshTopology.Quads);
-        Assert.AreEqual(meshData.indices[0].Length % 4, 0, "Topology was quads but indices array didn't have a multiple of 4 elements");
-
+    public void CreatePrefabInSlot(GameObject prefab, int quadIndex)
+    {
         var indices = meshData.indices[0];
         var vertices = meshData.vertices;
 
-        for (var meshStartIndex = 0; meshStartIndex < indices.Length; meshStartIndex += 4)
+        var meshStartIndex = quadIndex * 4;
+
+        var vertexIndex0 = indices[meshStartIndex + 0];
+        var vertexIndex1 = indices[meshStartIndex + 1];
+        var vertexIndex2 = indices[meshStartIndex + 2];
+        var vertexIndex3 = indices[meshStartIndex + 3];
+
+        var quadNeighbour01 = FindQuadNeighbour(indices, vertexIndex0, vertexIndex1, meshStartIndex);
+        var quadNeighbour12 = FindQuadNeighbour(indices, vertexIndex1, vertexIndex2, meshStartIndex);
+        var quadNeighbour23 = FindQuadNeighbour(indices, vertexIndex2, vertexIndex3, meshStartIndex);
+        var quadNeighbour30 = FindQuadNeighbour(indices, vertexIndex3, vertexIndex0, meshStartIndex);
+
+        var cageWarper = CageWarper.FromVertices(
+            meshData.vertices[vertexIndex0],
+            meshData.vertices[vertexIndex1],
+            meshData.vertices[vertexIndex2],
+            meshData.vertices[vertexIndex3],
+
+            FindTangentVertex(indices, vertices, vertexIndex0, vertexIndex1, quadNeighbour01),
+            FindTangentVertex(indices, vertices, vertexIndex1, vertexIndex0, quadNeighbour01),
+            FindTangentVertex(indices, vertices, vertexIndex2, vertexIndex3, quadNeighbour23),
+            FindTangentVertex(indices, vertices, vertexIndex3, vertexIndex2, quadNeighbour23),
+
+            FindTangentVertex(indices, vertices, vertexIndex0, vertexIndex3, quadNeighbour30),
+            FindTangentVertex(indices, vertices, vertexIndex1, vertexIndex2, quadNeighbour12),
+            FindTangentVertex(indices, vertices, vertexIndex2, vertexIndex1, quadNeighbour12),
+            FindTangentVertex(indices, vertices, vertexIndex3, vertexIndex0, quadNeighbour30)
+        );
+
+        // spawn object
+        var spawnedObject = GameObject.Instantiate(prefab, transform);
+        spawnedObject.hideFlags = HideFlags.DontSave;
+        // find mesh filter
+        var meshFilter = spawnedObject.GetComponent<MeshFilter>();
+        // get mesh
+        var originalMesh = meshFilter.sharedMesh;
+        var mesh = Mesh.Instantiate(originalMesh);
+        meshFilter.sharedMesh = mesh;
+        // read mesh
+        Assert.IsTrue(mesh.isReadable);
+        var localVertices = mesh.vertices;
+        var localNormals = mesh.normals;
+
+        // warp mesh
+        for (var vertexIndex = 0; vertexIndex < localVertices.Length; ++vertexIndex)
         {
-            var vertexIndex0 = indices[meshStartIndex + 0];
-            var vertexIndex1 = indices[meshStartIndex + 1];
-            var vertexIndex2 = indices[meshStartIndex + 2];
-            var vertexIndex3 = indices[meshStartIndex + 3];
-
-            var quadNeighbour01 = FindQuadNeighbour(indices, vertexIndex0, vertexIndex1, meshStartIndex);
-            var quadNeighbour12 = FindQuadNeighbour(indices, vertexIndex1, vertexIndex2, meshStartIndex);
-            var quadNeighbour23 = FindQuadNeighbour(indices, vertexIndex2, vertexIndex3, meshStartIndex);
-            var quadNeighbour30 = FindQuadNeighbour(indices, vertexIndex3, vertexIndex0, meshStartIndex);
-
-            var cageWarper = CageWarper.FromVertices(
-                meshData.vertices[vertexIndex0],
-                meshData.vertices[vertexIndex1],
-                meshData.vertices[vertexIndex2],
-                meshData.vertices[vertexIndex3],
-
-                FindTangentVertex(indices, vertices, vertexIndex0, vertexIndex1, quadNeighbour01),
-                FindTangentVertex(indices, vertices, vertexIndex1, vertexIndex0, quadNeighbour01),
-                FindTangentVertex(indices, vertices, vertexIndex2, vertexIndex3, quadNeighbour23),
-                FindTangentVertex(indices, vertices, vertexIndex3, vertexIndex2, quadNeighbour23),
-
-                FindTangentVertex(indices, vertices, vertexIndex0, vertexIndex3, quadNeighbour30),
-                FindTangentVertex(indices, vertices, vertexIndex1, vertexIndex2, quadNeighbour12),
-                FindTangentVertex(indices, vertices, vertexIndex2, vertexIndex1, quadNeighbour12),
-                FindTangentVertex(indices, vertices, vertexIndex3, vertexIndex0, quadNeighbour30)
-            );
-
-            // spawn object
-            var spawnedObject = GameObject.Instantiate(gridData.defaultSpawnedModel, transform);
-            spawnedObject.hideFlags = HideFlags.DontSave;
-            // find mesh filter
-            var meshFilter = spawnedObject.GetComponent<MeshFilter>();
-            // get mesh
-            var originalMesh = meshFilter.sharedMesh;
-            var mesh = Mesh.Instantiate(originalMesh);
-            meshFilter.sharedMesh = mesh;
-            // read mesh
-            Assert.IsTrue(mesh.isReadable);
-            var localVertices = mesh.vertices;
-            var localNormals = mesh.normals;
-
-            // warp mesh
-            for (var vertexIndex = 0; vertexIndex < localVertices.Length; ++vertexIndex)
-            {
-                localNormals[vertexIndex] = cageWarper.WarpNormal(localVertices[vertexIndex], localNormals[vertexIndex]);
-                localVertices[vertexIndex] = cageWarper.WarpVertex(localVertices[vertexIndex]);
-            }
-
-            // upload mesh back into mesh filter
-            mesh.vertices = localVertices;
-            mesh.normals = localNormals;
-
-            mesh.RecalculateBounds();
-
-            var quadIndexRegister = spawnedObject.AddComponent<GridQuadIndexRegister>();
-            quadIndexRegister.quadIndex = meshStartIndex / 4;
+            localNormals[vertexIndex] = cageWarper.WarpNormal(localVertices[vertexIndex], localNormals[vertexIndex]);
+            localVertices[vertexIndex] = cageWarper.WarpVertex(localVertices[vertexIndex]);
         }
+
+        // upload mesh back into mesh filter
+        mesh.vertices = localVertices;
+        mesh.normals = localNormals;
+
+        mesh.RecalculateBounds();
+
+        var quadIndexRegister = spawnedObject.AddComponent<GridQuadIndexRegister>();
+        quadIndexRegister.quadIndex = meshStartIndex / 4;
     }
 
     private int FindQuadNeighbour(int[] indices, int index0, int index1, int currentQuadStartIndex)

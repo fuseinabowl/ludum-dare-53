@@ -5,6 +5,7 @@ using UnityEngine.Assertions;
 
 using Sylves;
 
+[ExecuteAlways]
 public class IrregularGrid : MonoBehaviour
 {
     [SerializeField]
@@ -64,12 +65,13 @@ public class IrregularGrid : MonoBehaviour
             );
 
             // spawn object
-            var spawnedObject = GameObject.Instantiate(spawnedModel);
+            var spawnedObject = GameObject.Instantiate(spawnedModel, transform);
             // find mesh filter
             var meshFilter = spawnedObject.GetComponent<MeshFilter>();
             // get mesh
-            // use .mesh and not .sharedMesh to create a new mesh, so I can modify it
-            var mesh = meshFilter.mesh;
+            var originalMesh = meshFilter.sharedMesh;
+            var mesh = Mesh.Instantiate(originalMesh);
+            meshFilter.sharedMesh = mesh;
             // read mesh
             Assert.IsTrue(mesh.isReadable);
             var localVertices = mesh.vertices;

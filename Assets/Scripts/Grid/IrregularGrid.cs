@@ -66,6 +66,7 @@ public class IrregularGrid : MonoBehaviour
 
             // spawn object
             var spawnedObject = GameObject.Instantiate(spawnedModel, transform);
+            spawnedObject.hideFlags = HideFlags.DontSave;
             // find mesh filter
             var meshFilter = spawnedObject.GetComponent<MeshFilter>();
             // get mesh

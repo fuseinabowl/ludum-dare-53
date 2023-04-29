@@ -248,9 +248,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridData: {fileID: 11400000, guid: 2de50c3d972695849be040e546a04b0e, type: 2}
   mapEditorPalette:
-  - isSelected: 0
-    prefab: {fileID: 919132149155446097, guid: 421a2d673dd2cc448a736375bb7784a0, type: 3}
   - isSelected: 1
+    prefab: {fileID: 919132149155446097, guid: 421a2d673dd2cc448a736375bb7784a0, type: 3}
+  - isSelected: 0
     prefab: {fileID: 919132149155446097, guid: fe09564b8b5b95745ba8988ba55ea86e, type: 3}
 --- !u!4 &986006704
 Transform:

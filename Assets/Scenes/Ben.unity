@@ -654,7 +654,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   traveler: {fileID: 1175274931}
-  vertices:
+  initialVertices:
   - {fileID: 907995371}
   - {fileID: 1418082569}
   - {fileID: 2033319284}

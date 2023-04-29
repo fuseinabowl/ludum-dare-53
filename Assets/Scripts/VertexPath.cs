@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[ExecuteInEditMode]
 public class VertexPath : MonoBehaviour
 {
     private class Edge {
@@ -18,50 +19,108 @@ public class VertexPath : MonoBehaviour
 
     [Header("Nodes")]
     public GameObject traveler;
-    public GameObject[] vertices = new GameObject[]{};
+    public List<GameObject> initialVertices = new List<GameObject>();
 
     [Header("Movement")]
     public float moveSpeed = 1f;
 
+    private int initialVerticesCountInEditor = -1;
+    private List<Vector3> vertices = new List<Vector3>();
     private List<Edge> edges = new List<Edge>();
     private float totalTrackLength = 0;
     private float distance;
     private bool running;
     private bool runningLeft;
 
-    private void Start() {
+    public void AddLeftVertex(Vector3 vertex) {
+        vertices.Insert(0, Vectors.Z0(vertex));
         CreateEdges();
+        distance += edges[0].length;
+    }
+
+    public void AddRightVertex(Vector3 vertex) {
+        vertices.Add(Vectors.Z0(vertex));
+        CreateEdges();
+    }
+
+    public void RemoveLeftVertex() {
+        if (!IsValidPath()) {
+            return;
+        }
+        distance -= edges[0].length;
+        if (distance < 0) {
+            // the game should probably prevent this from happening (the track that the train is on was deleted)
+            distance = 0;
+        }
+        vertices.RemoveAt(0);
+        CreateEdges();
+    }
+
+    public void RemoveRightVertex() {
+        if (!IsValidPath()) {
+            return;
+        }
+        vertices.RemoveAt(vertices.Count - 1);
+        CreateEdges();
+        if (distance > totalTrackLength) {
+            // the game should probably prevent this from happening (the track that the train is on was deleted)
+            distance = totalTrackLength;
+        }
+    }
+
+    private void Start() {
+        InitVertices();
+        CreateEdges();
+
+        if (Application.isPlaying && IsValidPath()) {
+            MoveToStart();
+            StartMoving();
+        }
+    }
+
+
+    private void InitVertices() {
+        vertices = new List<Vector3>();
+
+        foreach (var vertexObj in initialVertices) {
+            if (vertexObj != null) {
+                vertices.Add(Vectors.Z0(vertexObj.transform.position));
+            }
+        }
 
         foreach (var edge in edges) {
             totalTrackLength += edge.length;
         }
-
-        MoveToStart();
-        StartMoving();
     }
 
     private void CreateEdges() {
-        for (int i = 1; i < vertices.Length; i++) {
-            edges.Add(new Edge(vertices[i-1].transform.position, vertices[i].transform.position));
+        edges = new List<Edge>();
+        totalTrackLength = 0;
+
+        for (int i = 1; i < vertices.Count; i++) {
+            var edge = new Edge(vertices[i-1], vertices[i]);
+            edges.Add(edge);
+            totalTrackLength += edge.length;
         }
     }
 
     private void MoveToStart() {
-        if (!CanMove()) {
-            Debug.LogError("Must specify a traveler node and at least one vertex!");
-            return;
-        }
-        traveler.transform.position = vertices[0].transform.position;
+        traveler.transform.position = vertices[0];
         distance = 0;
     }
 
-    private bool CanMove() {
-        return traveler != null && vertices.Length > 0;
+    private bool IsValidPath() {
+        return traveler != null && vertices != null & vertices.Count >= 2;
     }
 
     private void OnDrawGizmos() {
+        Gizmos.color = Color.green;
+        foreach (var vertex in vertices) {
+            Gizmos.DrawSphere(vertex, 0.3f);
+        }
+
+        Gizmos.color = Color.blue;
         foreach (var edge in edges) {
-            Gizmos.color = Color.blue;
             Gizmos.DrawLine(edge.left, edge.right);
         }
     }
@@ -73,11 +132,11 @@ public class VertexPath : MonoBehaviour
     }    
 
     private IEnumerator MoveCoroutine() {
-        if (!CanMove()) {
-            yield return null;
-        }
-
         while (running) {
+            if (!IsValidPath()) {
+                yield return null;
+            }
+
             if (runningLeft) {
                 distance -= moveSpeed * Time.deltaTime;
             } else {
@@ -113,9 +172,33 @@ public class VertexPath : MonoBehaviour
 
         if (!found) {
             Debug.LogWarningFormat("Didn't find position at {0}", distance);
-            movePos = vertices[0].transform.position;
+            movePos = vertices[0];
         }
 
         traveler.transform.position = movePos;
+    }
+
+    private void Update() {
+        if (!Application.isPlaying) {
+            return;
+        }
+
+        Vector3 mouseWorldPoint = Vectors.Z0(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+
+        if (Input.GetMouseButtonDown(0)) {
+            if (Input.GetKey(KeyCode.LeftControl)) {
+                RemoveRightVertex();
+            } else {
+                AddRightVertex(mouseWorldPoint);
+            }
+        }
+
+        if (Input.GetMouseButtonDown(1)) {
+            if (Input.GetKey(KeyCode.LeftControl)) {
+                RemoveLeftVertex();
+            } else {
+                AddLeftVertex(mouseWorldPoint);
+            }
+        }
     }
 }

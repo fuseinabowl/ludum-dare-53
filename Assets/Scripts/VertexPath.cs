@@ -59,7 +59,8 @@ public class VertexPath : MonoBehaviour
     //     }
     // }
 
-    public void Init(Vector3 connectPoint, Edge edge, float travelerScale = 1f) {
+    public void Init(Vector3 connectPoint, Edge edge, float travelerScale = 1f)
+    {
         Debug.Assert(vertices.Count == 0);
         Debug.Assert(edges.Count == 0);
         vertices.Add(connectPoint);
@@ -71,79 +72,126 @@ public class VertexPath : MonoBehaviour
         traveler.transform.position = vertices[0];
     }
 
-    public bool CanConnect(Edge edge) {
-        if (!IsValidPath()) {
+    public bool CanConnect(Edge edge)
+    {
+        if (!IsValidPath())
+        {
             return false;
         }
         var lastVertex = vertices[vertices.Count - 1];
-        return edge.left == vertices[0] || edge.left == lastVertex || edge.right == vertices[0] || edge.right == lastVertex;
+        // return edge.left == vertices[0] || edge.left == lastVertex || edge.right == vertices[0] || edge.right == lastVertex;
+        return edge.left == lastVertex || edge.right == lastVertex;
     }
 
-    public bool ContainsEdge(Edge edge) {
-        foreach (var pathEdge in edges) {
-            if (edge.Equals(pathEdge)) {
+    public bool ContainsEdge(Edge edge)
+    {
+        foreach (var pathEdge in edges)
+        {
+            if (edge.Equals(pathEdge))
+            {
                 return true;
             }
         }
         return false;
     }
 
-    public bool Connect(Edge edge) {
-        if (!CanConnect(edge)) {
+    /// <summary>
+    /// True if this path has a vertex that would overlap with edge other than at the ends.
+    /// </summary>
+    /// <param name="edge"></param>
+    /// <returns></returns>
+    public bool HasInternalVertexOnEdge(Edge edge) {
+        for (int i = 1; i < vertices.Count - 1; i++) {
+            if (vertices[i] == edge.left || vertices[i] == edge.right) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public bool CompletesLoop(Edge edge) {
+        var lastVertex = vertices[vertices.Count - 1];
+        if (edge.left == vertices[0]) {
+            return edge.right == lastVertex;
+        }
+        if (edge.right == vertices[0]) {
+            return edge.left == lastVertex;
+        }
+        return false;
+    }
+
+    public bool Connect(Edge edge)
+    {
+        if (!CanConnect(edge))
+        {
             return false;
         }
-        if (edge.left == vertices[0] || edge.right == vertices[0]) {
-            vertices.Insert(0, edge.Alternate(vertices[0]));
-            edges.Insert(0, edge);
-            totalTrackLength += edge.length;
-            distance += edge.length;
-        } else {
-            vertices.Add(edge.Alternate(vertices[vertices.Count - 1]));
-            edges.Add(edge);
-            totalTrackLength += edge.length;
-        }
+        // if (edge.left == vertices[0] || edge.right == vertices[0]) {
+        //     vertices.Insert(0, edge.Alternate(vertices[0]));
+        //     edges.Insert(0, edge);
+        //     totalTrackLength += edge.length;
+        //     distance += edge.length;
+        // } else {
+        vertices.Add(edge.Alternate(vertices[vertices.Count - 1]));
+        edges.Add(edge);
+        totalTrackLength += edge.length;
+        // }
         return true;
     }
 
-    private bool IsValidPath() {
+    private bool IsValidPath()
+    {
         return traveler != null && vertices != null & vertices.Count >= 2;
     }
 
-    private void OnDrawGizmos() {
+    private void OnDrawGizmos()
+    {
         Gizmos.color = Color.green;
-        foreach (var vertex in vertices) {
+        foreach (var vertex in vertices)
+        {
             Gizmos.DrawSphere(vertex, travelerScale);
         }
         Gizmos.color = Color.blue;
-        foreach (var edge in edges) {
+        foreach (var edge in edges)
+        {
             Gizmos.DrawLine(edge.left, edge.right);
         }
     }
 
-    public void StartMoving() {
+    public void StartMoving()
+    {
         traveler.transform.position = vertices[0];
         distance = 0;
         running = true;
         runningLeft = false;
         StartCoroutine(MoveCoroutine());
-    }    
+    }
 
-    private IEnumerator MoveCoroutine() {
-        while (running) {
-            if (!IsValidPath()) {
+    private IEnumerator MoveCoroutine()
+    {
+        while (running)
+        {
+            if (!IsValidPath())
+            {
                 yield return null;
             }
 
-            if (runningLeft) {
+            if (runningLeft)
+            {
                 distance -= moveSpeed * Time.deltaTime;
-            } else {
+            }
+            else
+            {
                 distance += moveSpeed * Time.deltaTime;
             }
 
-            if (runningLeft && distance < 0) {
+            if (runningLeft && distance < 0)
+            {
                 runningLeft = false;
                 distance = 0;
-            } else if (!runningLeft && distance > totalTrackLength) {
+            }
+            else if (!runningLeft && distance > totalTrackLength)
+            {
                 runningLeft = true;
                 distance = totalTrackLength;
             }
@@ -153,15 +201,18 @@ public class VertexPath : MonoBehaviour
         }
     }
 
-    private void MoveTraveler(float distance) {
+    private void MoveTraveler(float distance)
+    {
         float edgeDistance = distance;
         bool found = false;
         Vector3 movePos = Vector3.zero;
 
-        for (int i = 0; i < edges.Count; i++) {
+        for (int i = 0; i < edges.Count; i++)
+        {
             var vertex = vertices[i];
             var edge = edges[i];
-            if (edgeDistance <= edge.length) {
+            if (edgeDistance <= edge.length)
+            {
                 movePos = Vector3.Lerp(vertex, edge.Alternate(vertex), edgeDistance / edge.length);
                 found = true;
                 break;
@@ -169,7 +220,8 @@ public class VertexPath : MonoBehaviour
             edgeDistance -= edge.length;
         }
 
-        if (!found) {
+        if (!found)
+        {
             Debug.LogWarningFormat("Didn't find position at {0}", distance);
             movePos = vertices[0];
         }

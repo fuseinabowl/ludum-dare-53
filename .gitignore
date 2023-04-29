@@ -75,3 +75,8 @@ FMOD/**/.unsaved
 *.nosync
 Project File Backups/
 Autosave/
+
+### temp files
+*.blend1
+*~
+*.kra-autosave.kra

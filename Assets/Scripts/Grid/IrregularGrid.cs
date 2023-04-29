@@ -11,14 +11,39 @@ public class IrregularGrid : MonoBehaviour
     [SerializeField]
     private GameObject spawnedModel;
 
+    [SerializeField]
+    private int seed;
+
     private void Start()
+    {
+        Generate();
+    }
+
+    public void Regenerate()
+    {
+        ClearChildren();
+        Generate();
+    }
+
+    private void ClearChildren()
+    {
+        while (transform.childCount > 0)
+        {
+            var childTransform = transform.GetChild(0);
+            GameObject.DestroyImmediate(childTransform.gameObject);
+        }
+    }
+
+    private void Generate()
     {
         var triangleGrid = new TriangleGrid(0.5f, TriangleOrientation.FlatSides, bound: TriangleBound.Hexagon(4));
 
         var meshData = triangleGrid.ToMeshData();
 
+        var seededRng = new System.Random(seed);
+
         // change this to make a pairing that doesn't generate tris
-        meshData = meshData.RandomPairing();
+        meshData = meshData.RandomPairing(() => seededRng.NextDouble());
 
         meshData = ConwayOperators.Ortho(meshData);
 

@@ -15,7 +15,7 @@ public class CageWarper
         Vector3 v2plusX, Vector3 v3plusX,
 
         Vector3 v0minusZ, Vector3 v1plusZ,
-        Vector3 v2plusZ, Vector3 v3minusZ,
+        Vector3 v2plusZ, Vector3 v3minusZ
     )
     {
         var lowerLeftTriX = v3 - v0;
@@ -77,6 +77,13 @@ public class CageWarper
     private Vector3 UpperRightWarp(Vector3 vertex)
     {
         return upperRightTriX * vertex.x + Vector3.up * vertex.y + upperRightTriZ * vertex.z + upperRightBias;
+    }
+
+    private static Vector3 CalculateNormal(Vector3 tangent0, Vector3 tangent1)
+    {
+        var offset = tangent1 - tangent0;
+        var offsetNormal = new Vector3(offset.z, offset.y, -offset.x).normalized;
+        return offsetNormal;
     }
 
     private Vector3 lowerLeftTriX;

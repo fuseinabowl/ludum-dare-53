@@ -25,7 +25,7 @@ public class IrregularGrid : MonoBehaviour
 
         meshData = meshData.Relax();
 
-        meshData = Matrix4x4.Rotate(Quaternion.Euler(90f, 0f, 0f)) * meshData;
+        meshData = Matrix4x4.Rotate(Quaternion.Euler(-90f, 0f, 0f)) * meshData;
 
         Assert.AreEqual(meshData.topologies.Length, 1);
         Assert.AreEqual(meshData.topologies[0], Sylves.MeshTopology.Quads);
@@ -45,11 +45,24 @@ public class IrregularGrid : MonoBehaviour
             );
 
             // spawn object
+            var spawnedObject = GameObject.Instantiate(spawnedModel);
             // find mesh filter
+            var meshFilter = spawnedObject.GetComponent<MeshFilter>();
             // get mesh
+            // use .mesh and not .sharedMesh to create a new mesh, so I can modify it
+            var mesh = meshFilter.mesh;
             // read mesh
+            Assert.IsTrue(mesh.isReadable);
+            var localVertices = mesh.vertices;
+
             // warp mesh
+            for (var vertexIndex = 0; vertexIndex < localVertices.Length; ++vertexIndex)
+            {
+                localVertices[vertexIndex] = cageWarper.WarpVertex(localVertices[vertexIndex]);
+            }
+
             // upload mesh back into mesh filter
+            mesh.vertices = localVertices;
         }
     }
 }

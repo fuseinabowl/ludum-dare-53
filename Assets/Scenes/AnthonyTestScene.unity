@@ -246,7 +246,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e23723e0effa0804487c27299314c0d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnedModel: {fileID: 919132149155446097, guid: 421a2d673dd2cc448a736375bb7784a0, type: 3}
+  spawnedModel: {fileID: 919132149155446097, guid: fe09564b8b5b95745ba8988ba55ea86e, type: 3}
+  seed: 13
+  mapSize: 18
 --- !u!4 &986006704
 Transform:
   m_ObjectHideFlags: 0

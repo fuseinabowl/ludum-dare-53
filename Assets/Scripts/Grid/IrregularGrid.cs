@@ -14,6 +14,9 @@ public class IrregularGrid : MonoBehaviour
     [SerializeField]
     private int seed;
 
+    [SerializeField]
+    private int mapSize = 4;
+
     private void Start()
     {
         Generate();
@@ -36,7 +39,7 @@ public class IrregularGrid : MonoBehaviour
 
     private void Generate()
     {
-        var triangleGrid = new TriangleGrid(0.5f, TriangleOrientation.FlatSides, bound: TriangleBound.Hexagon(4));
+        var triangleGrid = new TriangleGrid(0.5f, TriangleOrientation.FlatSides, bound: TriangleBound.Hexagon(mapSize));
 
         var meshData = triangleGrid.ToMeshData();
 

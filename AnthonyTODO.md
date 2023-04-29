@@ -58,9 +58,14 @@
 # Anthony's tasks
 
 - Create level editor - Done!
-- Create level
+- Make level editor able to rotate tiles - Done!
+- Make level editor able to flip tiles
+- Add visble placement indicator
+- Create 1st level
   - Create models
+    - need concept art
   - Create basic layout
+- Add prop spawner
 - Add enclosed "stations" for farms and for market drop offs
   - hides the train turning around + getting loaded/unloaded
 - Fix grid relaxing

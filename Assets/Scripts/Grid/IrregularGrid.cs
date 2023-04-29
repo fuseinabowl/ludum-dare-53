@@ -8,8 +8,6 @@ using Sylves;
 [ExecuteAlways]
 public class IrregularGrid : MonoBehaviour
 {
-    public bool vertexGraph = false;
-    
     [SerializeField]
     private GameObject spawnedModel;
 
@@ -18,10 +16,6 @@ public class IrregularGrid : MonoBehaviour
 
     [SerializeField]
     private int mapSize = 4;
-
-    private Vector3 mouseHit;
-
-    private EdgeGraph edgeGraph = null;
 
     private void Start()
     {
@@ -62,8 +56,10 @@ public class IrregularGrid : MonoBehaviour
 
         meshData = Matrix4x4.Rotate(Quaternion.Euler(-90f, 0f, 0f)) * meshData;
 
-        if (vertexGraph) {
-            edgeGraph = CreateEdgeGraph(meshData.vertices, meshData.indices[0]);
+        VertexNetwork net;
+
+        if (TryGetComponent<VertexNetwork>(out net)) {
+            net.SetEdgeGraph(CreateEdgeGraph(meshData.vertices, meshData.indices[0]));
         }
 
         Assert.AreEqual(meshData.topologies.Length, 1);
@@ -188,7 +184,22 @@ public class IrregularGrid : MonoBehaviour
         }
     }
 
-    private EdgeGraph CreateEdgeGraph(Vector3[] badVertices, int[] quadEdges) {
+    private int FindIndexInQuad(int[] indices, int quadStartIndex, int thisVertexIndex)
+    {
+        for (var cornerIndex = 0; cornerIndex < 4; ++cornerIndex)
+        {
+            var investigatingIndex = quadStartIndex + cornerIndex;
+            if (indices[investigatingIndex] == thisVertexIndex)
+            {
+                return investigatingIndex;
+            }
+        }
+
+        Assert.IsTrue(false, $"Couldn't find this vertex index ({thisVertexIndex}) in this quad ({quadStartIndex / 4})");
+        return -1;
+    }
+
+    private static EdgeGraph CreateEdgeGraph(Vector3[] badVertices, int[] quadEdges) {
         List<Vector3> vertices = new List<Vector3>(badVertices.Length);
         foreach (var vertex in badVertices) {
             vertices.Add(Vector3.Scale(vertex, new Vector3(-1, 1, -1)));
@@ -205,52 +216,5 @@ public class IrregularGrid : MonoBehaviour
         }
         
         return new EdgeGraph(vertices, edges);
-    }
-
-    private void OnDrawGizmos() {
-        if (edgeGraph != null) {
-            foreach (var vertex in edgeGraph.vertices) {
-                Gizmos.color = Color.blue;
-                Gizmos.DrawSphere(vertex, 0.01f);
-            }
-
-            var closestEdge = edgeGraph.ClosestEdge(mouseHit);
-            
-            foreach (var edge in edgeGraph.edges) {
-                if (edge == closestEdge) {
-                    Gizmos.color = Color.red;
-                } else {
-                    Gizmos.color = Color.green;
-                }
-                Gizmos.DrawLine(edge.left, edge.right);
-            }
-        }
-    }
-
-    private int FindIndexInQuad(int[] indices, int quadStartIndex, int thisVertexIndex)
-    {
-        for (var cornerIndex = 0; cornerIndex < 4; ++cornerIndex)
-        {
-            var investigatingIndex = quadStartIndex + cornerIndex;
-            if (indices[investigatingIndex] == thisVertexIndex)
-            {
-                return investigatingIndex;
-            }
-        }
-
-        Assert.IsTrue(false, $"Couldn't find this vertex index ({thisVertexIndex}) in this quad ({quadStartIndex / 4})");
-        return -1;
-    }
-
-    public void Update() {
-        if (Application.isPlaying) {
-            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit)) {
-                mouseHit = hit.point;
-            } else {
-                mouseHit = Vector3.zero;
-            }
-        }
     }
 }

@@ -183,21 +183,30 @@ public class VertexPath : MonoBehaviour
             return;
         }
 
-        Vector3 mouseWorldPoint = Vectors.Z0(Camera.main.ScreenToWorldPoint(Input.mousePosition));
-
-        if (Input.GetMouseButtonDown(0)) {
-            if (Input.GetKey(KeyCode.LeftControl)) {
-                RemoveRightVertex();
-            } else {
-                AddRightVertex(mouseWorldPoint);
+        for (int i = 0; i <= 2; i++) {
+            if (Input.GetMouseButtonDown(i)) {
+                DidClick(i);
+                break;
             }
         }
+    }
 
-        if (Input.GetMouseButtonDown(1)) {
-            if (Input.GetKey(KeyCode.LeftControl)) {
-                RemoveLeftVertex();
-            } else {
-                AddLeftVertex(mouseWorldPoint);
+    private void DidClick(int button) {
+        var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit)) {
+            if (button == 0) {
+                if (Input.GetKey(KeyCode.LeftControl)) {
+                    RemoveRightVertex();
+                } else {
+                    AddRightVertex(hit.point);
+                }
+            } else if (button == 1) {
+                if (Input.GetKey(KeyCode.LeftControl)) {
+                    RemoveLeftVertex();
+                } else {
+                    AddLeftVertex(hit.point);
+                }
             }
         }
     }

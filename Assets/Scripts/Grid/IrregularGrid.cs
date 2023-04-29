@@ -132,6 +132,9 @@ public class IrregularGrid : MonoBehaviour
             mesh.normals = localNormals;
 
             mesh.RecalculateBounds();
+
+            var quadIndexRegister = spawnedObject.AddComponent<GridQuadIndexRegister>();
+            quadIndexRegister.quadIndex = meshStartIndex / 4;
         }
     }
 

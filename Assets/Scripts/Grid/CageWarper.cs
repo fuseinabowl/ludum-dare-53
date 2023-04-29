@@ -32,15 +32,15 @@ public class CageWarper
             upperRightTriZ = upperRightTriZ,
             upperRightBias = v2 - upperRightTriX - upperRightTriZ,
 
-            v0xNormal = CalculateNormal(v0minusX, v3),
-            v1xNormal = CalculateNormal(v1minusX, v2),
-            v2xNormal = CalculateNormal(v1, v2plusX),
-            v3xNormal = CalculateNormal(v0, v3plusX),
+            v0xNormal = CalculateNormal(v0minusZ, v1),
+            v1xNormal = CalculateNormal(v0, v1plusZ),
+            v2xNormal = CalculateNormal(v3, v2plusZ),
+            v3xNormal = CalculateNormal(v3minusZ, v2),
 
-            v0zNormal = CalculateNormal(v0minusZ, v1),
-            v1zNormal = CalculateNormal(v0, v1plusZ),
-            v2zNormal = CalculateNormal(v3, v2plusZ),
-            v3zNormal = CalculateNormal(v3minusZ, v2),
+            v0zNormal = -CalculateNormal(v0minusX, v3),
+            v1zNormal = -CalculateNormal(v1minusX, v2),
+            v2zNormal = -CalculateNormal(v1, v2plusX),
+            v3zNormal = -CalculateNormal(v0, v3plusX),
         };
     }
 

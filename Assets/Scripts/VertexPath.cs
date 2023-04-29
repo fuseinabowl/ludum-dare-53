@@ -5,18 +5,6 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class VertexPath : MonoBehaviour
 {
-    private class Edge {
-        public Vector3 left;
-        public Vector3 right;
-        public float length;
-
-        public Edge(Vector3 left, Vector3 right) {
-            this.left = left;
-            this.right = right;
-            length = Vector3.Distance(left, right);
-        }
-    }
-
     [Header("Nodes")]
     public GameObject traveler;
     public List<GameObject> initialVertices = new List<GameObject>();

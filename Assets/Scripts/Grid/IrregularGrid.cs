@@ -78,6 +78,7 @@ public class IrregularGrid : MonoBehaviour
             // warp mesh
             for (var vertexIndex = 0; vertexIndex < localVertices.Length; ++vertexIndex)
             {
+                localNormals[vertexIndex] = cageWarper.WarpNormal(localVertices[vertexIndex], localNormals[vertexIndex]);
                 localVertices[vertexIndex] = cageWarper.WarpVertex(localVertices[vertexIndex]);
             }
 

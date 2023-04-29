@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,5 +11,14 @@ public class GridData : ScriptableObject
     public int mapSize = 4;
     public float cellSide = 0.5f;
 
-    public List<GameObject> matchingOrderPrefabOverrides = new List<GameObject>();
+    [Serializable]
+    public class QuadOverride
+    {
+        public GameObject prefab = null;
+        // 0-3
+        public int rotationIndex = 0;
+        public bool isFlippedAcrossX = false;
+    }
+
+    public List<QuadOverride> matchingOrderPrefabOverrides = new List<QuadOverride>();
 }

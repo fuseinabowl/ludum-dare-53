@@ -147,7 +147,8 @@ public class MapEditorTool : EditorTool
 
         var arrayProp = serializedObject.FindProperty(nameof(GridData.matchingOrderPrefabOverrides));
         EnsurePrefabOverrideListSize(arrayProp, slot);
-        arrayProp.GetArrayElementAtIndex(slot).objectReferenceValue = toBePlaced;
+        var quadOverrideInstance = arrayProp.GetArrayElementAtIndex(slot);
+        quadOverrideInstance.FindPropertyRelative(nameof(GridData.QuadOverride.prefab)).objectReferenceValue = toBePlaced;
 
         serializedObject.ApplyModifiedProperties();
     }

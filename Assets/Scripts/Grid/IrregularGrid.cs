@@ -81,7 +81,7 @@ public class IrregularGrid : MonoBehaviour
     {
         if (quadIndex < gridData.matchingOrderPrefabOverrides.Count)
         {
-            return gridData.matchingOrderPrefabOverrides[quadIndex];
+            return gridData.matchingOrderPrefabOverrides[quadIndex].prefab;
         }
 
         return null;

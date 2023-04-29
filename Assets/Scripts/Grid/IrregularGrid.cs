@@ -116,6 +116,8 @@ public class IrregularGrid : MonoBehaviour
             // upload mesh back into mesh filter
             mesh.vertices = localVertices;
             mesh.normals = localNormals;
+
+            mesh.RecalculateBounds();
         }
     }
 

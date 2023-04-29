@@ -8,7 +8,15 @@ public class CageWarper
     private CageWarper()
     {}
 
-    public static CageWarper FromVertices(Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3)
+    public static CageWarper FromVertices(
+        Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3,
+        // normal generation - neighbouring vertices
+        Vector3 v0minusX, Vector3 v1minusX,
+        Vector3 v2plusX, Vector3 v3plusX,
+
+        Vector3 v0minusZ, Vector3 v1plusZ,
+        Vector3 v2plusZ, Vector3 v3minusZ,
+    )
     {
         var lowerLeftTriX = v3 - v0;
         var lowerLeftTriZ = v1 - v0;
@@ -23,6 +31,16 @@ public class CageWarper
             upperRightTriX = upperRightTriX,
             upperRightTriZ = upperRightTriZ,
             upperRightBias = v2 - upperRightTriX - upperRightTriZ,
+
+            v0xNormal = CalculateNormal(v0minusX, v3),
+            v1xNormal = CalculateNormal(v1minusX, v2),
+            v2xNormal = CalculateNormal(v1, v2plusX),
+            v3xNormal = CalculateNormal(v0, v3plusX),
+
+            v0zNormal = CalculateNormal(v0minusZ, v1),
+            v1zNormal = CalculateNormal(v0, v1plusZ),
+            v2zNormal = CalculateNormal(v3, v2plusZ),
+            v3zNormal = CalculateNormal(v3minusZ, v2),
         };
     }
 
@@ -36,6 +54,11 @@ public class CageWarper
         {
             return UpperRightWarp(vertex);
         }
+    }
+
+    public Vector3 WarpNormal(Vector3 vertex, Vector3 normal)
+    {
+        return normal;
     }
 
     private Vector3 LowerLeftWarp(Vector3 vertex)
@@ -54,4 +77,14 @@ public class CageWarper
     private Vector3 upperRightTriX;
     private Vector3 upperRightTriZ;
     private Vector3 upperRightBias;
+
+    private Vector3 v0xNormal;
+    private Vector3 v1xNormal;
+    private Vector3 v2xNormal;
+    private Vector3 v3xNormal;
+
+    private Vector3 v0zNormal;
+    private Vector3 v1zNormal;
+    private Vector3 v2zNormal;
+    private Vector3 v3zNormal;
 }

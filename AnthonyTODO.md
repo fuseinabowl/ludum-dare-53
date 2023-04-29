@@ -11,7 +11,7 @@
 
 # Train moving
 
-- Smoothing at ends aka accelleration
+- Smoothing at ends aka acceleration
 - Carriages
 - Flipping direction of carriages at ends
 
@@ -54,3 +54,15 @@
 
 - Music
 - Effects
+
+# Anthony's tasks
+
+- Create level editor
+- Create level
+  - Create models
+  - Create basic layout
+- Add enclosed "stations" for farms and for market drop offs
+  - hides the train turning around + getting loaded/unloaded
+- Fix grid relaxing
+  - Will probably fix sides of the world
+    - if it doesn't, trim the sides of the world

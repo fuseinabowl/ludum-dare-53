@@ -58,15 +58,17 @@ public class CageWarper
 
     public Vector3 WarpNormal(Vector3 vertex, Vector3 normal)
     {
-        var leftNormalX = Vector3.Lerp(v0xNormal, v1xNormal, vertex.z);
-        var rightNormalX = Vector3.Lerp(v3xNormal, v2xNormal, vertex.z);
-        var normalX = Vector3.Lerp(leftNormalX, rightNormalX, vertex.x);
-
-        var leftNormalZ = Vector3.Lerp(v0zNormal, v1zNormal, vertex.z);
-        var rightNormalZ = Vector3.Lerp(v3zNormal, v2zNormal, vertex.z);
-        var normalZ = Vector3.Lerp(leftNormalZ, rightNormalZ, vertex.x);
+        var normalX = BilinearBlend(vertex, v0xNormal, v1xNormal, v2xNormal, v3xNormal);
+        var normalZ = BilinearBlend(vertex, v0zNormal, v1zNormal, v2zNormal, v3zNormal);
 
         return normalX * normal.x + Vector3.up * normal.y + normalZ * normal.z;
+    }
+
+    private Vector3 BilinearBlend(Vector3 vertex, Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3)
+    {
+        var leftValue = Vector3.Lerp(v0, v1, vertex.z);
+        var rightValue = Vector3.Lerp(v3, v2, vertex.z);
+        return Vector3.Lerp(leftValue, rightValue, vertex.x);
     }
 
     private Vector3 LowerLeftWarp(Vector3 vertex)

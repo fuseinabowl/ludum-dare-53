@@ -33,13 +33,13 @@ public class VertexPath : MonoBehaviour
     private bool runningLeft;
 
     public void AddLeftVertex(Vector3 vertex) {
-        vertices.Insert(0, Vectors.Z0(vertex));
+        vertices.Insert(0, vertex);
         CreateEdges();
         distance += edges[0].length;
     }
 
     public void AddRightVertex(Vector3 vertex) {
-        vertices.Add(Vectors.Z0(vertex));
+        vertices.Add(vertex);
         CreateEdges();
     }
 
@@ -84,7 +84,7 @@ public class VertexPath : MonoBehaviour
 
         foreach (var vertexObj in initialVertices) {
             if (vertexObj != null) {
-                vertices.Add(Vectors.Z0(vertexObj.transform.position));
+                vertices.Add(vertexObj.transform.position);
             }
         }
 

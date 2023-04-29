@@ -274,8 +274,14 @@ MonoBehaviour:
   mapEditorPalette:
   - isSelected: 0
     prefab: {fileID: 919132149155446097, guid: 421a2d673dd2cc448a736375bb7784a0, type: 3}
-  - isSelected: 1
+  - isSelected: 0
     prefab: {fileID: 919132149155446097, guid: fe09564b8b5b95745ba8988ba55ea86e, type: 3}
+  - isSelected: 0
+    prefab: {fileID: 6817244548919748188, guid: e268ddfd56e632042b2422a64f7bd579, type: 3}
+  - isSelected: 0
+    prefab: {fileID: 7468105294721396955, guid: f1f961ae561b6c5459748bde95a2c0a4, type: 3}
+  - isSelected: 1
+    prefab: {fileID: 5711264294226808743, guid: 44fec5479b6b12e4b9773cdde6dcd0ae, type: 3}
 --- !u!4 &986006704
 Transform:
   m_ObjectHideFlags: 0

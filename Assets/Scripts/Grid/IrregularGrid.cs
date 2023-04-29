@@ -108,6 +108,10 @@ public class IrregularGrid : MonoBehaviour
 
     public void CreatePrefabInSlot(GameObject prefab, int quadIndex)
     {
+        // on recompile, mesh data is lost
+        // recreate it here if it doesn't exist
+        EnsureMeshDataValid();
+
         var indices = meshData.indices[0];
         var vertices = meshData.vertices;
 
@@ -169,6 +173,14 @@ public class IrregularGrid : MonoBehaviour
 
         var quadIndexRegister = spawnedObject.AddComponent<GridQuadIndexRegister>();
         quadIndexRegister.quadIndex = meshStartIndex / 4;
+    }
+
+    private void EnsureMeshDataValid()
+    {
+        if (meshData == null)
+        {
+            meshData = GenerateMeshData();
+        }
     }
 
     private int FindQuadNeighbour(int[] indices, int index0, int index1, int currentQuadStartIndex)

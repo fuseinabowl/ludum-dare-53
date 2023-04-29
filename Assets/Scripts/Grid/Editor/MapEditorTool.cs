@@ -143,16 +143,20 @@ public class MapEditorTool : EditorTool
 
     private void SavePrefabToSlot(GameObject toBePlaced, int slot)
     {
-        EnsurePrefabOverrideListSize(CastTarget.GridData.matchingOrderPrefabOverrides, slot);
-        CastTarget.GridData.matchingOrderPrefabOverrides[slot] = toBePlaced;
+        var serializedObject = new SerializedObject(CastTarget.GridData);
+
+        var arrayProp = serializedObject.FindProperty(nameof(GridData.matchingOrderPrefabOverrides));
+        EnsurePrefabOverrideListSize(arrayProp, slot);
+        arrayProp.GetArrayElementAtIndex(slot).objectReferenceValue = toBePlaced;
+
+        serializedObject.ApplyModifiedProperties();
     }
 
-    private void EnsurePrefabOverrideListSize(List<GameObject> prefabList, int requiredIndex)
+    private void EnsurePrefabOverrideListSize(SerializedProperty gridDataOverridesArray, int requiredIndex)
     {
-        var missingElements = requiredIndex + 1 - prefabList.Count;
-        if (missingElements > 0)
+        if (requiredIndex >= gridDataOverridesArray.arraySize)
         {
-            prefabList.AddRange(Enumerable.Repeat<GameObject>(null, missingElements));
+            gridDataOverridesArray.arraySize = requiredIndex + 1;
         }
     }
 

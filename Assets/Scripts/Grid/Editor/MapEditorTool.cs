@@ -174,6 +174,7 @@ public class MapEditorTool : EditorTool
 
     private void SavePrefabToSlot(GameObject toBePlaced, int slot)
     {
+        Undo.RecordObject(CastTarget.GridData, "Assign prefab to grid slot");
         var serializedObject = new SerializedObject(CastTarget.GridData);
 
         var arrayProp = serializedObject.FindProperty(nameof(GridData.matchingOrderPrefabOverrides));
@@ -186,6 +187,7 @@ public class MapEditorTool : EditorTool
 
     private void IncrementAndSaveRotationInSlot(int slot)
     {
+        Undo.RecordObject(CastTarget.GridData, "Rotate grid slot");
         var serializedObject = new SerializedObject(CastTarget.GridData);
 
         var arrayProp = serializedObject.FindProperty(nameof(GridData.matchingOrderPrefabOverrides));

@@ -99,11 +99,42 @@ public class MapEditorTool : EditorTool
             }
         }
 
+        if (evt.type == EventType.KeyDown)
+        {
+            if (evt.keyCode == KeyCode.R)
+            {
+                RotateUnderCursor(evt);
+                evt.Use();
+            }
+            else if (evt.keyCode == KeyCode.F)
+            {
+                FlipUnderCursor(evt);
+                evt.Use();
+            }
+        }
+
         // prevent the user from accidentally clicking off this tool
         HandleUtility.AddDefaultControl(GUIUtility.GetControlID(FocusType.Passive));
 
         window.Repaint();
         tileMapEditorToolPerfMarker.End();
+    }
+
+    private void RotateUnderCursor(Event evt)
+    {
+        var hit = GetObjectUnderCursor();
+        if (hit != null)
+        {
+            var quadIndex = hit.GetComponent<GridQuadIndexRegister>().quadIndex;
+
+            IncrementAndSaveRotationInSlot(quadIndex);
+            GameObject.DestroyImmediate(hit);
+            CastTarget.CreatePrefabInSlot(quadIndex);
+        }
+    }
+
+    private void FlipUnderCursor(Event evt)
+    {
     }
 
     private GameObject GetObjectUnderCursor()
@@ -136,7 +167,7 @@ public class MapEditorTool : EditorTool
 
             SavePrefabToSlot(toBePlaced, quadIndex);
             GameObject.DestroyImmediate(hit);
-            CastTarget.CreatePrefabInSlot(toBePlaced, quadIndex);
+            CastTarget.CreatePrefabInSlot(quadIndex);
         }
         clickPerfMarker.End();
     }
@@ -149,6 +180,19 @@ public class MapEditorTool : EditorTool
         EnsurePrefabOverrideListSize(arrayProp, slot);
         var quadOverrideInstance = arrayProp.GetArrayElementAtIndex(slot);
         quadOverrideInstance.FindPropertyRelative(nameof(GridData.QuadOverride.prefab)).objectReferenceValue = toBePlaced;
+
+        serializedObject.ApplyModifiedProperties();
+    }
+
+    private void IncrementAndSaveRotationInSlot(int slot)
+    {
+        var serializedObject = new SerializedObject(CastTarget.GridData);
+
+        var arrayProp = serializedObject.FindProperty(nameof(GridData.matchingOrderPrefabOverrides));
+        EnsurePrefabOverrideListSize(arrayProp, slot);
+        var quadOverrideInstance = arrayProp.GetArrayElementAtIndex(slot);
+        var rotationIndexProperty = quadOverrideInstance.FindPropertyRelative(nameof(GridData.QuadOverride.rotationIndex));
+        rotationIndexProperty.intValue = (rotationIndexProperty.intValue + 1) % 4;
 
         serializedObject.ApplyModifiedProperties();
     }

@@ -71,17 +71,15 @@ public class IrregularGrid : MonoBehaviour
 
         for (var quadIndex = 0; quadIndex < indices.Length / 4; ++quadIndex)
         {
-            var overridePrefab = GetPrefabOverrideForQuad(quadIndex);
-            var selectedPrefab = overridePrefab != null ? overridePrefab : gridData.defaultSpawnedModel;
-            CreatePrefabInSlot(selectedPrefab, quadIndex);
+            CreatePrefabInSlot(quadIndex);
         }
     }
 
-    private GameObject GetPrefabOverrideForQuad(int quadIndex)
+    private GridData.QuadOverride GetOverrideForQuad(int quadIndex)
     {
         if (quadIndex < gridData.matchingOrderPrefabOverrides.Count)
         {
-            return gridData.matchingOrderPrefabOverrides[quadIndex].prefab;
+            return gridData.matchingOrderPrefabOverrides[quadIndex];
         }
 
         return null;
@@ -107,8 +105,17 @@ public class IrregularGrid : MonoBehaviour
         return Matrix4x4.Rotate(Quaternion.Euler(-90f, 0f, 0f)) * meshData;
     }
 
-    public void CreatePrefabInSlot(GameObject prefab, int quadIndex)
+    public void CreatePrefabInSlot(int quadIndex)
     {
+        var quadOverride = GetOverrideForQuad(quadIndex);
+        var selectedPrefab = quadOverride?.prefab != null ? quadOverride.prefab : gridData.defaultSpawnedModel;
+
+        var rotationIndex = quadOverride?.rotationIndex ?? 0;
+        var rotationMatrix =
+              Matrix4x4.Translate(new Vector3(0.5f, 0f, 0.5f))
+            * Matrix4x4.Rotate(Quaternion.AngleAxis(90f * rotationIndex, Vector3.up))
+            * Matrix4x4.Translate(new Vector3(-0.5f, 0f, -0.5f));
+
         // on recompile, mesh data is lost
         // recreate it here if it doesn't exist
         EnsureMeshDataValid();
@@ -146,7 +153,7 @@ public class IrregularGrid : MonoBehaviour
         );
 
         // spawn object
-        var spawnedObject = GameObject.Instantiate(prefab, transform);
+        var spawnedObject = GameObject.Instantiate(selectedPrefab, transform);
         spawnedObject.hideFlags = HideFlags.DontSave;
         // find mesh filter
         var meshFilter = spawnedObject.GetComponent<MeshFilter>();
@@ -156,8 +163,8 @@ public class IrregularGrid : MonoBehaviour
         meshFilter.sharedMesh = mesh;
         // read mesh
         Assert.IsTrue(mesh.isReadable);
-        var localVertices = mesh.vertices;
-        var localNormals = mesh.normals;
+        var localVertices = mesh.vertices.Select(vertex => rotationMatrix.MultiplyPoint(vertex)).ToArray();
+        var localNormals = mesh.normals.Select(vertex => rotationMatrix.MultiplyVector(vertex)).ToArray();
 
         // warp mesh
         for (var vertexIndex = 0; vertexIndex < localVertices.Length; ++vertexIndex)

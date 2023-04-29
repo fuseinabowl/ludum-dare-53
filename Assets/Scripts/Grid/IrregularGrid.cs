@@ -8,6 +8,7 @@ using UnityEngine.Assertions;
 using Sylves;
 
 [ExecuteAlways]
+[SelectionBase]
 public class IrregularGrid : MonoBehaviour
 {
     [SerializeField]

@@ -70,8 +70,20 @@ public class IrregularGrid : MonoBehaviour
 
         for (var quadIndex = 0; quadIndex < indices.Length / 4; ++quadIndex)
         {
-            CreatePrefabInSlot(gridData.defaultSpawnedModel, quadIndex);
+            var overridePrefab = GetPrefabOverrideForQuad(quadIndex);
+            var selectedPrefab = overridePrefab != null ? overridePrefab : gridData.defaultSpawnedModel;
+            CreatePrefabInSlot(selectedPrefab, quadIndex);
         }
+    }
+
+    private GameObject GetPrefabOverrideForQuad(int quadIndex)
+    {
+        if (quadIndex < gridData.matchingOrderPrefabOverrides.Count)
+        {
+            return gridData.matchingOrderPrefabOverrides[quadIndex];
+        }
+
+        return null;
     }
 
     private MeshData GenerateMeshData()

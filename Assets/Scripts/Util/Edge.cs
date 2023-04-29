@@ -30,9 +30,15 @@ public class Edge : IEquatable<Edge>, IComparable<Edge>
     /// <summary>
     /// Calculates the distance between this edge and a point via the point's normal to this edge.
     /// </summary>
-    public float Distance(Vector3 point) {
+    public float Distance(Vector3 point)
+    {
         var projection = Vectors.ProjectPointLine(point, left, right);
         return Vector3.Distance(point, projection);
+    }
+
+    public Vector3 Alternate(Vector3 point)
+    {
+        return point == left ? right : left;
     }
 
     public override bool Equals(object obj)

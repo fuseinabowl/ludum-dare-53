@@ -17,6 +17,15 @@ public class IrregularGrid : MonoBehaviour
     [SerializeField]
     private int mapSize = 4;
 
+    [SerializeField]
+    private float cellSide = 0.5f;
+
+    private VertexNetwork vertexNetwork;
+
+    private void Awake() {
+        vertexNetwork = GetComponent<VertexNetwork>();
+    }
+
     private void Start()
     {
         Generate();
@@ -39,7 +48,7 @@ public class IrregularGrid : MonoBehaviour
 
     private void Generate()
     {
-        var triangleGrid = new TriangleGrid(0.5f, TriangleOrientation.FlatSides, bound: TriangleBound.Hexagon(mapSize));
+        var triangleGrid = new TriangleGrid(cellSide, TriangleOrientation.FlatSides, bound: TriangleBound.Hexagon(mapSize));
 
         var meshData = triangleGrid.ToMeshData();
 
@@ -56,10 +65,8 @@ public class IrregularGrid : MonoBehaviour
 
         meshData = Matrix4x4.Rotate(Quaternion.Euler(-90f, 0f, 0f)) * meshData;
 
-        VertexNetwork net;
-
-        if (TryGetComponent<VertexNetwork>(out net)) {
-            net.SetEdgeGraph(CreateEdgeGraph(meshData.vertices, meshData.indices[0]));
+        if (vertexNetwork) {
+            vertexNetwork.SetEdgeGraph(CreateEdgeGraph(meshData.vertices, meshData.indices[0]));
         }
 
         Assert.AreEqual(meshData.topologies.Length, 1);

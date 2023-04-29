@@ -26,4 +26,17 @@ public class EdgeGraph {
         }
         return closest;
     }
+
+    public Vector3 ClosestVertex(Vector3 point) {
+        Vector3 closest = Vector3.zero;
+        float min = float.PositiveInfinity;
+        foreach (var vertex in vertices) {
+            var distance = Vector3.Distance(vertex, point);
+            if (distance < min) {
+                closest = vertex;
+                min = distance;
+            }
+        }
+        return closest;
+    }
 }

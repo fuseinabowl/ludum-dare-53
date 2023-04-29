@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,8 +21,14 @@ public class IrregularGrid : MonoBehaviour
     [SerializeField]
     private float cellSide = 0.5f;
 
+    [Serializable]
+    public class PaletteOption
+    {
+        public bool isSelected = false;
+        public GameObject prefab;
+    }
     [SerializeField]
-    public List<GameObject> mapEditorPalette = new List<GameObject>();
+    public List<PaletteOption> mapEditorPalette = new List<PaletteOption>();
 
     private VertexNetwork vertexNetwork;
 

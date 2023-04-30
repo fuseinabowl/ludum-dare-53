@@ -52,18 +52,31 @@ public class VertexPath : MonoBehaviour
     private void AddEdge(Edge edge)
     {
         var edgeModel = Instantiate(net.edgeModelPrefab, transform);
-        edgeModel.transform.localScale = new Vector3(
-            travelerScale,
-            travelerScale / 2f,
-            edge.length
+        edgeModel.GetComponentInChildren<TrackModelGeneratorComponent>().SetPoints(
+            edge.middle,
+            edge.toVertex,
+            CalculateOverExtendedVertex(edge.middle, edge.toVertex, overextendDistance:0.1f)
         );
-        edgeModel.transform.position = edge.middle;
-        edgeModel.transform.rotation = Quaternion.LookRotation(edge.extent, Vector3.up);
 
+        UpdateLastEdgeEndPoint(edge.middle);
         edges.Add(new EdgeAndInstanceData{
             edge = edge,
             tracksObject = edgeModel,
         });
+    }
+
+    private static Vector3 CalculateOverExtendedVertex(Vector3 start, Vector3 end, float overextendDistance)
+    {
+        var offset = end - start;
+        return end + offset.normalized * overextendDistance;
+    }
+
+    private void UpdateLastEdgeEndPoint(Vector3 newEndPoint)
+    {
+        if (edges.Count > 0)
+        {
+            edges[edges.Count - 1].tracksObject.GetComponentInChildren<TrackModelGeneratorComponent>().SetEnd(newEndPoint);
+        }
     }
 
     public Edge LastEdge()

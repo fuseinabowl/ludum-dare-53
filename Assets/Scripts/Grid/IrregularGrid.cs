@@ -266,7 +266,7 @@ public class IrregularGrid : MonoBehaviour
     private static EdgeGraph CreateEdgeGraph(Vector3[] badVertices, int[] quadEdges) {
         List<Vector3> vertices = new List<Vector3>(badVertices.Length);
         foreach (var vertex in badVertices) {
-            vertices.Add(Vector3.Scale(vertex, new Vector3(-1, 1, -1)));
+            vertices.Add(vertex);
         }
 
         List<Edge> edges = new List<Edge>();

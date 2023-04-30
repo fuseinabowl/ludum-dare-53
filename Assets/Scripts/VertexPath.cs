@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 [ExecuteInEditMode]
 public class VertexPath : MonoBehaviour
@@ -239,6 +240,7 @@ public class VertexPath : MonoBehaviour
         bool found = false;
         Vector3 movePos = Vector3.zero;
 
+        Assert.AreNotEqual(vertices.Count, 0);
         foreach (var edge in edges)
         {
             if (edgeDistance <= edge.length)
@@ -252,8 +254,7 @@ public class VertexPath : MonoBehaviour
 
         if (!found)
         {
-            Debug.LogWarningFormat("Didn't find position at {0}", distance);
-            movePos = vertices[0];
+            movePos = vertices[vertices.Count - 1];
         }
 
         traveler.transform.position = movePos;

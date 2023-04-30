@@ -30,6 +30,7 @@ public class VertexNetwork : MonoBehaviour
     private EconomyController economy;
     private EdgeGraph edgeGraph = null;
     private List<VertexPath> vertexPaths = new List<VertexPath>();
+    public IReadOnlyList<VertexPath> VertexPaths => vertexPaths;
     private Edge closestEdge = null;
     private bool canPlaceClosestEdge = false;
     private bool canDeleteClosestEdge = false;
@@ -248,11 +249,10 @@ public class VertexNetwork : MonoBehaviour
         {
             if (path.DeleteEdge(edge))
             {
+                onAvailableEdgesChanged?.Invoke();
                 return;
             }
         }
-
-        onAvailableEdgesChanged?.Invoke();
     }
 
     private void OnDrawGizmos()

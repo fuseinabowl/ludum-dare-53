@@ -16,7 +16,6 @@ public class HighlightManager : MonoBehaviour
 
     private void Awake()
     {
-        Debug.Log("initialising");
         CreateAvailableEdgeHighlights();
         network.onAvailableEdgesChanged += OnAvailableEdgesChanged;
     }
@@ -38,22 +37,23 @@ public class HighlightManager : MonoBehaviour
 
     private void CreateAvailableEdgeHighlights()
     {
-        Debug.Log("Creating available edges");
         var availableEdges = network.AllConnectableEdges();
-        foreach (var edge in availableEdges)
+        foreach (var path in network.VertexPaths)
         {
-            Debug.Log("Creating an edge");
-            var newHighlight = GameObject.Instantiate(highlightPrefab);
+            foreach (var edge in network.ConnectableEdges(path))
+            {
+                var newHighlight = GameObject.Instantiate(highlightPrefab);
 
-            newHighlight.transform.localScale = new Vector3(
-                1f,
-                1f,
-                edge.length
-            );
-            newHighlight.transform.position = edge.middle;
-            newHighlight.transform.rotation = Quaternion.LookRotation(edge.extent, Vector3.up);
+                newHighlight.transform.localScale = new Vector3(
+                    1f,
+                    1f,
+                    edge.length
+                );
+                newHighlight.transform.position = edge.middle;
+                newHighlight.transform.rotation = Quaternion.LookRotation(path.LastVertex() - edge.middle, Vector3.up);
 
-            highlights.Add(newHighlight);
+                highlights.Add(newHighlight);
+            }
         }
     }
 }

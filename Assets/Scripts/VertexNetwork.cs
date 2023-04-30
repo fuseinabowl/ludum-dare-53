@@ -13,6 +13,7 @@ public class VertexNetwork : MonoBehaviour
     public List<Station> stations = new List<Station>();
     public VertexPath vertexPathPrefab;
     public GameObject edgeModelPrefab;
+    public GameObject trainPrefab;
 
     [Header("Gizmos")]
     public bool gizmoEdges;

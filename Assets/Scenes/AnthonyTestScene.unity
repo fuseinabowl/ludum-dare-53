@@ -422,6 +422,7 @@ MonoBehaviour:
   - {fileID: 1106794188}
   vertexPathPrefab: {fileID: 8314416547386774449, guid: 7228ecdfb28f349fbb56d13894439cd4, type: 3}
   edgeModelPrefab: {fileID: 6775559527801339564, guid: 50afe59e6559646e587268d4e845d8ac, type: 3}
+  trainPrefab: {fileID: 4263812648893780629, guid: d56bd571a39374b098ccfcb53a2ee901, type: 3}
   gizmoEdges: 0
   moveSpeed: 1
 --- !u!1 &1106794186
@@ -469,6 +470,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9961026691c14a94ab22f06be74503e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 0
   front: {fileID: 1487580105}
   stationPath: {fileID: 0}
 --- !u!1001 &1130315454
@@ -651,6 +653,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9961026691c14a94ab22f06be74503e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 0
   front: {fileID: 1137583122}
   stationPath: {fileID: 0}
 --- !u!1 &1866899493
@@ -714,8 +717,8 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
-  orthographic: 1
+  field of view: 90
+  orthographic: 0
   orthographic size: 7
   m_Depth: -1
   m_CullingMask:
@@ -739,14 +742,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1866899493}
-  m_LocalRotation: {x: 0.35510695, y: 0, z: 0, w: 0.9348257}
+  m_LocalRotation: {x: 0.5, y: 0, z: 0, w: 0.8660254}
   m_LocalPosition: {x: 0, y: 7.34, z: -9.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 41.6, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 60, y: 0, z: 0}
 --- !u!114 &1866899497
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -805,8 +808,10 @@ MonoBehaviour:
   panSpeed: 10
   rotationSpeed: 90
   zoomSpeed: 10
-  minZoom: 4
-  maxZoom: 10
+  minOrthoZoom: 4
+  maxOrthoZoom: 10
+  minFOVZoom: 40
+  maxFOVZoom: 100
 --- !u!1 &1871542652
 GameObject:
   m_ObjectHideFlags: 0

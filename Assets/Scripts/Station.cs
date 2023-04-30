@@ -10,4 +10,8 @@ public class Station : MonoBehaviour
 
     [HideInInspector]
     public VertexPath stationPath;
+
+    private void Start() {
+        SingletonProvider.Get<VertexNetwork>().AddStation(this);
+    }
 }

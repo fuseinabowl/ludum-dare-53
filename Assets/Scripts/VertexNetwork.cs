@@ -10,7 +10,6 @@ public class VertexNetwork : MonoBehaviour
     public float minEdgeAngle = 90f;
 
     [Header("Objects")]
-    public List<Station> stations = new List<Station>();
     public VertexPath vertexPathPrefab;
     public GameObject edgeModelPrefab;
     public GameObject trainPrefab;
@@ -36,38 +35,43 @@ public class VertexNetwork : MonoBehaviour
     private bool canDeleteClosestEdge = false;
     private bool canSplitClosestEdge = false;
     private Vector3 mouseHit;
+    private List<Station> pendingStations = new List<Station>();
 
     public void SetEdgeGraph(EdgeGraph eg)
     {
         edgeGraph = eg;
-        InitStations();
+        foreach (var pendingStation in pendingStations) {
+            InitStation(pendingStation);
+        }
+        pendingStations.Clear();
+    }
+
+    public void AddStation(Station station)
+    {
+        if (edgeGraph == null) {
+            pendingStations.Add(station);
+        } else {
+            InitStation(station);
+        }
+    }
+
+    private void InitStation(Station station) {
+        var rootVertex = edgeGraph.ClosestVertex(station.transform.position);
+        if (station.front == null)
+        {
+            Debug.LogWarning("station has no front object, cannot create path");
+            return;
+        }
+        var frontVertex = edgeGraph.ClosestVertex(station.front.transform.position);
+        rootVectors.Add(rootVertex);
+        var vertexPath = Instantiate(vertexPathPrefab, transform);
+        vertexPaths.Add(vertexPath);
+        vertexPath.Init(this, rootVertex, edgeGraph.FindEdge(frontVertex, rootVertex));
     }
 
     private void Start()
     {
         economy = SingletonProvider.Get<EconomyController>();
-    }
-
-    private void InitStations()
-    {
-        if (!Application.isPlaying)
-        {
-            return;
-        }
-        foreach (var station in stations)
-        {
-            var rootVertex = edgeGraph.ClosestVertex(station.transform.position);
-            if (station.front == null)
-            {
-                Debug.LogWarning("station has no front object, cannot create path");
-                continue;
-            }
-            var frontVertex = edgeGraph.ClosestVertex(station.front.transform.position);
-            rootVectors.Add(rootVertex);
-            var vertexPath = Instantiate(vertexPathPrefab, transform);
-            vertexPaths.Add(vertexPath);
-            vertexPath.Init(this, rootVertex, edgeGraph.FindEdge(frontVertex, rootVertex));
-        }
     }
 
     private void Update()

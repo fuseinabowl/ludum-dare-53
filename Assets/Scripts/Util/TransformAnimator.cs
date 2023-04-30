@@ -24,6 +24,8 @@ public class TransformAnimator : MonoBehaviour
         NUDGE
     }
 
+    public Transform otherTransform = null;
+
     public new Animation animation = Animation.PULSE;
 
     [Range(0, 5)]
@@ -41,6 +43,12 @@ public class TransformAnimator : MonoBehaviour
 
     public bool animateOnStart = false;
 
+    private Transform t {
+        get {
+            return otherTransform != null ? otherTransform : transform;
+        }
+        set {}
+    }
     private Vector3 startLocalPosition;
     private Vector3 startLocalScale;
     private Quaternion startLocalRotation;
@@ -55,13 +63,13 @@ public class TransformAnimator : MonoBehaviour
         }
     }
 
-    public IEnumerator IAnimate()
+    private IEnumerator IAnimate()
     {
         if (!AnyComponentIsAnimating())
         {
-            startLocalPosition = transform.localPosition;
-            startLocalScale = transform.localScale;
-            startLocalRotation = transform.localRotation;
+            startLocalPosition = t.localPosition;
+            startLocalScale = t.localScale;
+            startLocalRotation = t.localRotation;
         }
 
         animationCount++;
@@ -89,9 +97,9 @@ public class TransformAnimator : MonoBehaviour
 
         if (!AnyComponentIsAnimating())
         {
-            transform.localPosition = startLocalPosition;
-            transform.localScale = startLocalScale;
-            transform.localRotation = startLocalRotation;
+            t.localPosition = startLocalPosition;
+            t.localScale = startLocalScale;
+            t.localRotation = startLocalRotation;
         }
     }
 
@@ -108,7 +116,7 @@ public class TransformAnimator : MonoBehaviour
             }
 
             var currentScale = BiSmoothStep(1f, magnitude, elapsed / duration);
-            transform.localScale *= 1 + currentScale - prevScale;
+            t.localScale *= 1 + currentScale - prevScale;
             prevScale = currentScale;
             yield return null;
             elapsed += Time.deltaTime;
@@ -126,8 +134,8 @@ public class TransformAnimator : MonoBehaviour
                 ? (360f * elapsed / duration) % 360f
                 : Mathf.SmoothStep(0f, 360f, elapsed / duration);
 
-            transform.localRotation = Quaternion.Euler(
-                transform.localRotation.eulerAngles + (currentRotation - prevRotation) * Vector3.up
+            t.localRotation = Quaternion.Euler(
+                t.localRotation.eulerAngles + (currentRotation - prevRotation) * Vector3.up
             );
 
             prevRotation = currentRotation;
@@ -160,7 +168,7 @@ public class TransformAnimator : MonoBehaviour
                         Mathf.PerlinNoise(seed + 1, elapsed * complexity) * 2 - 1,
                         Mathf.PerlinNoise(seed + 2, elapsed * complexity) * 2 - 1
                     );
-                transform.localPosition += currentLocalPosition - prevLocalPosition;
+                t.localPosition += currentLocalPosition - prevLocalPosition;
                 prevLocalPosition = currentLocalPosition;
             }
 
@@ -174,8 +182,8 @@ public class TransformAnimator : MonoBehaviour
                         Mathf.PerlinNoise(seed + 4, elapsed * complexity) * 2 - 1,
                         Mathf.PerlinNoise(seed + 5, elapsed * complexity) * 2 - 1
                     );
-                transform.localRotation = Quaternion.Euler(
-                    transform.localRotation.eulerAngles + currentLocalRotation - prevLocalRotation
+                t.localRotation = Quaternion.Euler(
+                    t.localRotation.eulerAngles + currentLocalRotation - prevLocalRotation
                 );
                 prevLocalRotation = currentLocalRotation;
             }
@@ -198,7 +206,7 @@ public class TransformAnimator : MonoBehaviour
             }
 
             var currentExtent = BiSmoothStep(0f, magnitude, elapsed / duration);
-            transform.localPosition += (currentExtent - prevExtent) * direction.normalized;
+            t.localPosition += (currentExtent - prevExtent) * direction.normalized;
 
             prevExtent = currentExtent;
             yield return null;

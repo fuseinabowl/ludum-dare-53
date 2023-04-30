@@ -16,6 +16,7 @@ MonoBehaviour:
   seed: 0
   mapSize: 4
   cellSide: 2
+  relaxSize: 0.6
   matchingOrderPrefabOverrides:
   - prefab: {fileID: 0}
     rotationIndex: 0

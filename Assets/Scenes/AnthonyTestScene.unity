@@ -455,6 +455,8 @@ MonoBehaviour:
     prefab: {fileID: 6817244548919748188, guid: f1cdc3ac48eb4864aa0bb5be52837b0c, type: 3}
   - isSelected: 1
     prefab: {fileID: 6817244548919748188, guid: 0170e8096d04acd43848c772bc50f431, type: 3}
+  relaxIterations: 1000
+  relaxStrength: 0.1
 --- !u!4 &986006704
 Transform:
   m_ObjectHideFlags: 0
@@ -488,7 +490,7 @@ MonoBehaviour:
   edgeModelPrefab: {fileID: 353253216238958770, guid: d33a651214683c84186651ba6c34be6c, type: 3}
   trainPrefab: {fileID: 4263812648893780629, guid: d56bd571a39374b098ccfcb53a2ee901, type: 3}
   gizmoVertices: 0
-  gizmoEdges: 1
+  gizmoEdges: 0
   moveSpeed: 1
 --- !u!114 &986006706
 MonoBehaviour:

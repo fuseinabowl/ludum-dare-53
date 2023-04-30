@@ -6,9 +6,6 @@ using UnityEngine.Assertions;
 [ExecuteInEditMode]
 public class VertexPath : MonoBehaviour
 {
-    [Header("Nodes")]
-    public GameObject traveler;
-
     [Header("Edge placement")]
     public float minEdgeAngle = 90f;
 
@@ -23,6 +20,7 @@ public class VertexPath : MonoBehaviour
     private float distance;
     private bool running;
     private bool runningLeft;
+    private GameObject train;
 
     public void Init(
         VertexNetwork vertexNetwork,
@@ -34,15 +32,26 @@ public class VertexPath : MonoBehaviour
     {
         Debug.Assert(vertices.Count == 0);
         Debug.Assert(edges.Count == 0);
-        edge = edge.DirectionalFrom(root);
-        vertices.Add(edge.fromVertex);
-        vertices.Add(edge.toVertex);
-        edges.Add(edge);
         net = vertexNetwork;
         this.travelerScale = travelerScale;
         this.minEdgeAngle = minEdgeAngle;
-        traveler.transform.localScale = travelerScale * Vector3.one;
-        traveler.transform.position = vertices[0];
+        edge = edge.DirectionalFrom(root);
+        vertices.Add(edge.fromVertex);
+        vertices.Add(edge.toVertex);
+        AddEdge(edge);
+    }
+
+    private void AddEdge(Edge edge)
+    {
+        edges.Add(edge);
+        var edgeModel = Instantiate(net.edgeModelPrefab, transform);
+        edgeModel.transform.localScale = new Vector3(
+            travelerScale,
+            travelerScale / 2f,
+            edge.length
+        );
+        edgeModel.transform.position = edge.middle;
+        edgeModel.transform.rotation = Quaternion.LookRotation(edge.extent, Vector3.up);
     }
 
     public Edge LastEdge()
@@ -163,23 +172,26 @@ public class VertexPath : MonoBehaviour
         Debug.Assert(edge.direction == Edge.Direction.NONE);
         var directionalEdge = edge.DirectionalFrom(LastVertex());
         vertices.Add(directionalEdge.toVertex);
-        edges.Add(directionalEdge);
+        AddEdge(directionalEdge);
         return true;
     }
 
-    public void Join(VertexPath path) {
+    public void Join(VertexPath path)
+    {
         path.vertices.Reverse();
         path.edges.Reverse();
         vertices.AddRange(path.vertices);
-        // for (int i = path.edges.Count - 1; i >= 0; i--) {
-        foreach (var edge in path.edges) {
-            edges.Add(edge.DirectionalFrom(LastEdge().toVertex));
+        foreach (var edge in path.edges)
+        {
+            AddEdge(edge.DirectionalFrom(LastEdge().toVertex));
         }
     }
 
-    private float TotalTrackLength() {
+    private float TotalTrackLength()
+    {
         float len = 0;
-        foreach (var edge in edges) {
+        foreach (var edge in edges)
+        {
             len += edge.length;
         }
         return len;
@@ -194,7 +206,7 @@ public class VertexPath : MonoBehaviour
 
     private bool IsValidPath()
     {
-        return traveler != null && vertices != null & vertices.Count >= 2;
+        return vertices != null & vertices.Count >= 2;
     }
 
     private void OnDrawGizmos()
@@ -211,9 +223,17 @@ public class VertexPath : MonoBehaviour
         }
     }
 
+    private void SpawnTrain()
+    {
+        train = GameObject.Instantiate(net.trainPrefab, transform);
+        train.transform.localScale *= travelerScale;
+        train.transform.position = vertices[0];
+    }
+
     public void StartMoving()
     {
-        traveler.transform.position = vertices[0];
+        SpawnTrain();
+        train.transform.position = vertices[0];
         distance = 0;
         running = true;
         runningLeft = false;
@@ -260,7 +280,7 @@ public class VertexPath : MonoBehaviour
     private void MoveTraveler(float distance)
     {
         float edgeDistance = distance;
-        bool found = false;
+        Edge foundEdge = null;
         Vector3 movePos = Vector3.zero;
 
         Assert.AreNotEqual(vertices.Count, 0);
@@ -269,18 +289,19 @@ public class VertexPath : MonoBehaviour
             if (edgeDistance <= edge.length)
             {
                 movePos = Vector3.Lerp(edge.fromVertex, edge.toVertex, edgeDistance / edge.length);
-                found = true;
+                foundEdge = edge;
                 break;
             }
             edgeDistance -= edge.length;
         }
 
-        if (!found)
+        if (foundEdge == null)
         {
             movePos = vertices[vertices.Count - 1];
         }
 
-        traveler.transform.position = movePos;
+        train.transform.position = movePos;
+        train.transform.rotation = Quaternion.LookRotation(foundEdge.extent, Vector3.up);
     }
 
     private void CompletedTrip()

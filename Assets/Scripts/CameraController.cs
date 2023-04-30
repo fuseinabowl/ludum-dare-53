@@ -12,84 +12,109 @@ public class CameraController : MonoBehaviour
 
     [Header("Zoom")]
     public float zoomSpeed = 10f;
-    public float minZoom = 5f;
-    public float maxZoom = 50f;
-    
+    public float minOrthoZoom = 4;
+    public float maxOrthoZoom = 10;
+    public float minFOVZoom = 50;
+    public float maxFOVZoom = 80;
+
     private Camera cam;
     private Vector3 prevPosition;
     private Vector3 lookTarget;
 
-    private void Awake() {
+    private void Awake()
+    {
         cam = GetComponent<Camera>();
     }
 
-    private void Start() {
+    private void Start()
+    {
         prevPosition = transform.position;
+        cam.orthographicSize = (minOrthoZoom + maxOrthoZoom) / 2f;
+        cam.fieldOfView = (minFOVZoom + maxFOVZoom) / 2f;
         UpdateLookTarget();
     }
 
     private void Update()
     {
-        if (prevPosition != transform.position) {
+        if (prevPosition != transform.position)
+        {
             UpdateLookTarget();
             prevPosition = transform.position;
         }
     }
 
-    private void UpdateLookTarget() {
+    private void UpdateLookTarget()
+    {
         Ray ray = cam.ViewportPointToRay(new Vector3(0.5F, 0.5F, 0));
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit)) {
+        if (Physics.Raycast(ray, out hit))
+        {
             lookTarget = hit.point;
-        } else {
+        }
+        else
+        {
             lookTarget = Vector3.zero;
         }
     }
 
-
-    private void LateUpdate() {
+    private void LateUpdate()
+    {
         var panInput = InputPan();
         var panDelta = transform.right * (panInput.x * -panSpeed);
         panDelta += transform.up * (panInput.y * -panSpeed);
+        panDelta = Vectors.Y(0, panDelta);
         transform.position += panDelta * Time.deltaTime;
 
         float rotateInput = InputRotation();
-        transform.RotateAround(lookTarget, Vector3.up, rotateInput * rotationSpeed * Time.deltaTime);
+        transform.RotateAround(
+            lookTarget,
+            Vector3.up,
+            rotateInput * rotationSpeed * Time.deltaTime
+        );
 
         float zoomInput = InputZoom();
         cam.orthographicSize = Mathf.Clamp(
-            minZoom,
+            minOrthoZoom,
             cam.orthographicSize + zoomInput * zoomSpeed * Time.deltaTime,
-            maxZoom);
+            maxOrthoZoom
+        );
+        cam.fieldOfView = Mathf.Clamp(
+            minFOVZoom,
+            cam.fieldOfView + zoomInput * zoomSpeed * 10f * Time.deltaTime,
+            maxFOVZoom
+        );
     }
 
-    private Vector3 InputPan() {
+    private Vector3 InputPan()
+    {
         float x = Input.GetKey(KeyCode.A)
             ? 1
             : Input.GetKey(KeyCode.D)
-            ? -1
-            : 0;
+                ? -1
+                : 0;
         float y = Input.GetKey(KeyCode.W)
             ? -1
             : Input.GetKey(KeyCode.S)
-            ? 1
-            : 0;
+                ? 1
+                : 0;
         return new Vector3(x, y, 0).normalized;
     }
 
-    private float InputRotation() {
+    private float InputRotation()
+    {
         return Input.GetKey(KeyCode.Q)
             ? -1
             : Input.GetKey(KeyCode.E)
-            ? 1
-            : 0;
+                ? 1
+                : 0;
     }
 
-    private float InputZoom() {
+    private float InputZoom()
+    {
         return Input.GetKey(KeyCode.Z)
             ? -1
             : Input.GetKey(KeyCode.C)
-            ? 1
-            : 0;
+                ? 1
+                : 0;
     }
 }

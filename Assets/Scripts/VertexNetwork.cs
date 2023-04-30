@@ -171,7 +171,10 @@ public class VertexNetwork : MonoBehaviour
                 && !lastEdgeNonDirectional.Equals(Lists.Circ(adjacentEdges, i + 1))
             )
             {
-                connectableEdges.Add(adjacentEdges[i]);
+                var edge = adjacentEdges[i];
+                if (!rootVectors.Contains(edge.left) && !rootVectors.Contains(edge.right)) {
+                    connectableEdges.Add(edge);
+                }
             }
         }
 
@@ -192,9 +195,7 @@ public class VertexNetwork : MonoBehaviour
             foreach (var edge in ConnectableEdges(path))
             {
                 Debug.Assert(edge.direction == Edge.Direction.NONE);
-                if (!rootVectors.Contains(edge.left) && !rootVectors.Contains(edge.right)) {
-                    all.Add(edge);
-                }
+                all.Add(edge);
             }
         }
 

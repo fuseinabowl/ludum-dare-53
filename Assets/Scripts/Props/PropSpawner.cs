@@ -60,7 +60,11 @@ public class PropSpawner : MonoBehaviour
     /// <returns>Position in local space</returns>
     private Vector3 ChooseNearbyPosition()
     {
-        return transform.localPosition;
+        var topDownPosition = Random.insideUnitCircle * options.maxPositionVariation.x;
+        var topDownPosition3d = new Vector3(topDownPosition.x, 0f, topDownPosition.y);
+        var verticalOffset = Random.Range(-options.maxPositionVariation.y, options.maxPositionVariation.y);
+        var offset = topDownPosition3d + Vector3.up * verticalOffset;
+        return transform.localPosition + offset;
     }
 
     private Quaternion ChooseRandomAroundYAxisRotation()

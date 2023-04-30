@@ -31,6 +31,12 @@ public class IrregularGrid : MonoBehaviour
     [HideInInspector]
     private MeshData meshData;
 
+    [SerializeField]
+    [Min(0)]
+    private int relaxIterations = 10;
+    [SerializeField]
+    private float relaxStrength = 1e-3f;
+
     private void Awake() {
         vertexNetwork = GetComponent<VertexNetwork>();
     }
@@ -100,7 +106,7 @@ public class IrregularGrid : MonoBehaviour
 
         meshData = meshData.Weld();
 
-        meshData = meshData.Relax();
+        TownscaperRelaxer.Relax(meshData, gridData.relaxSize, relaxIterations, relaxStrength);
 
         return Matrix4x4.Rotate(Quaternion.Euler(-90f, 0f, 0f)) * meshData;
     }

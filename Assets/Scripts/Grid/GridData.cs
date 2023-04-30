@@ -10,6 +10,7 @@ public class GridData : ScriptableObject
     public int seed = 0;
     public int mapSize = 4;
     public float cellSide = 0.5f;
+    public float relaxSize = 1f;
 
     [Serializable]
     public class QuadOverride

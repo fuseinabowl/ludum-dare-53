@@ -161,11 +161,6 @@ public class VertexPath : MonoBehaviour
             return false;
         }
 
-        if (TrainIsOnEdge(foundEdge.edge))
-        {
-            return false;
-        }
-
         return true;
     }
 
@@ -223,21 +218,6 @@ public class VertexPath : MonoBehaviour
         }
         index = -1;
         return null;
-    }
-
-    private bool TrainIsOnEdge(Edge onEdge)
-    {
-        float len = 0;
-        foreach (var edge in edges)
-        {
-            len += edge.edge.length;
-            if (trainDistance < len)
-            {
-                return edge.edge == onEdge;
-            }
-        }
-        Debug.LogWarning("didn't find edge?");
-        return false;
     }
 
     public bool DeleteEdge(Edge edge)

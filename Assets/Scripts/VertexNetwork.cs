@@ -5,10 +5,13 @@ using UnityEngine;
 
 public class VertexNetwork : MonoBehaviour
 {
-    public List<GameObject> roots = new List<GameObject>();
+    [Header("Config")]
     public float travelerScale = 1f;
-    public VertexPath vertexPathPrefab;
     public float minEdgeAngle = 90f;
+
+    [Header("Objects")]
+    public List<Station> stations = new List<Station>();
+    public VertexPath vertexPathPrefab;
 
     [Header("Gizmos")]
     public bool gizmoEdges;
@@ -17,7 +20,7 @@ public class VertexNetwork : MonoBehaviour
     public float moveSpeed = 1f;
 
     [HideInInspector]
-    public HashSet<Vector3> rootVectors = null;
+    public HashSet<Vector3> rootVectors = new HashSet<Vector3>();
 
     private EconomyController economy;
     private EdgeGraph edgeGraph = null;
@@ -30,16 +33,38 @@ public class VertexNetwork : MonoBehaviour
     public void SetEdgeGraph(EdgeGraph eg)
     {
         edgeGraph = eg;
-        rootVectors = new HashSet<Vector3>();
-        foreach (var root in roots)
-        {
-            rootVectors.Add(edgeGraph.ClosestVertex(root.transform.position));
-        }
+        InitStations();
     }
 
     private void Start()
     {
         economy = SingletonProvider.Get<EconomyController>();
+    }
+
+    private void InitStations()
+    {
+        if (!Application.isPlaying) {
+            return;
+        }
+        foreach (var station in stations)
+        {
+            var rootVertex = edgeGraph.ClosestVertex(station.transform.position);
+            if (station.front == null) {
+                Debug.LogWarning("station has no front object, cannot create path");
+                continue;
+            }
+            var frontVertex = edgeGraph.ClosestVertex(station.front.transform.position);
+            rootVectors.Add(rootVertex);
+            var vertexPath = Instantiate(vertexPathPrefab, transform);
+            vertexPaths.Add(vertexPath);
+            vertexPath.Init(
+                this,
+                rootVertex,
+                edgeGraph.FindEdge(frontVertex, rootVertex),
+                travelerScale,
+                minEdgeAngle
+            );
+        }
     }
 
     private void Update()
@@ -71,33 +96,36 @@ public class VertexNetwork : MonoBehaviour
 
     private void PlaceEdge(Edge edge)
     {
-        Vector3 root;
-        bool isOnRoot = IsOnRoot(edge, out root);
-
+        VertexPath connectPath = null;
+        VertexPath joinPath = null;
+        
         foreach (var path in vertexPaths)
         {
             if (path.CanConnect(edge))
             {
-                if (isOnRoot)
-                {
-                    // either:
-                    // (1) player is connecting one root to another, in which case the path should be extended.
-                    // (2) the player is starting another path from the root, in which case a new path should be created.
-                    if (path.EndsWith(root))
-                    {
-                        break;
-                    }
+                if (connectPath == null) {
+                    connectPath = path;
+                } else if (joinPath == null) {
+                    joinPath = path;
+                } else {
+                    Debug.LogWarning("Trying to join 3+ paths together, no thanks, need to disable this in CanPlaceEdge");
+                    return;
                 }
-                path.Connect(edge);
-                return;
             }
         }
 
-        Debug.Assert(isOnRoot);
-        var vertexPath = Instantiate(vertexPathPrefab, transform);
-        vertexPaths.Add(vertexPath);
-        vertexPath.Init(this, root, edge, travelerScale, minEdgeAngle);
-        vertexPath.StartMoving();
+        if (connectPath == null) {
+            Debug.LogError("couldn't find a path to connect the edge to!!!!!!!");
+            return;
+        }
+
+        connectPath.Connect(edge);
+
+        if (joinPath) {
+            connectPath.Join(joinPath);
+            vertexPaths.Remove(joinPath);
+            GameObject.Destroy(joinPath);
+        }
     }
 
     public List<Edge> ConnectableEdges(VertexPath path)
@@ -140,7 +168,7 @@ public class VertexNetwork : MonoBehaviour
 
     /// <summary>
     /// Returns the set of all non-directional edges that can be connected to on any path,
-    /// 
+    ///
     /// </summary>
     /// <returns></returns>
     public HashSet<Edge> AllConnectableEdges()
@@ -152,13 +180,7 @@ public class VertexNetwork : MonoBehaviour
             foreach (var edge in ConnectableEdges(path))
             {
                 Debug.Assert(edge.direction == Edge.Direction.NONE);
-                all.Add(edge);
-            }
-        }
-
-        foreach (var root in rootVectors) {
-            foreach (var edge in edgeGraph.AdjacentEdges(root)) {
-                if (!AnyPathHasEdge(edge)) {
+                if (!rootVectors.Contains(edge.left) && rootVectors.Contains(edge.right)) {
                     all.Add(edge);
                 }
             }
@@ -167,19 +189,13 @@ public class VertexNetwork : MonoBehaviour
         return all;
     }
 
-    private bool AnyPathHasEdge(Edge edge) {
-        foreach (var path in vertexPaths) {
-            foreach (var pathEdge in path.edges) {
-                if (pathEdge.NonDirectional().Equals(edge)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     private bool CanPlaceEdge(Edge edge)
     {
+        if (rootVectors.Contains(edge.left) || rootVectors.Contains(edge.right))
+        {
+            return false;
+        }
+
         foreach (var path in vertexPaths)
         {
             if (path.HasInternalVertexOnEdge(edge))
@@ -187,8 +203,6 @@ public class VertexNetwork : MonoBehaviour
                 return false;
             }
         }
-
-        int connectablePathCount = 0;
 
         foreach (var path in vertexPaths)
         {
@@ -198,24 +212,11 @@ public class VertexNetwork : MonoBehaviour
             }
             if (path.CanConnect(edge))
             {
-                connectablePathCount++;
+                return true;
             }
         }
 
-        if (connectablePathCount == 1)
-        {
-            return true;
-        }
-
-        if (connectablePathCount > 1)
-        {
-            return false;
-        }
-
-        // todo: cannot form loops to deliver to the same root
-
-        Vector3 root;
-        return IsOnRoot(edge, out root);
+        return false;
     }
 
     private bool CanDeleteEdge(Edge edge)
@@ -239,20 +240,6 @@ public class VertexNetwork : MonoBehaviour
                 return;
             }
         }
-    }
-
-    private bool IsOnRoot(Edge edge, out Vector3 root)
-    {
-        foreach (var rootVector in rootVectors)
-        {
-            if (edge.left == rootVector || edge.right == rootVector)
-            {
-                root = rootVector;
-                return true;
-            }
-        }
-        root = Vector3.zero;
-        return false;
     }
 
     private void OnDrawGizmos()

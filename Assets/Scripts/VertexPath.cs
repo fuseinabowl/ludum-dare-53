@@ -20,7 +20,6 @@ public class VertexPath : MonoBehaviour
 
     private VertexNetwork net;
     private float travelerScale = 1f;
-    private float totalTrackLength = 0;
     private float distance;
     private bool running;
     private bool runningLeft;
@@ -39,7 +38,6 @@ public class VertexPath : MonoBehaviour
         vertices.Add(edge.fromVertex);
         vertices.Add(edge.toVertex);
         edges.Add(edge);
-        totalTrackLength = edge.length;
         net = vertexNetwork;
         this.travelerScale = travelerScale;
         this.minEdgeAngle = minEdgeAngle;
@@ -74,24 +72,18 @@ public class VertexPath : MonoBehaviour
         var connectableEdges = net.ConnectableEdges(this);
         bool hasConnectable = false;
 
-        foreach (var connEdge in connectableEdges) {
-            if (connEdge.Equals(edge)) {
+        foreach (var connEdge in connectableEdges)
+        {
+            if (connEdge.Equals(edge))
+            {
                 hasConnectable = true;
             }
         }
 
-        if (!hasConnectable) {
+        if (!hasConnectable)
+        {
             return false;
         }
-
-        // Debug.Assert(edge.direction == Edge.Direction.NONE);
-        // var lastEdge = LastEdge();
-        // var directionalEdge = edge.DirectionalFrom(lastVertex);
-
-        // if (Vector3.Angle(lastEdge.extent, -directionalEdge.extent) < minEdgeAngle)
-        // {
-        //     return false;
-        // }
 
         return true;
     }
@@ -134,7 +126,7 @@ public class VertexPath : MonoBehaviour
             // can't delete the last edge
             return false;
         }
-        if (distance > totalTrackLength - edge.length)
+        if (distance > TotalTrackLength() - edge.length)
         {
             // can't delete edge if the train is on it
             return false;
@@ -156,7 +148,6 @@ public class VertexPath : MonoBehaviour
         }
         edges.RemoveAt(edges.Count - 1);
         vertices.RemoveAt(vertices.Count - 1);
-        totalTrackLength -= edge.length;
         return true;
     }
 
@@ -173,8 +164,25 @@ public class VertexPath : MonoBehaviour
         var directionalEdge = edge.DirectionalFrom(LastVertex());
         vertices.Add(directionalEdge.toVertex);
         edges.Add(directionalEdge);
-        totalTrackLength += directionalEdge.length;
         return true;
+    }
+
+    public void Join(VertexPath path) {
+        path.vertices.Reverse();
+        path.edges.Reverse();
+        vertices.AddRange(path.vertices);
+        // for (int i = path.edges.Count - 1; i >= 0; i--) {
+        foreach (var edge in path.edges) {
+            edges.Add(edge.DirectionalFrom(LastEdge().toVertex));
+        }
+    }
+
+    private float TotalTrackLength() {
+        float len = 0;
+        foreach (var edge in edges) {
+            len += edge.length;
+        }
+        return len;
     }
 
     public bool IsComplete()
@@ -229,6 +237,8 @@ public class VertexPath : MonoBehaviour
             {
                 distance += net.moveSpeed * Time.deltaTime;
             }
+
+            float totalTrackLength = TotalTrackLength();
 
             if (runningLeft && distance < 0)
             {

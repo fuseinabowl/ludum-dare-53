@@ -32,10 +32,13 @@ public class EdgeGraph
         return closest;
     }
 
-    public List<Edge> AdjacentEdges(Vector3 point) {
+    public List<Edge> AdjacentEdges(Vector3 point)
+    {
         var adj = new List<Edge>();
-        foreach (var edge in edges) {
-            if (point == edge.left || point == edge.right) {
+        foreach (var edge in edges)
+        {
+            if (point == edge.left || point == edge.right)
+            {
                 adj.Add(edge);
             }
         }
@@ -56,5 +59,19 @@ public class EdgeGraph
             }
         }
         return closest;
+    }
+
+    public Edge FindEdge(Vector3 l, Vector3 r)
+    {
+        var findEdge = new Edge(l, r);
+        foreach (var edge in edges)
+        {
+            if (edge.Equals(findEdge))
+            {
+                return edge;
+            }
+        }
+        Debug.LogError("couldn't find an edge!!!!!! this is going to break in unexpected ways");
+        return findEdge;
     }
 }

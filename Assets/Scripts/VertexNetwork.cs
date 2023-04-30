@@ -7,9 +7,19 @@ public class VertexNetwork : MonoBehaviour
     public List<GameObject> roots = new List<GameObject>();
     public float travelerScale = 1f;
     public VertexPath vertexPathPrefab;
+    public float minEdgeAngle = 90f;
 
+    [Header("Gizmos")]
+    public bool gizmoEdges;
+
+    [Header("Edge config")]
+    public float moveSpeed = 1f;
+
+    [HideInInspector]
+    public HashSet<Vector3> rootVectors = null;
+
+    private EconomyController economy;
     private EdgeGraph edgeGraph = null;
-    private HashSet<Vector3> rootVectors = null;
     private List<VertexPath> vertexPaths = new List<VertexPath>();
     private Edge closestEdge = null;
     private bool canPlaceClosestEdge = false;
@@ -26,6 +36,10 @@ public class VertexNetwork : MonoBehaviour
         }
     }
 
+    private void Start() {
+        economy = SingletonProvider.Get<EconomyController>();
+    }
+
     private void Update()
     {
         var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -37,7 +51,12 @@ public class VertexNetwork : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0) && canPlaceClosestEdge)
         {
-            PlaceEdge(closestEdge);
+            if (economy.CanBuyTrack()) {
+                economy.BuyAndPlaceTrack();
+                PlaceEdge(closestEdge);
+            } else {
+                economy.CannotBuy();
+            }
         }
         else if (Input.GetMouseButtonDown(1) && canDeleteClosestEdge)
         {
@@ -54,11 +73,13 @@ public class VertexNetwork : MonoBehaviour
         {
             if (path.CanConnect(edge))
             {
-                if (isOnRoot) {
+                if (isOnRoot)
+                {
                     // either:
                     // (1) player is connecting one root to another, in which case the path should be extended.
                     // (2) the player is starting another path from the root, in which case a new path should be created.
-                    if (path.EndsWith(root)) {
+                    if (path.EndsWith(root))
+                    {
                         break;
                     }
                 }
@@ -70,7 +91,7 @@ public class VertexNetwork : MonoBehaviour
         Debug.Assert(isOnRoot);
         var vertexPath = Instantiate(vertexPathPrefab, transform);
         vertexPaths.Add(vertexPath);
-        vertexPath.Init(root, edge, travelerScale);
+        vertexPath.Init(this, root, edge, travelerScale, minEdgeAngle);
         vertexPath.StartMoving();
     }
 
@@ -88,10 +109,6 @@ public class VertexNetwork : MonoBehaviour
 
         foreach (var path in vertexPaths)
         {
-            if (path.ContainsEdge(edge))
-            {
-                return false;
-            }
             if (path.CompletesLoop(edge))
             {
                 return false;
@@ -167,16 +184,38 @@ public class VertexNetwork : MonoBehaviour
 
             if (closestEdge != null)
             {
-                Gizmos.color = canPlaceClosestEdge ? Color.green : canDeleteClosestEdge ? Color.yellow : Color.red;
+                Gizmos.color = canPlaceClosestEdge
+                    ? Color.green
+                    : canDeleteClosestEdge
+                        ? Color.yellow
+                        : Color.red;
                 Gizmos.DrawLine(closestEdge.left, closestEdge.right);
+            }
+
+            if (gizmoEdges)
+            {
+                foreach (var edge in edgeGraph.edges)
+                {
+                    if (edge != closestEdge)
+                    {
+                        Gizmos.color = Color.yellow;
+                        Gizmos.DrawLine(edge.left, edge.right);
+                    }
+                }
             }
         }
 
         if (mouseHit != Vector3.zero)
         {
             Gizmos.color = Color.cyan;
-            Gizmos.DrawLine(mouseHit + travelerScale / 10f * Vector3.left, mouseHit + travelerScale / 10f * Vector3.right);
-            Gizmos.DrawLine(mouseHit + travelerScale / 10f * Vector3.back, mouseHit + travelerScale / 10f * Vector3.forward);
+            Gizmos.DrawLine(
+                mouseHit + travelerScale / 10f * Vector3.left,
+                mouseHit + travelerScale / 10f * Vector3.right
+            );
+            Gizmos.DrawLine(
+                mouseHit + travelerScale / 10f * Vector3.back,
+                mouseHit + travelerScale / 10f * Vector3.forward
+            );
         }
     }
 }

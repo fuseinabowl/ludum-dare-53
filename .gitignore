@@ -80,3 +80,9 @@ Autosave/
 *.blend1
 *~
 *.kra-autosave.kra
+
+### crash files
+mono_crash.*
+
+### vscode
+/.config/

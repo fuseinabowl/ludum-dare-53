@@ -68,14 +68,12 @@ public class VertexPath : MonoBehaviour
     {
         if (!IsValidPath())
         {
-            Debug.Log("can't connect, isn't a valid path");
             return false;
         }
 
         var lastVertex = LastVertex();
         if (edge.left != lastVertex && edge.right != lastVertex)
         {
-            Debug.LogFormat("a lastVertex is {0} and left edge {1} right {2}", lastVertex, edge.left, edge.right);
             return false;
         }
 
@@ -92,11 +90,9 @@ public class VertexPath : MonoBehaviour
 
         if (!hasConnectable)
         {
-            Debug.Log("b");
             return false;
         }
 
-        Debug.Log("c");
         return true;
     }
 

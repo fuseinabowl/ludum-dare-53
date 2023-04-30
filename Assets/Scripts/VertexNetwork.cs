@@ -7,6 +7,10 @@ public class VertexNetwork : MonoBehaviour
     public List<GameObject> roots = new List<GameObject>();
     public float travelerScale = 1f;
     public VertexPath vertexPathPrefab;
+    public float minEdgeAngle = 90f;
+
+    [Header("Gizmos")]
+    public bool gizmoEdges;
 
     private EdgeGraph edgeGraph = null;
     private HashSet<Vector3> rootVectors = null;
@@ -54,11 +58,13 @@ public class VertexNetwork : MonoBehaviour
         {
             if (path.CanConnect(edge))
             {
-                if (isOnRoot) {
+                if (isOnRoot)
+                {
                     // either:
                     // (1) player is connecting one root to another, in which case the path should be extended.
                     // (2) the player is starting another path from the root, in which case a new path should be created.
-                    if (path.EndsWith(root)) {
+                    if (path.EndsWith(root))
+                    {
                         break;
                     }
                 }
@@ -70,7 +76,7 @@ public class VertexNetwork : MonoBehaviour
         Debug.Assert(isOnRoot);
         var vertexPath = Instantiate(vertexPathPrefab, transform);
         vertexPaths.Add(vertexPath);
-        vertexPath.Init(root, edge, travelerScale);
+        vertexPath.Init(root, edge, travelerScale, minEdgeAngle);
         vertexPath.StartMoving();
     }
 
@@ -167,16 +173,38 @@ public class VertexNetwork : MonoBehaviour
 
             if (closestEdge != null)
             {
-                Gizmos.color = canPlaceClosestEdge ? Color.green : canDeleteClosestEdge ? Color.yellow : Color.red;
+                Gizmos.color = canPlaceClosestEdge
+                    ? Color.green
+                    : canDeleteClosestEdge
+                        ? Color.yellow
+                        : Color.red;
                 Gizmos.DrawLine(closestEdge.left, closestEdge.right);
+            }
+
+            if (gizmoEdges)
+            {
+                foreach (var edge in edgeGraph.edges)
+                {
+                    if (edge != closestEdge)
+                    {
+                        Gizmos.color = Color.yellow;
+                        Gizmos.DrawLine(edge.left, edge.right);
+                    }
+                }
             }
         }
 
         if (mouseHit != Vector3.zero)
         {
             Gizmos.color = Color.cyan;
-            Gizmos.DrawLine(mouseHit + travelerScale / 10f * Vector3.left, mouseHit + travelerScale / 10f * Vector3.right);
-            Gizmos.DrawLine(mouseHit + travelerScale / 10f * Vector3.back, mouseHit + travelerScale / 10f * Vector3.forward);
+            Gizmos.DrawLine(
+                mouseHit + travelerScale / 10f * Vector3.left,
+                mouseHit + travelerScale / 10f * Vector3.right
+            );
+            Gizmos.DrawLine(
+                mouseHit + travelerScale / 10f * Vector3.back,
+                mouseHit + travelerScale / 10f * Vector3.forward
+            );
         }
     }
 }

@@ -11,6 +11,9 @@ public class VertexPath : MonoBehaviour
     [Header("Movement")]
     public float moveSpeed = 1f;
 
+    [Header("Edge placement")]
+    public float minEdgeAngle = 90f;
+
     [HideInInspector]
     public List<Edge> edges = new List<Edge>();
 
@@ -23,51 +26,16 @@ public class VertexPath : MonoBehaviour
     private bool running;
     private bool runningLeft;
 
-    // public void AddLeftVertex(Vector3 vertex) {
-    //     vertices.Insert(0, vertex);
-    //     CreateEdges();
-    //     distance += edges[0].length;
-    // }
-
-    // public void AddRightVertex(Vector3 vertex) {
-    //     vertices.Add(vertex);
-    //     CreateEdges();
-    // }
-
-    // public void RemoveLeftVertex() {
-    //     if (!IsValidPath()) {
-    //         return;
-    //     }
-    //     distance -= edges[0].length;
-    //     if (distance < 0) {
-    //         // the game should probably prevent this from happening (the track that the train is on was deleted)
-    //         distance = 0;
-    //     }
-    //     vertices.RemoveAt(0);
-    //     CreateEdges();
-    // }
-
-    // public void RemoveRightVertex() {
-    //     if (!IsValidPath()) {
-    //         return;
-    //     }
-    //     vertices.RemoveAt(vertices.Count - 1);
-    //     CreateEdges();
-    //     if (distance > totalTrackLength) {
-    //         // the game should probably prevent this from happening (the track that the train is on was deleted)
-    //         distance = totalTrackLength;
-    //     }
-    // }
-
-    public void Init(Vector3 connectPoint, Edge edge, float travelerScale = 1f)
+    public void Init(Vector3 connectPoint, Edge edge, float travelerScale, float minEdgeAngle)
     {
         Debug.Assert(vertices.Count == 0);
         Debug.Assert(edges.Count == 0);
         vertices.Add(connectPoint);
-        vertices.Add(edge.Alternate(connectPoint));
+        vertices.Add(edge.OtherVertex(connectPoint));
         edges.Add(edge);
         totalTrackLength = edge.length;
         this.travelerScale = travelerScale;
+        this.minEdgeAngle = minEdgeAngle;
         traveler.transform.localScale = travelerScale * Vector3.one;
         traveler.transform.position = vertices[0];
     }
@@ -76,11 +44,30 @@ public class VertexPath : MonoBehaviour
     {
         if (!IsValidPath())
         {
+            Debug.Log("can't connect, isn't a valid path");
             return false;
         }
+
         var lastVertex = vertices[vertices.Count - 1];
-        // return edge.left == vertices[0] || edge.left == lastVertex || edge.right == vertices[0] || edge.right == lastVertex;
-        return edge.left == lastVertex || edge.right == lastVertex;
+        if (edge.left != lastVertex && edge.right != lastVertex)
+        {
+            return false;
+        }
+
+        Debug.Assert(edge.direction == Edge.Direction.NONE);
+        var lastEdge = edges[edges.Count - 1];
+        var directionalEdge = edge.DirectionalFrom(lastVertex);
+
+        // This comparison is "> minEdgeAngle" rather than "< maxEdgeAngle" because it compares the
+        // extent of each vector's to->from vectors. Imagine a straight track composing those on top
+        // of each other. The angle is 0! Now imagine a track that makes a sharp 45-degree turn and
+        // composing THOSE on top of each other. The angle is 135!
+        if (Vector3.Angle(lastEdge.extent, directionalEdge.extent) > minEdgeAngle)
+        {
+            return false;
+        }
+
+        return true;
     }
 
     public bool ContainsEdge(Edge edge)
@@ -100,44 +87,57 @@ public class VertexPath : MonoBehaviour
     /// </summary>
     /// <param name="edge"></param>
     /// <returns></returns>
-    public bool HasInternalVertexOnEdge(Edge edge) {
-        for (int i = 1; i < vertices.Count - 1; i++) {
-            if (vertices[i] == edge.left || vertices[i] == edge.right) {
+    public bool HasInternalVertexOnEdge(Edge edge)
+    {
+        for (int i = 1; i < vertices.Count - 1; i++)
+        {
+            if (vertices[i] == edge.left || vertices[i] == edge.right)
+            {
                 return true;
             }
         }
         return false;
     }
 
-    public bool CompletesLoop(Edge edge) {
+    public bool CompletesLoop(Edge edge)
+    {
         var lastVertex = vertices[vertices.Count - 1];
-        if (edge.left == vertices[0]) {
+        if (edge.left == vertices[0])
+        {
             return edge.right == lastVertex;
         }
-        if (edge.right == vertices[0]) {
+        if (edge.right == vertices[0])
+        {
             return edge.left == lastVertex;
         }
         return false;
     }
 
-    public bool CanDeleteEdge(Edge edge) {
-        if (edges.Count == 1) {
+    public bool CanDeleteEdge(Edge edge)
+    {
+        if (edges.Count == 1)
+        {
             // can't delete the last edge
             return false;
         }
-        if (distance > totalTrackLength - edge.length) {
+        if (distance > totalTrackLength - edge.length)
+        {
             // can't delete edge if the train is on it
             return false;
         }
-        return edges[edges.Count - 1].Equals(edge);
+        var lastEdge = edges[edges.Count - 1];
+        return lastEdge.NonDirectional().Equals(edge);
     }
 
-    public bool EndsWith(Vector3 vertex) {
+    public bool EndsWith(Vector3 vertex)
+    {
         return vertices[vertices.Count - 1] == vertex;
     }
 
-    public bool DeleteEdge(Edge edge) {
-        if (!CanDeleteEdge(edge)) {
+    public bool DeleteEdge(Edge edge)
+    {
+        if (!CanDeleteEdge(edge))
+        {
             return false;
         }
         edges.RemoveAt(edges.Count - 1);
@@ -146,22 +146,21 @@ public class VertexPath : MonoBehaviour
         return true;
     }
 
+    /// <summary>
+    /// Note that this will modify the edge's direction.
+    /// </summary>
     public bool Connect(Edge edge)
     {
         if (!CanConnect(edge))
         {
             return false;
         }
-        // if (edge.left == vertices[0] || edge.right == vertices[0]) {
-        //     vertices.Insert(0, edge.Alternate(vertices[0]));
-        //     edges.Insert(0, edge);
-        //     totalTrackLength += edge.length;
-        //     distance += edge.length;
-        // } else {
-        vertices.Add(edge.Alternate(vertices[vertices.Count - 1]));
-        edges.Add(edge);
-        totalTrackLength += edge.length;
-        // }
+        Debug.Assert(edge.direction == Edge.Direction.NONE);
+        var lastVertex = vertices[vertices.Count - 1];
+        var directionalEdge = edge.DirectionalFrom(lastVertex);
+        vertices.Add(directionalEdge.toVertex);
+        edges.Add(directionalEdge);
+        totalTrackLength += directionalEdge.length;
         return true;
     }
 
@@ -233,13 +232,28 @@ public class VertexPath : MonoBehaviour
         bool found = false;
         Vector3 movePos = Vector3.zero;
 
-        for (int i = 0; i < edges.Count; i++)
+        // for (int i = 0; i < edges.Count; i++)
+        // {
+        //     var vertex = vertices[i];
+        //     var edge = edges[i];
+        //     if (edgeDistance <= edge.length)
+        //     {
+        //         movePos = Vector3.Lerp(
+        //             vertex,
+        //             edge.OtherVertex(vertex),
+        //             edgeDistance / edge.length
+        //         );
+        //         found = true;
+        //         break;
+        //     }
+        //     edgeDistance -= edge.length;
+        // }
+
+        foreach (var edge in edges)
         {
-            var vertex = vertices[i];
-            var edge = edges[i];
             if (edgeDistance <= edge.length)
             {
-                movePos = Vector3.Lerp(vertex, edge.Alternate(vertex), edgeDistance / edge.length);
+                movePos = Vector3.Lerp(edge.fromVertex, edge.toVertex, edgeDistance / edge.length);
                 found = true;
                 break;
             }

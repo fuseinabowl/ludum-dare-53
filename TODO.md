@@ -1,3 +1,7 @@
+# Tweaks
+
+- Get the track grid size to be ~1 unity dimension
+
 # Track building
 
 - Only allow connecting "roots" of different types. Currently villages can be connected to villages and farms can be connected to farms.

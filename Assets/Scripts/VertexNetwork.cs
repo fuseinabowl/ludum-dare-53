@@ -135,6 +135,8 @@ public class VertexNetwork : MonoBehaviour
         if (connectPath.IsComplete()) {
             connectPath.StartMoving();
         }
+
+        onAvailableEdgesChanged?.Invoke();
     }
 
     public List<Edge> ConnectableEdges(VertexPath path)
@@ -189,7 +191,7 @@ public class VertexNetwork : MonoBehaviour
             foreach (var edge in ConnectableEdges(path))
             {
                 Debug.Assert(edge.direction == Edge.Direction.NONE);
-                if (!rootVectors.Contains(edge.left) && rootVectors.Contains(edge.right)) {
+                if (!rootVectors.Contains(edge.left) && !rootVectors.Contains(edge.right)) {
                     all.Add(edge);
                 }
             }
@@ -249,6 +251,8 @@ public class VertexNetwork : MonoBehaviour
                 return;
             }
         }
+
+        onAvailableEdgesChanged?.Invoke();
     }
 
     private void OnDrawGizmos()

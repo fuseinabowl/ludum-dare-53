@@ -12,9 +12,14 @@ public class VertexNetwork : MonoBehaviour
     [Header("Gizmos")]
     public bool gizmoEdges;
 
+    [Header("Edge config")]
+    public float moveSpeed = 1f;
+
+    [HideInInspector]
+    public HashSet<Vector3> rootVectors = null;
+
     private EconomyController economy;
     private EdgeGraph edgeGraph = null;
-    private HashSet<Vector3> rootVectors = null;
     private List<VertexPath> vertexPaths = new List<VertexPath>();
     private Edge closestEdge = null;
     private bool canPlaceClosestEdge = false;
@@ -86,7 +91,7 @@ public class VertexNetwork : MonoBehaviour
         Debug.Assert(isOnRoot);
         var vertexPath = Instantiate(vertexPathPrefab, transform);
         vertexPaths.Add(vertexPath);
-        vertexPath.Init(root, edge, travelerScale, minEdgeAngle);
+        vertexPath.Init(this, root, edge, travelerScale, minEdgeAngle);
         vertexPath.StartMoving();
     }
 

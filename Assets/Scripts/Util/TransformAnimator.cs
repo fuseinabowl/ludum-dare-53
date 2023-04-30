@@ -15,7 +15,14 @@ using UnityEngine.UI;
 /// </summary>
 public class TransformAnimator : MonoBehaviour
 {
-    public enum Animation { PULSE, SPIN, SHAKE, WIGGLE, NUDGE }
+    public enum Animation
+    {
+        PULSE,
+        SPIN,
+        SHAKE,
+        WIGGLE,
+        NUDGE
+    }
 
     public new Animation animation = Animation.PULSE;
 
@@ -40,9 +47,9 @@ public class TransformAnimator : MonoBehaviour
     private TransformAnimator[] animators;
     private int animationCount = 0;
 
-    public void Animate()
+    public void Animate(bool startIfAnimating = false)
     {
-        if (enabled)
+        if (enabled && startIfAnimating)
         {
             StartCoroutine(IAnimate());
         }
@@ -145,22 +152,28 @@ public class TransformAnimator : MonoBehaviour
 
             if (shake)
             {
-                var currentLocalPosition = 5f * magnitudeStep * new Vector3(
-                    Mathf.PerlinNoise(seed, elapsed * complexity) * 2 - 1,
-                    Mathf.PerlinNoise(seed + 1, elapsed * complexity) * 2 - 1,
-                    Mathf.PerlinNoise(seed + 2, elapsed * complexity) * 2 - 1
-                );
+                var currentLocalPosition =
+                    5f
+                    * magnitudeStep
+                    * new Vector3(
+                        Mathf.PerlinNoise(seed, elapsed * complexity) * 2 - 1,
+                        Mathf.PerlinNoise(seed + 1, elapsed * complexity) * 2 - 1,
+                        Mathf.PerlinNoise(seed + 2, elapsed * complexity) * 2 - 1
+                    );
                 transform.localPosition += currentLocalPosition - prevLocalPosition;
                 prevLocalPosition = currentLocalPosition;
             }
 
             if (wiggle)
             {
-                var currentLocalRotation = 15f * magnitudeStep * new Vector3(
-                    Mathf.PerlinNoise(seed + 3, elapsed * complexity) * 2 - 1,
-                    Mathf.PerlinNoise(seed + 4, elapsed * complexity) * 2 - 1,
-                    Mathf.PerlinNoise(seed + 5, elapsed * complexity) * 2 - 1
-                );
+                var currentLocalRotation =
+                    15f
+                    * magnitudeStep
+                    * new Vector3(
+                        Mathf.PerlinNoise(seed + 3, elapsed * complexity) * 2 - 1,
+                        Mathf.PerlinNoise(seed + 4, elapsed * complexity) * 2 - 1,
+                        Mathf.PerlinNoise(seed + 5, elapsed * complexity) * 2 - 1
+                    );
                 transform.localRotation = Quaternion.Euler(
                     transform.localRotation.eulerAngles + currentLocalRotation - prevLocalRotation
                 );

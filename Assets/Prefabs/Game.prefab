@@ -709,7 +709,7 @@ MonoBehaviour:
   dollarsText: {fileID: 8932602601385829991}
   buyAnim: {fileID: 8981691954296543155}
   cannotBuyAnim: {fileID: 7908331905365301918}
-  startDollars: 3
+  startDollars: 5
   availableTracks: 0
 --- !u!114 &6014158685337761116
 MonoBehaviour:

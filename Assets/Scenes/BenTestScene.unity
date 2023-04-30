@@ -340,6 +340,7 @@ MonoBehaviour:
   vertexPathPrefab: {fileID: 8314416547386774449, guid: 7228ecdfb28f349fbb56d13894439cd4, type: 3}
   minEdgeAngle: 90
   gizmoEdges: 1
+  moveSpeed: 5
 --- !u!1001 &1069761677
 PrefabInstance:
   m_ObjectHideFlags: 0

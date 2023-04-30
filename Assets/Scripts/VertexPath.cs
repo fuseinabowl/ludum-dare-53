@@ -9,8 +9,14 @@ public class VertexPath : MonoBehaviour
     [Header("Edge placement")]
     public float minEdgeAngle = 90f;
 
+    public class EdgeAndInstanceData
+    {
+        public Edge edge;
+        public GameObject tracksObject;
+    }
+
     [HideInInspector]
-    public List<Edge> edges = new List<Edge>();
+    public List<EdgeAndInstanceData> edges = new List<EdgeAndInstanceData>();
 
     [HideInInspector]
     public List<Vector3> vertices = new List<Vector3>();
@@ -41,9 +47,10 @@ public class VertexPath : MonoBehaviour
         AddEdge(edge);
     }
 
+    private Dictionary<Edge, GameObject> edgeModels;
+
     private void AddEdge(Edge edge)
     {
-        edges.Add(edge);
         var edgeModel = Instantiate(net.edgeModelPrefab, transform);
         edgeModel.transform.localScale = new Vector3(
             travelerScale,
@@ -52,11 +59,16 @@ public class VertexPath : MonoBehaviour
         );
         edgeModel.transform.position = edge.middle;
         edgeModel.transform.rotation = Quaternion.LookRotation(edge.extent, Vector3.up);
+
+        edges.Add(new EdgeAndInstanceData{
+            edge = edge,
+            tracksObject = edgeModel,
+        });
     }
 
     public Edge LastEdge()
     {
-        return edges[edges.Count - 1];
+        return edges[edges.Count - 1].edge;
     }
 
     public Vector3 LastVertex()
@@ -155,6 +167,7 @@ public class VertexPath : MonoBehaviour
         {
             return false;
         }
+        GameObject.Destroy(edges[edges.Count - 1].tracksObject);
         edges.RemoveAt(edges.Count - 1);
         vertices.RemoveAt(vertices.Count - 1);
         return true;
@@ -181,18 +194,18 @@ public class VertexPath : MonoBehaviour
         path.vertices.Reverse();
         path.edges.Reverse();
         vertices.AddRange(path.vertices);
-        foreach (var edge in path.edges)
+        foreach (var edgeData in path.edges)
         {
-            AddEdge(edge.DirectionalFrom(LastEdge().toVertex));
+            AddEdge(edgeData.edge.DirectionalFrom(LastEdge().toVertex));
         }
     }
 
     private float TotalTrackLength()
     {
         float len = 0;
-        foreach (var edge in edges)
+        foreach (var edgeData in edges)
         {
-            len += edge.length;
+            len += edgeData.edge.length;
         }
         return len;
     }
@@ -217,8 +230,9 @@ public class VertexPath : MonoBehaviour
             Gizmos.DrawSphere(vertex, travelerScale);
         }
         Gizmos.color = Color.blue;
-        foreach (var edge in edges)
+        foreach (var edgeData in edges)
         {
+            var edge = edgeData.edge;
             Gizmos.DrawLine(edge.left, edge.right);
         }
     }
@@ -284,8 +298,9 @@ public class VertexPath : MonoBehaviour
         Vector3 movePos = Vector3.zero;
 
         Assert.AreNotEqual(vertices.Count, 0);
-        foreach (var edge in edges)
+        foreach (var edgeData in edges)
         {
+            var edge = edgeData.edge;
             if (edgeDistance <= edge.length)
             {
                 movePos = Vector3.Lerp(edge.fromVertex, edge.toVertex, edgeDistance / edge.length);

@@ -181,6 +181,16 @@ public class IrregularGrid : MonoBehaviour
 
         var quadIndexRegister = spawnedObject.AddComponent<GridQuadIndexRegister>();
         quadIndexRegister.quadIndex = meshStartIndex / 4;
+
+        SpawnPropsOnObject(spawnedObject, rotationMatrix, cageWarper);
+    }
+
+    private void SpawnPropsOnObject(GameObject instance, Matrix4x4 preWarpTransform, CageWarper warper)
+    {
+        foreach (var propSpawner in instance.GetComponentsInChildren<PropSpawner>())
+        {
+            propSpawner.Spawn(preWarpTransform, warper);
+        }
     }
 
     private void EnsureMeshDataValid()

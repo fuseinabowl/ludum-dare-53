@@ -9,20 +9,19 @@ public class PropSpawner : MonoBehaviour
     [SerializeField]
     private PropSpawnerOptions options;
 
-    private void Start()
-    {
-        Spawn();
-        Destroy(this);
-    }
-
-    private void Spawn()
+    public void Spawn(Matrix4x4 preWarpTransform, CageWarper warper)
     {
         if (ChooseWhetherToSpawn())
         {
             var prefab = ChooseSpawnPrefab();
-            var spawnedObject = GameObject.Instantiate(prefab, transform);
-            spawnedObject.transform.position = ChooseNearbyPosition();
+            var spawnedObject = GameObject.Instantiate(prefab, transform.parent);
+            var localPosition = ChooseNearbyPosition();
+            var preWarpPosition = preWarpTransform.MultiplyPoint(localPosition);
+            var warpedPosition = warper.WarpVertex(preWarpPosition);
+            spawnedObject.transform.localPosition = warpedPosition;
             spawnedObject.transform.rotation = spawnedObject.transform.rotation * ChooseRandomAroundYAxisRotation();
+
+            spawnedObject.hideFlags = HideFlags.DontSave;
         }
     }
 
@@ -58,10 +57,10 @@ public class PropSpawner : MonoBehaviour
     /// <summary>
     /// Get nearby position
     /// </summary>
-    /// <returns>Position in world space</returns>
+    /// <returns>Position in local space</returns>
     private Vector3 ChooseNearbyPosition()
     {
-        return transform.position;
+        return transform.localPosition;
     }
 
     private Quaternion ChooseRandomAroundYAxisRotation()

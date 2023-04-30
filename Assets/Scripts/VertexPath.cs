@@ -19,10 +19,11 @@ public class VertexPath : MonoBehaviour
     public List<Vector3> vertices = new List<Vector3>();
 
     private VertexNetwork net;
-    private GameObject train;
-    private float trainDistance;
-    private bool trainRunning;
-    private bool trainRunningLeft;
+    public VertexNetwork Net => net;
+
+    public delegate void TrackEvent();
+    public TrackEvent fullTrackEstablished;
+    public TrackEvent fullTrackBroken;
 
     public void Init(VertexNetwork vertexNetwork, Vector3 root, Edge edge)
     {
@@ -171,11 +172,7 @@ public class VertexPath : MonoBehaviour
             // can't delete the last edge
             return false;
         }
-        if (train != null && trainDistance > TotalTrackLength() - edge.length)
-        {
-            // can't delete edge if the train is on it
-            return false;
-        }
+
         var lastEdge = LastEdge();
         return lastEdge.NonDirectional().Equals(edge);
     }
@@ -199,8 +196,7 @@ public class VertexPath : MonoBehaviour
         }
 
         DestroyEdge(foundEdge);
-        GameObject.Destroy(train);
-        trainRunning = false;
+        fullTrackBroken?.Invoke();
 
         return vertexPath;
     }
@@ -265,7 +261,7 @@ public class VertexPath : MonoBehaviour
         }
     }
 
-    private float TotalTrackLength()
+    public float TotalTrackLength()
     {
         float len = 0;
         foreach (var edgeData in edges)
@@ -280,6 +276,11 @@ public class VertexPath : MonoBehaviour
         return IsValidPath()
             && net.rootVectors.Contains(vertices[0])
             && net.rootVectors.Contains(LastVertex());
+    }
+
+    public void NotifyCompleted()
+    {
+        fullTrackEstablished?.Invoke();
     }
 
     private bool IsValidPath()
@@ -300,91 +301,5 @@ public class VertexPath : MonoBehaviour
             var edge = edgeData.edge;
             Gizmos.DrawLine(edge.left, edge.right);
         }
-    }
-
-    private void SpawnTrain()
-    {
-        train = GameObject.Instantiate(net.trainPrefab, transform);
-        train.transform.localScale *= net.travelerScale;
-        train.transform.position = vertices[0];
-    }
-
-    public void StartMoving()
-    {
-        SpawnTrain();
-        train.transform.position = vertices[0];
-        trainDistance = 0;
-        trainRunning = true;
-        trainRunningLeft = false;
-        StartCoroutine(MoveCoroutine());
-    }
-
-    private IEnumerator MoveCoroutine()
-    {
-        while (trainRunning)
-        {
-            if (!IsValidPath())
-            {
-                yield return null;
-            }
-
-            if (trainRunningLeft)
-            {
-                trainDistance -= net.moveSpeed * Time.deltaTime;
-            }
-            else
-            {
-                trainDistance += net.moveSpeed * Time.deltaTime;
-            }
-
-            float totalTrackLength = TotalTrackLength();
-
-            if (trainRunningLeft && trainDistance < 0)
-            {
-                trainRunningLeft = false;
-                trainDistance = 0;
-            }
-            else if (!trainRunningLeft && trainDistance > totalTrackLength)
-            {
-                trainRunningLeft = true;
-                trainDistance = totalTrackLength;
-                CompletedTrip();
-            }
-
-            MoveTraveler(trainDistance);
-            yield return null;
-        }
-    }
-
-    private void MoveTraveler(float distance)
-    {
-        float edgeDistance = distance;
-        Edge foundEdge = null;
-        Vector3 movePos = Vector3.zero;
-
-        Assert.AreNotEqual(vertices.Count, 0);
-        foreach (var edgeData in edges)
-        {
-            var edge = edgeData.edge;
-            if (edgeDistance <= edge.length)
-            {
-                movePos = Vector3.Lerp(edge.fromVertex, edge.toVertex, edgeDistance / edge.length);
-                foundEdge = edge;
-                break;
-            }
-            edgeDistance -= edge.length;
-        }
-
-        if (foundEdge == null)
-        {
-            movePos = vertices[vertices.Count - 1];
-        }
-
-        train.transform.position = movePos;
-        train.transform.rotation = Quaternion.LookRotation(foundEdge.extent, Vector3.up);
-    }
-
-    private void CompletedTrip()
-    {
     }
 }

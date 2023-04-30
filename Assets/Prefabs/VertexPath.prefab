@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5551366530426428591}
   - component: {fileID: 8314416547386774449}
+  - component: {fileID: 6823236800351751856}
   m_Layer: 0
   m_Name: VertexPath
   m_TagString: Untagged
@@ -44,6 +45,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 541a2b331bc0f458e97b73efb61b8393, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  traveler: {fileID: 0}
-  minEdgeAngle: 90
   vertices: []
+--- !u!114 &6823236800351751856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3102221719211983328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db64a4126c3b4d04395a671a844cedbe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  path: {fileID: 8314416547386774449}

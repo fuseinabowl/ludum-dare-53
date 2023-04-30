@@ -140,7 +140,7 @@ public class VertexNetwork : MonoBehaviour
 
         if (connectPath.IsComplete())
         {
-            connectPath.StartMoving();
+            connectPath.NotifyCompleted();
         }
 
         onAvailableEdgesChanged?.Invoke();

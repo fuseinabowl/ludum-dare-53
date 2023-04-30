@@ -2,7 +2,9 @@
 
 - Only allow connecting "roots" of different types. Currently villages can be connected to villages and farms can be connected to farms.
 - Bridges
+ - nope
 - Only allow tracks to be built between non-sharp edges of a polygon
+ - done by Ben
 
 # Level building
 

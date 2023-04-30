@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   locomotive: {fileID: 4263812648893780629, guid: d56bd571a39374b098ccfcb53a2ee901, type: 3}
   carriage: {fileID: 4263812648893780629, guid: d56bd571a39374b098ccfcb53a2ee901, type: 3}
-  separation: 1
+  carriageLength: 0.7
   numberOfCarriages: 3

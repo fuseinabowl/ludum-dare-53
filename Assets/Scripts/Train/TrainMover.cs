@@ -16,6 +16,7 @@ public class TrainMover : MonoBehaviour
     private TrainData trainData;
 
     private GameObject locomotive;
+    private List<GameObject> carriages = new List<GameObject>();
     private float trainDistance;
     private bool trainRunning;
     private bool trainRunningLeft;
@@ -34,6 +35,11 @@ public class TrainMover : MonoBehaviour
     private void OnFullTrackBroken()
     {
         GameObject.Destroy(locomotive);
+        foreach (var carriage in carriages)
+        {
+            GameObject.Destroy(carriage);
+        }
+        carriages.Clear();
         trainRunning = false;
     }
 
@@ -123,7 +129,14 @@ public class TrainMover : MonoBehaviour
     {
         locomotive = GameObject.Instantiate(trainData.locomotive, transform);
         locomotive.transform.position = path.vertices[0];
+
+        for (var carriageIndex = 0; carriageIndex < trainData.numberOfCarriages; ++carriageIndex)
+        {
+            carriages.Add(GameObject.Instantiate(trainData.locomotive, transform));
+        }
     }
+
+    private float TrainLength => trainData.carriageLength * (trainData.numberOfCarriages + 1);
 
     private IEnumerator MoveCoroutine(SmoothPath smoothPath)
     {
@@ -143,14 +156,20 @@ public class TrainMover : MonoBehaviour
                 trainRunningLeft = false;
                 trainDistance = 0;
             }
-            else if (!trainRunningLeft && trainDistance > smoothPath.totalDistance)
+            else if (!trainRunningLeft && trainDistance + TrainLength > smoothPath.totalDistance)
             {
                 trainRunningLeft = true;
-                trainDistance = smoothPath.totalDistance;
+                trainDistance = smoothPath.totalDistance - TrainLength;
                 CompletedTrip();
             }
 
-            PlaceTrainCar(locomotive, trainDistance, smoothPath);
+            for (var carriageIndex = 0; carriageIndex < carriages.Count; ++carriageIndex)
+            {
+                var carriage = carriages[carriageIndex];
+                PlaceTrainCar(carriage, trainDistance + trainData.carriageLength * carriageIndex, smoothPath);
+            }
+
+            PlaceTrainCar(locomotive, trainDistance + trainData.carriageLength * carriages.Count, smoothPath);
             yield return null;
         }
     }

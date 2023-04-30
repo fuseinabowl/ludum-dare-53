@@ -164,8 +164,9 @@ public class TrainMover : MonoBehaviour
             var nextSegment = path.path[segmentIndex + 1];
             if (remainingDistance <= segment.length)
             {
-                train.transform.position = Vector3.Lerp(segment.startPosition, nextSegment.startPosition, remainingDistance / segment.length);
-                var facingDirection = Vector3.Lerp(segment.facingDirection, nextSegment.facingDirection, remainingDistance / segment.length);
+                var proportionThroughThisSegment = remainingDistance / segment.length;
+                train.transform.position = Vector3.Lerp(segment.startPosition, nextSegment.startPosition, proportionThroughThisSegment);
+                var facingDirection = Vector3.Lerp(segment.facingDirection, nextSegment.facingDirection, proportionThroughThisSegment);
                 train.transform.rotation = Quaternion.LookRotation(facingDirection, Vector3.up);
                 return;
             }

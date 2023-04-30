@@ -104,7 +104,7 @@ public class IrregularGrid : MonoBehaviour
 
         meshData = ConwayOperators.Ortho(meshData);
 
-        meshData = meshData.Weld();
+        meshData = meshData.Weld(tolerance:1e-1f);
 
         TownscaperRelaxer.Relax(meshData, gridData.relaxSize, relaxIterations, relaxStrength);
 

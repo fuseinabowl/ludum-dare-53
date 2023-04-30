@@ -99,12 +99,9 @@ public static class TownscaperRelaxer
         output.p2 = Rotate180_2d(idealOffset) + center - p2;
         output.p3 = Rotate90_2d (idealOffset) + center - p3;
 
-        // Debug.Log($"ideal offset: {idealOffset}\noffset0: {output.p0}\n
-
         return output;
     }
 
-    // makes it easier to flip the rotation to try out the other way
     private static Vector3 Rotate90_2d(Vector3 value)
     {
         return new Vector3(value.y, -value.x, value.z);

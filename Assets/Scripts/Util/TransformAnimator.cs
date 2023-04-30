@@ -145,7 +145,7 @@ public class TransformAnimator : MonoBehaviour
 
             if (shake)
             {
-                var currentLocalPosition = magnitudeStep * new Vector3(
+                var currentLocalPosition = 5f * magnitudeStep * new Vector3(
                     Mathf.PerlinNoise(seed, elapsed * complexity) * 2 - 1,
                     Mathf.PerlinNoise(seed + 1, elapsed * complexity) * 2 - 1,
                     Mathf.PerlinNoise(seed + 2, elapsed * complexity) * 2 - 1

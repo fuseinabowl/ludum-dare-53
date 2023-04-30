@@ -12,6 +12,7 @@ public class VertexNetwork : MonoBehaviour
     [Header("Gizmos")]
     public bool gizmoEdges;
 
+    private EconomyController economy;
     private EdgeGraph edgeGraph = null;
     private HashSet<Vector3> rootVectors = null;
     private List<VertexPath> vertexPaths = new List<VertexPath>();
@@ -30,6 +31,10 @@ public class VertexNetwork : MonoBehaviour
         }
     }
 
+    private void Start() {
+        economy = SingletonProvider.Get<EconomyController>();
+    }
+
     private void Update()
     {
         var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -41,7 +46,12 @@ public class VertexNetwork : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0) && canPlaceClosestEdge)
         {
-            PlaceEdge(closestEdge);
+            if (economy.CanBuyTrack()) {
+                economy.BuyAndPlaceTrack();
+                PlaceEdge(closestEdge);
+            } else {
+                economy.CannotBuy();
+            }
         }
         else if (Input.GetMouseButtonDown(1) && canDeleteClosestEdge)
         {
@@ -94,10 +104,6 @@ public class VertexNetwork : MonoBehaviour
 
         foreach (var path in vertexPaths)
         {
-            if (path.ContainsEdge(edge))
-            {
-                return false;
-            }
             if (path.CompletesLoop(edge))
             {
                 return false;

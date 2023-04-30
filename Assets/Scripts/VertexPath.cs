@@ -70,18 +70,6 @@ public class VertexPath : MonoBehaviour
         return true;
     }
 
-    public bool ContainsEdge(Edge edge)
-    {
-        foreach (var pathEdge in edges)
-        {
-            if (edge.Equals(pathEdge))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
     /// <summary>
     /// True if this path has a vertex that would overlap with edge other than at the ends.
     /// </summary>

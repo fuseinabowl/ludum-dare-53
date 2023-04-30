@@ -27,7 +27,6 @@ public class VertexNetwork : MonoBehaviour
     public delegate void UpdateEvent();
     public UpdateEvent onAvailableEdgesChanged;
 
-    private EconomyController economy;
     private EdgeGraph edgeGraph = null;
     private List<VertexPath> vertexPaths = new List<VertexPath>();
     public IReadOnlyList<VertexPath> VertexPaths => vertexPaths;
@@ -44,7 +43,6 @@ public class VertexNetwork : MonoBehaviour
 
     private void Start()
     {
-        economy = SingletonProvider.Get<EconomyController>();
     }
 
     private void InitStations()
@@ -84,15 +82,7 @@ public class VertexNetwork : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0) && canPlaceClosestEdge)
         {
-            if (economy.CanBuyTrack())
-            {
-                economy.BuyAndPlaceTrack();
-                PlaceEdge(closestEdge);
-            }
-            else
-            {
-                economy.CannotBuy();
-            }
+            PlaceEdge(closestEdge);
         }
         else if (Input.GetMouseButtonDown(1) && canDeleteClosestEdge)
         {

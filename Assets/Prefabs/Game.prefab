@@ -570,6 +570,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5cc46ff93c554c8cb12b221531f207a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  otherTransform: {fileID: 0}
   animation: 0
   duration: 0.5
   magnitude: 1.4
@@ -589,6 +590,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5cc46ff93c554c8cb12b221531f207a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  otherTransform: {fileID: 0}
   animation: 2
   duration: 0.5
   magnitude: 1.2
@@ -609,7 +611,6 @@ GameObject:
   - component: {fileID: 6974706376002517203}
   - component: {fileID: 960939533529426506}
   - component: {fileID: 839490892177806600}
-  - component: {fileID: 3798148450765482017}
   - component: {fileID: 6014158685337761116}
   m_Layer: 0
   m_Name: Game
@@ -694,23 +695,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   component: {fileID: 960939533529426506}
---- !u!114 &3798148450765482017
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5879547802644299674}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d65dd19b4f84240ee9084ad2686dd9a1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dollarsText: {fileID: 8932602601385829991}
-  buyAnim: {fileID: 8981691954296543155}
-  cannotBuyAnim: {fileID: 7908331905365301918}
-  startDollars: 5
-  availableTracks: 0
 --- !u!114 &6014158685337761116
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -723,7 +707,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 176cbb29f630142008018179ee9c4934, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  component: {fileID: 3798148450765482017}
+  component: {fileID: 0}
 --- !u!1 &6806837194059899323
 GameObject:
   m_ObjectHideFlags: 0

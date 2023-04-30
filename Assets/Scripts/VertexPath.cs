@@ -321,9 +321,5 @@ public class VertexPath : MonoBehaviour
 
     private void CompletedTrip()
     {
-        if (IsComplete())
-        {
-            SingletonProvider.Get<EconomyController>().GiveResources(1);
-        }
     }
 }

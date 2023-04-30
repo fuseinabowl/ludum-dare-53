@@ -8,6 +8,30 @@ public class CageWarper
     private CageWarper()
     {}
 
+    public static CageWarper FromVerticesWithTrackNormals(
+        Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3,
+        Vector3 v03xNormal, Vector3 v12xNormal,
+        Vector3 v01yNormal, Vector3 v23yNormal
+    )
+    {
+        return new CageWarper{
+            v0 = v0,
+            v1 = v1,
+            v2 = v2,
+            v3 = v3,
+
+            v0xNormal = v03xNormal,
+            v1xNormal = v12xNormal,
+            v2xNormal = v12xNormal,
+            v3xNormal = v03xNormal,
+
+            v0zNormal = v01yNormal,
+            v1zNormal = v01yNormal,
+            v2zNormal = v23yNormal,
+            v3zNormal = v23yNormal,
+        };
+    }
+
     public static CageWarper FromVertices(
         Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3,
         // normal generation - neighbouring vertices

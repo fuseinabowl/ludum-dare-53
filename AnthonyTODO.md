@@ -62,14 +62,15 @@
 - Create level editor - Done!
 - Make level editor able to rotate tiles - Done!
 - Make level editor able to flip tiles
-- Add visble placement indicator
+- Add visble placement indicator - Done!
 - Create 1st level
   - Create models
     - need concept art
   - Create basic layout
-- Add prop spawner
+- Add prop spawner - Done!
 - Add enclosed "stations" for farms and for market drop offs
   - hides the train turning around + getting loaded/unloaded
+  - not doing, making normal stations and flipping the train around in plain view
 - Fix grid relaxing
   - Will probably fix sides of the world
     - if it doesn't, trim the sides of the world

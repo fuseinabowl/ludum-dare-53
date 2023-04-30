@@ -41,10 +41,10 @@ public static class TownscaperRelaxer
                     idealSize
                 );
 
-                vertexForceAccumulator[index0] -= offsets.p0;
-                vertexForceAccumulator[index1] -= offsets.p1;
-                vertexForceAccumulator[index2] -= offsets.p2;
-                vertexForceAccumulator[index3] -= offsets.p3;
+                vertexForceAccumulator[index0] += offsets.p0;
+                vertexForceAccumulator[index1] += offsets.p1;
+                vertexForceAccumulator[index2] += offsets.p2;
+                vertexForceAccumulator[index3] += offsets.p3;
             }
 
             for (var vertexIndex = 0; vertexIndex < meshData.vertices.Length; ++vertexIndex)
@@ -94,10 +94,12 @@ public static class TownscaperRelaxer
 
         var output = new OffsetToFullySquarePoints();
 
-        output.p0 = idealOffset;
-        output.p1 = Rotate270_2d(idealOffset);
-        output.p2 = Rotate180_2d(idealOffset);
-        output.p3 = Rotate90_2d (idealOffset);
+        output.p0 = idealOffset               + center - p0;
+        output.p1 = Rotate270_2d(idealOffset) + center - p1;
+        output.p2 = Rotate180_2d(idealOffset) + center - p2;
+        output.p3 = Rotate90_2d (idealOffset) + center - p3;
+
+        // Debug.Log($"ideal offset: {idealOffset}\noffset0: {output.p0}\n
 
         return output;
     }

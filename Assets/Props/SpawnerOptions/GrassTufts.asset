@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2452a5aaa4b4314fa05d287ace76bcd, type: 3}
   m_Name: GrassTufts
   m_EditorClassIdentifier: 
-  spawnChance: 1
-  maxPositionVariation: {x: 0, y: 0}
+  spawnChance: 0.7
+  maxPositionVariation: {x: 0.3, y: 0}
   spawnChoices:
+  - weight: 0.1
+    prefab: {fileID: 919132149155446097, guid: 96f9e75f4e728f8439a7b04c8a7a4ed7, type: 3}
   - weight: 1
-    prefab: {fileID: 4652874848461228421, guid: 547883a4a64153444835d71b3545c542, type: 3}
+    prefab: {fileID: 919132149155446097, guid: b260859076116894d9e343f7fb30c8a1, type: 3}

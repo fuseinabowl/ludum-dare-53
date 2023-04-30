@@ -103,11 +103,9 @@ public static class TownscaperRelaxer
     }
 
     // makes it easier to flip the rotation to try out the other way
-    private const float ninetyYScale = 1f;
-
     private static Vector3 Rotate90_2d(Vector3 value)
     {
-        return new Vector3(ninetyYScale * value.y, -ninetyYScale * value.x, value.z);
+        return new Vector3(value.y, -value.x, value.z);
     }
 
     private static Vector3 Rotate180_2d(Vector3 value)
@@ -117,6 +115,6 @@ public static class TownscaperRelaxer
 
     private static Vector3 Rotate270_2d(Vector3 value)
     {
-        return new Vector3(-ninetyYScale * value.y, ninetyYScale * value.x, value.z);
+        return new Vector3(-value.y, value.x, value.z);
     }
 }

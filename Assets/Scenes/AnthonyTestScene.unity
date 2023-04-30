@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481676, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -485,8 +485,9 @@ MonoBehaviour:
   travelerScale: 0.2
   minEdgeAngle: 90
   vertexPathPrefab: {fileID: 8314416547386774449, guid: 7228ecdfb28f349fbb56d13894439cd4, type: 3}
-  edgeModelPrefab: {fileID: 6775559527801339564, guid: 50afe59e6559646e587268d4e845d8ac, type: 3}
+  edgeModelPrefab: {fileID: 353253216238958770, guid: d33a651214683c84186651ba6c34be6c, type: 3}
   trainPrefab: {fileID: 4263812648893780629, guid: d56bd571a39374b098ccfcb53a2ee901, type: 3}
+  gizmoVertices: 0
   gizmoEdges: 1
   moveSpeed: 1
 --- !u!114 &986006706

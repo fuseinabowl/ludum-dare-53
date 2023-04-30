@@ -34,6 +34,7 @@ public class VertexNetwork : MonoBehaviour
     private Edge closestEdge = null;
     private bool canPlaceClosestEdge = false;
     private bool canDeleteClosestEdge = false;
+    private bool canSplitClosestEdge = false;
     private Vector3 mouseHit;
 
     public void SetEdgeGraph(EdgeGraph eg)
@@ -49,13 +50,15 @@ public class VertexNetwork : MonoBehaviour
 
     private void InitStations()
     {
-        if (!Application.isPlaying) {
+        if (!Application.isPlaying)
+        {
             return;
         }
         foreach (var station in stations)
         {
             var rootVertex = edgeGraph.ClosestVertex(station.transform.position);
-            if (station.front == null) {
+            if (station.front == null)
+            {
                 Debug.LogWarning("station has no front object, cannot create path");
                 continue;
             }
@@ -63,13 +66,7 @@ public class VertexNetwork : MonoBehaviour
             rootVectors.Add(rootVertex);
             var vertexPath = Instantiate(vertexPathPrefab, transform);
             vertexPaths.Add(vertexPath);
-            vertexPath.Init(
-                this,
-                rootVertex,
-                edgeGraph.FindEdge(frontVertex, rootVertex),
-                travelerScale,
-                minEdgeAngle
-            );
+            vertexPath.Init(this, rootVertex, edgeGraph.FindEdge(frontVertex, rootVertex));
         }
     }
 
@@ -81,6 +78,7 @@ public class VertexNetwork : MonoBehaviour
         closestEdge = edgeGraph.ClosestEdge(mouseHit);
         canPlaceClosestEdge = CanPlaceEdge(closestEdge);
         canDeleteClosestEdge = CanDeleteEdge(closestEdge);
+        canSplitClosestEdge = CanSplitEdge(closestEdge);
 
         if (Input.GetMouseButtonDown(0) && canPlaceClosestEdge)
         {
@@ -98,42 +96,56 @@ public class VertexNetwork : MonoBehaviour
         {
             DeleteEdge(closestEdge);
         }
+        else if (Input.GetMouseButtonDown(1) && canSplitClosestEdge)
+        {
+            SplitEdge(closestEdge);
+        }
     }
 
     private void PlaceEdge(Edge edge)
     {
         VertexPath connectPath = null;
         VertexPath joinPath = null;
-        
+
         foreach (var path in vertexPaths)
         {
             if (path.CanConnect(edge))
             {
-                if (connectPath == null) {
+                if (connectPath == null)
+                {
                     connectPath = path;
-                } else if (joinPath == null) {
+                }
+                else if (joinPath == null)
+                {
                     joinPath = path;
-                } else {
-                    Debug.LogWarning("Trying to join 3+ paths together, no thanks, need to disable this in CanPlaceEdge");
+                }
+                else
+                {
+                    Debug.LogWarning(
+                        "Trying to join 3+ paths together, no thanks, need to disable this in CanPlaceEdge"
+                    );
                     return;
                 }
             }
         }
 
-        if (connectPath == null) {
+        if (connectPath == null)
+        {
             Debug.LogError("couldn't find a path to connect the edge to!!!!!!!");
             return;
         }
 
         connectPath.Connect(edge);
 
-        if (joinPath) {
+        if (joinPath)
+        {
             connectPath.Join(joinPath);
             vertexPaths.Remove(joinPath);
             GameObject.Destroy(joinPath);
         }
 
-        if (connectPath.IsComplete()) {
+        if (connectPath.IsComplete())
+        {
             connectPath.StartMoving();
         }
 
@@ -172,7 +184,8 @@ public class VertexNetwork : MonoBehaviour
             )
             {
                 var edge = adjacentEdges[i];
-                if (!rootVectors.Contains(edge.left) && !rootVectors.Contains(edge.right)) {
+                if (!rootVectors.Contains(edge.left) && !rootVectors.Contains(edge.right))
+                {
                     connectableEdges.Add(edge);
                 }
             }
@@ -251,6 +264,31 @@ public class VertexNetwork : MonoBehaviour
             if (path.DeleteEdge(edge))
             {
                 onAvailableEdgesChanged?.Invoke();
+                return;
+            }
+        }
+    }
+
+    private bool CanSplitEdge(Edge edge)
+    {
+        foreach (var path in vertexPaths)
+        {
+            if (path.CanSplit(edge))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void SplitEdge(Edge edge)
+    {
+        foreach (var path in vertexPaths)
+        {
+            var vertexPath = path.Split(edge);
+            if (vertexPath)
+            {
+                vertexPaths.Add(vertexPath);
                 return;
             }
         }

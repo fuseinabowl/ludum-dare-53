@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-#if UNITY
 using UnityEngine;
-#endif
 
 namespace Sylves
 {
@@ -44,7 +42,6 @@ namespace Sylves
             Scale = scale;
         }
 
-#if UNITY
         public static TRS Local(Transform t)
         {
             return new TRS(t.localPosition, t.localRotation, t.localScale);
@@ -54,7 +51,6 @@ namespace Sylves
         {
             return new TRS(t.position, t.rotation, t.lossyScale);
         }
-#endif
 
         public Matrix4x4 ToMatrix()
         {

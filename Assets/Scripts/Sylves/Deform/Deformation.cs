@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Linq;
-#if UNITY
 using UnityEngine;
-#endif
 
 namespace Sylves
 {
@@ -140,7 +138,6 @@ namespace Sylves
         }
 
 // TODO: Operate on MeshData isntead?
-#if UNITY
         private Mesh Deform(Mesh mesh, int submeshStart, int submeshCount)
         {
             var newMesh = new Mesh();
@@ -232,7 +229,6 @@ namespace Sylves
         {
             return Deform(mesh, submesh, 1);
         }
-#endif
 
         public static Deformation operator *(Deformation meshDeformation, Matrix4x4 m)
         {

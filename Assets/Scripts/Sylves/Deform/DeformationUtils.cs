@@ -2,9 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-#if UNITY
 using UnityEngine;
-#endif
 
 using static Sylves.VectorUtils;
 

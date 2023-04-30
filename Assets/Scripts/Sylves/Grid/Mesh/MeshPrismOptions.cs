@@ -1,7 +1,4 @@
-﻿#if UNITY
-#endif
-
-
+﻿
 namespace Sylves
 {
     public class MeshPrismGridOptions : MeshGridOptions

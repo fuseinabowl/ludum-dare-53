@@ -132,7 +132,7 @@ public class TrainMover : MonoBehaviour
 
         for (var carriageIndex = 0; carriageIndex < trainData.numberOfCarriages; ++carriageIndex)
         {
-            carriages.Add(GameObject.Instantiate(trainData.locomotive, transform));
+            carriages.Add(GameObject.Instantiate(trainData.carriage, transform));
         }
     }
 

@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2452a5aaa4b4314fa05d287ace76bcd, type: 3}
+  m_Name: GrassTufts
+  m_EditorClassIdentifier: 
+  spawnChance: 1
+  maxPositionVariation: {x: 0, y: 0}
+  spawnChoices:
+  - weight: 1
+    prefab: {fileID: 4652874848461228421, guid: 547883a4a64153444835d71b3545c542, type: 3}

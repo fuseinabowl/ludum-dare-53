@@ -413,6 +413,8 @@ MonoBehaviour:
     prefab: {fileID: 6817244548919748188, guid: 0170e8096d04acd43848c772bc50f431, type: 3}
   relaxIterations: 1000
   relaxStrength: 0.1
+  combinedMaterials:
+  - {fileID: 2100000, guid: e30fef19aea8f074a9b0247f79701795, type: 2}
 --- !u!4 &986006704
 Transform:
   m_ObjectHideFlags: 0

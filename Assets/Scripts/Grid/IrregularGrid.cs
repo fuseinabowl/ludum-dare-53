@@ -106,12 +106,24 @@ public class IrregularGrid : MonoBehaviour
 
         var indices = meshData.indices[0];
 
+        var accumulatingVertices = new List<Vector3>();
+        var accumulatingNormals = new List<Vector3>();
+        var accumulatingUv0s = new List<Vector2>();
+        var accumulatingUv1s = new List<Vector2>();
+        var accumulatingIndices = new List<int>();
+
         for (var quadIndex = 0; quadIndex < indices.Length / 4; ++quadIndex)
         {
-            AppendWarpedSlotPrefabToMeshDataAndSpawnProps(quadIndex);
+            AppendWarpedSlotPrefabToMeshDataAndSpawnProps(quadIndex, accumulatingVertices, accumulatingNormals, accumulatingUv0s, accumulatingUv1s, accumulatingIndices);
         }
 
         var mesh = new Mesh();
+
+        mesh.vertices = accumulatingVertices.ToArray();
+        mesh.normals = accumulatingNormals.ToArray();
+        mesh.SetUVs(0, accumulatingUv0s.ToArray());
+        mesh.SetUVs(1, accumulatingUv1s.ToArray());
+        mesh.SetIndices(accumulatingIndices.ToArray(), UnityEngine.MeshTopology.Triangles, 0);
 
         var meshFilter = gameObject.AddComponent<MeshFilter>();
         meshFilter.sharedMesh = mesh;
@@ -120,9 +132,22 @@ public class IrregularGrid : MonoBehaviour
         meshRenderer.sharedMaterials = combinedMaterials;
     }
 
-    private void AppendWarpedSlotPrefabToMeshDataAndSpawnProps(int quadIndex)
+    private void AppendWarpedSlotPrefabToMeshDataAndSpawnProps(int quadIndex, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uv0, List<Vector2> uv1, List<int> indices)
     {
         var warpedData = InstantiateAndWarpTilePrefab(quadIndex);
+
+        var baseVertex = vertices.Count;
+        vertices.AddRange(warpedData.vertices);
+        normals.AddRange(warpedData.normals);
+        uv0.AddRange(warpedData.uv0);
+        uv1.AddRange(warpedData.uv1);
+        indices.AddRange(warpedData.subMesh0Indices.Select(index => index + baseVertex));
+
+        UnityEngine.Object.Destroy(warpedData.tileInstance.GetComponent<MeshFilter>());
+        UnityEngine.Object.Destroy(warpedData.tileInstance.GetComponent<MeshRenderer>());
+
+        var rotationMatrix = GetTileTransform(quadIndex);
+        SpawnPropsOnObject(warpedData.tileInstance, rotationMatrix, warpedData.warper);
     }
 
     private GridData.QuadOverride GetOverrideForQuad(int quadIndex)
@@ -181,6 +206,8 @@ public class IrregularGrid : MonoBehaviour
         public GameObject tileInstance;
         public Vector3[] vertices;
         public Vector3[] normals;
+        public Vector2[] uv0;
+        public Vector2[] uv1;
         public int[] subMesh0Indices;
         public CageWarper warper;
     }
@@ -258,10 +285,16 @@ public class IrregularGrid : MonoBehaviour
             localVertices[vertexIndex] = cageWarper.WarpVertex(localVertices[vertexIndex]);
         }
 
+        var uv0 = new List<Vector2>();
+        mesh.GetUVs(0, uv0);
+        var uv1 = new List<Vector2>();
+        mesh.GetUVs(1, uv1);
         return new WarpedMeshData{
             tileInstance = spawnedObject,
             vertices = localVertices,
             normals = localNormals,
+            uv0 = uv0.ToArray(),
+            uv1 = uv1.ToArray(),
             subMesh0Indices = mesh.GetIndices(0),
             warper = cageWarper,
         };

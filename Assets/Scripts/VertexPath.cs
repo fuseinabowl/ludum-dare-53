@@ -163,7 +163,7 @@ public class VertexPath : MonoBehaviour
             return false;
         }
 
-        if (edges[0].Equals(foundEdge) || edges[edges.Count].Equals(foundEdge))
+        if (edges[0].Equals(foundEdge) || edges[edges.Count - 1].Equals(foundEdge))
         {
             return false;
         }

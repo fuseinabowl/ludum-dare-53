@@ -51,6 +51,7 @@ public class CameraController : MonoBehaviour
         var panInput = InputPan();
         var panDelta = transform.right * (panInput.x * -panSpeed);
         panDelta += transform.up * (panInput.y * -panSpeed);
+        panDelta = Vectors.Y(0, panDelta);
         transform.position += panDelta * Time.deltaTime;
 
         float rotateInput = InputRotation();

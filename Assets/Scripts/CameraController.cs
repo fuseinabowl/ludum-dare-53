@@ -30,7 +30,7 @@ public class CameraController : MonoBehaviour
     {
         prevPosition = transform.position;
         cam.orthographicSize = (minOrthoZoom + maxOrthoZoom) / 2f;
-        cam.fieldOfView = (minFOVZoom + maxFOVZoom) / 2f;
+        SafeApplyFieldOfView(cam.fieldOfView);
         UpdateLookTarget();
     }
 
@@ -78,9 +78,15 @@ public class CameraController : MonoBehaviour
             cam.orthographicSize + zoomInput * zoomSpeed * Time.deltaTime,
             maxOrthoZoom
         );
+
+        SafeApplyFieldOfView(cam.fieldOfView + zoomInput * zoomSpeed * 10f * Time.deltaTime);
+    }
+
+    private void SafeApplyFieldOfView(float fov)
+    {
         cam.fieldOfView = Mathf.Clamp(
+            fov,
             minFOVZoom,
-            cam.fieldOfView + zoomInput * zoomSpeed * 10f * Time.deltaTime,
             maxFOVZoom
         );
     }

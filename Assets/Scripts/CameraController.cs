@@ -108,19 +108,19 @@ public class CameraController : MonoBehaviour
 
     private float InputRotation()
     {
-        return Input.GetKey(KeyCode.Q)
+        return CameraPlayerPrefs.CameraRotationMultiplier * (Input.GetKey(KeyCode.Q)
             ? -1
             : Input.GetKey(KeyCode.E)
                 ? 1
-                : 0;
+                : 0);
     }
 
     private float InputZoom()
     {
-        return Input.GetKey(KeyCode.Z)
+        return CameraPlayerPrefs.CameraZoomMultiplier * (Input.GetKey(KeyCode.Z)
             ? -1
             : Input.GetKey(KeyCode.C)
                 ? 1
-                : 0;
+                : 0);
     }
 }

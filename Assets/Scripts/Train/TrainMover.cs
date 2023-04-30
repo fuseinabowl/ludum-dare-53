@@ -148,12 +148,12 @@ public class TrainMover : MonoBehaviour
                 CompletedTrip();
             }
 
-            MoveTraveler(trainDistance, smoothPath);
+            PlaceTrainCar(train, trainDistance, smoothPath);
             yield return null;
         }
     }
 
-    private void MoveTraveler(float distance, SmoothPath path)
+    private void PlaceTrainCar(GameObject trainCar, float distance, SmoothPath path)
     {
         float remainingDistance = distance;
 
@@ -165,9 +165,9 @@ public class TrainMover : MonoBehaviour
             if (remainingDistance <= segment.length)
             {
                 var proportionThroughThisSegment = remainingDistance / segment.length;
-                train.transform.position = Vector3.Lerp(segment.startPosition, nextSegment.startPosition, proportionThroughThisSegment);
+                trainCar.transform.position = Vector3.Lerp(segment.startPosition, nextSegment.startPosition, proportionThroughThisSegment);
                 var facingDirection = Vector3.Lerp(segment.facingDirection, nextSegment.facingDirection, proportionThroughThisSegment);
-                train.transform.rotation = Quaternion.LookRotation(facingDirection, Vector3.up);
+                trainCar.transform.rotation = Quaternion.LookRotation(facingDirection, Vector3.up);
                 return;
             }
             remainingDistance -= segment.length;
@@ -176,8 +176,8 @@ public class TrainMover : MonoBehaviour
         Assert.IsTrue(remainingDistance > 0f, "If edge distance is less than 0 it should have chosen one of the path segments");
 
         var finalSegment = path.path[path.path.Length - 1];
-        train.transform.position = finalSegment.startPosition;
-        train.transform.rotation = Quaternion.LookRotation(finalSegment.facingDirection, Vector3.up);
+        trainCar.transform.position = finalSegment.startPosition;
+        trainCar.transform.rotation = Quaternion.LookRotation(finalSegment.facingDirection, Vector3.up);
     }
 
     private void CompletedTrip()

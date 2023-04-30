@@ -21,10 +21,10 @@ public static class TrackModelGenerator
         for (var segmentIndex = 0; segmentIndex < segments; ++segmentIndex)
         {
             var startBezierT = (float)segmentIndex / segments;
-            var startBezierValues = CalculateBezier(start, control, end, startBezierT);
+            var startBezierValues = Bezier.Calculate(start, control, end, startBezierT);
 
             var endBezierT = (float)(segmentIndex + 1) / segments;
-            var endBezierValues = CalculateBezier(start, control, end, endBezierT);
+            var endBezierValues = Bezier.Calculate(start, control, end, endBezierT);
 
             // create a cage warp from the segment start bezier point to the segment end bezier point
             var v0 = startBezierValues.point + startBezierValues.crossZ * 0.5f;
@@ -57,30 +57,5 @@ public static class TrackModelGenerator
         }
 
         return compositeMesh;
-    }
-
-    private struct BezierResults
-    {
-        public Vector3 point;
-        public Vector3 tangent;
-        public Vector3 crossZ; // normal when viewed from above
-    }
-
-    private static BezierResults CalculateBezier(Vector3 start, Vector3 control, Vector3 end, float t)
-    {
-        var position = Vector3.Lerp(
-            Vector3.Lerp(start, control, t),
-            Vector3.Lerp(control, end, t),
-            t
-        );
-
-        var dpDt = start * (2f * t - 2f) + (2f * end - 4f * control) * t + 2f * control;
-        var tangent = dpDt.normalized;
-
-        return new BezierResults{
-            point = position,
-            tangent = tangent,
-            crossZ = Vector3.Cross(Vector3.up, tangent),
-        };
     }
 }

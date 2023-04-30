@@ -54,6 +54,7 @@ public class TrainMover : MonoBehaviour
     private struct SmoothPathSegment
     {
         public Vector3 startPosition;
+        public Vector3 facingDirection;
         public float length; // 0 for end
     }
 
@@ -76,8 +77,10 @@ public class TrainMover : MonoBehaviour
             );
         }
 
+        var finalEdge = path.edges[path.edges.Count - 1].edge;
         result[path.edges.Count - 1 * smoothSegmentsPerPathSegment] = new SmoothPathSegment{
-            startPosition = path.edges[0].edge.middle,
+            startPosition = finalEdge.middle,
+            facingDirection = (finalEdge.toVertex - finalEdge.middle).normalized,
             length = 0f,
         };
 
@@ -105,6 +108,7 @@ public class TrainMover : MonoBehaviour
 
             outputPaths[outputIndex] = new SmoothPathSegment{
                 startPosition = segmentStartPosition,
+                facingDirection = (segmentEndPosition - segmentStartPosition).normalized, // not accurate, should be from the previous start to this end
                 length = distance,
             };
 
@@ -154,13 +158,15 @@ public class TrainMover : MonoBehaviour
         float remainingDistance = distance;
 
         Assert.AreNotEqual(path.path.Length, 0);
-        for (var segmentIndex = 0; segmentIndex < path.path.Length; ++segmentIndex)
+        for (var segmentIndex = 0; segmentIndex < path.path.Length - 1; ++segmentIndex)
         {
             var segment = path.path[segmentIndex];
+            var nextSegment = path.path[segmentIndex + 1];
             if (remainingDistance <= segment.length)
             {
-                train.transform.position = Vector3.Lerp(segment.startPosition, path.path[segmentIndex + 1].startPosition, remainingDistance / segment.length);
-                // train.transform.rotation = Quaternion.LookRotation(foundEdge.extent, Vector3.up);
+                train.transform.position = Vector3.Lerp(segment.startPosition, nextSegment.startPosition, remainingDistance / segment.length);
+                var facingDirection = Vector3.Lerp(segment.facingDirection, nextSegment.facingDirection, remainingDistance / segment.length);
+                train.transform.rotation = Quaternion.LookRotation(facingDirection, Vector3.up);
                 return;
             }
             remainingDistance -= segment.length;
@@ -170,7 +176,7 @@ public class TrainMover : MonoBehaviour
 
         var finalSegment = path.path[path.path.Length - 1];
         train.transform.position = finalSegment.startPosition;
-        // train.transform.rotation = Quaternion.LookRotation(foundEdge.extent, Vector3.up);
+        train.transform.rotation = Quaternion.LookRotation(finalSegment.facingDirection, Vector3.up);
     }
 
     private void CompletedTrip()

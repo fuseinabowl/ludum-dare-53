@@ -59,3 +59,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   path: {fileID: 8314416547386774449}
+  smoothSegmentsPerPathSegment: 8

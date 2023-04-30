@@ -74,7 +74,11 @@ public class Vectors
     /// </summary>
     public static Vector2 Round(Vector3 position)
     {
-        return new Vector3(Mathf.Round(position.x), Mathf.Round(position.y), Mathf.Round(position.z));
+        return new Vector3(
+            Mathf.Round(position.x),
+            Mathf.Round(position.y),
+            Mathf.Round(position.z)
+        );
     }
 
     public static int Compare(Vector3 left, Vector3 right)
@@ -108,7 +112,8 @@ public class Vectors
         Vector3 lineDirection = lineEnd - lineStart;
         float length = lineDirection.magnitude;
         Vector3 normalizedLineDirection = lineDirection;
-        if (length > .000001f) {
+        if (length > .000001f)
+        {
             normalizedLineDirection /= length;
         }
 

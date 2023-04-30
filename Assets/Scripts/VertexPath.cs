@@ -47,12 +47,12 @@ public class VertexPath : MonoBehaviour
         traveler.transform.position = vertices[0];
     }
 
-    private Edge LastEdge()
+    public Edge LastEdge()
     {
         return edges[edges.Count - 1];
     }
 
-    private Vector3 LastVertex()
+    public Vector3 LastVertex()
     {
         return vertices[vertices.Count - 1];
     }
@@ -71,14 +71,27 @@ public class VertexPath : MonoBehaviour
             return false;
         }
 
-        Debug.Assert(edge.direction == Edge.Direction.NONE);
-        var lastEdge = LastEdge();
-        var directionalEdge = edge.DirectionalFrom(lastVertex);
+        var connectableEdges = net.ConnectableEdges(this);
+        bool hasConnectable = false;
 
-        if (Vector3.Angle(lastEdge.extent, -directionalEdge.extent) < minEdgeAngle)
-        {
+        foreach (var connEdge in connectableEdges) {
+            if (connEdge.Equals(edge)) {
+                hasConnectable = true;
+            }
+        }
+
+        if (!hasConnectable) {
             return false;
         }
+
+        // Debug.Assert(edge.direction == Edge.Direction.NONE);
+        // var lastEdge = LastEdge();
+        // var directionalEdge = edge.DirectionalFrom(lastVertex);
+
+        // if (Vector3.Angle(lastEdge.extent, -directionalEdge.extent) < minEdgeAngle)
+        // {
+        //     return false;
+        // }
 
         return true;
     }

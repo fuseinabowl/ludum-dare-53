@@ -32,6 +32,16 @@ public class EdgeGraph
         return closest;
     }
 
+    public List<Edge> AdjacentEdges(Vector3 point) {
+        var adj = new List<Edge>();
+        foreach (var edge in edges) {
+            if (point == edge.left || point == edge.right) {
+                adj.Add(edge);
+            }
+        }
+        return adj;
+    }
+
     public Vector3 ClosestVertex(Vector3 point)
     {
         Vector3 closest = Vector3.zero;

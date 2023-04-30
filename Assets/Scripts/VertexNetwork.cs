@@ -22,6 +22,9 @@ public class VertexNetwork : MonoBehaviour
     [HideInInspector]
     public HashSet<Vector3> rootVectors = new HashSet<Vector3>();
 
+    public delegate void UpdateEvent();
+    public UpdateEvent onAvailableEdgesChanged;
+
     private EconomyController economy;
     private EdgeGraph edgeGraph = null;
     private List<VertexPath> vertexPaths = new List<VertexPath>();

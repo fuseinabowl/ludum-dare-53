@@ -49,8 +49,7 @@ public class VertexPath : MonoBehaviour
         var edgeModel = Instantiate(net.edgeModelPrefab, transform);
         edgeModel.GetComponentInChildren<TrackModelGeneratorComponent>().SetPoints(
             edge.middle,
-            edge.toVertex,
-            CalculateOverExtendedVertex(edge.middle, edge.toVertex, overextendDistance:0.1f)
+            edge.toVertex
         );
 
         UpdateLastEdgeEndPoint(edge.middle);
@@ -60,12 +59,6 @@ public class VertexPath : MonoBehaviour
         });
 
         BuildVertices();
-    }
-
-    private static Vector3 CalculateOverExtendedVertex(Vector3 start, Vector3 end, float overextendDistance)
-    {
-        var offset = end - start;
-        return end + offset.normalized * overextendDistance;
     }
 
     private void UpdateLastEdgeEndPoint(Vector3 newEndPoint)
@@ -255,6 +248,7 @@ public class VertexPath : MonoBehaviour
         }
 
         DestroyEdge(FindDirectionalEdge(edge, out var i));
+        edges[edges.Count - 1].tracksObject.GetComponentInChildren<TrackModelGeneratorComponent>().SetEndToIdle();
         return true;
     }
 

@@ -16,6 +16,15 @@ public class TrackModelGeneratorComponent : MonoBehaviour
     private Vector3 cachedControl;
     private Vector3 cachedEnd;
 
+    public void SetPoints(Vector3 start, Vector3 control)
+    {
+        cachedStart = start;
+        cachedControl = control;
+        cachedEnd = CalculateIdleEndPoint(start, control);
+
+        GenerateAndApplyMeshFromCache();
+    }
+
     public void SetPoints(Vector3 start, Vector3 control, Vector3 end)
     {
         cachedStart = start;
@@ -36,5 +45,23 @@ public class TrackModelGeneratorComponent : MonoBehaviour
         cachedEnd = end;
 
         GenerateAndApplyMeshFromCache();
+    }
+
+    public void SetEndToIdle()
+    {
+        cachedEnd = CalculateIdleEndPoint(cachedStart, cachedControl);
+
+        GenerateAndApplyMeshFromCache();
+    }
+
+    private Vector3 CalculateIdleEndPoint(Vector3 start, Vector3 control)
+    {
+        return CalculateOverExtendedVertex(start, control, overextendDistance:0.1f);
+    }
+
+    private static Vector3 CalculateOverExtendedVertex(Vector3 start, Vector3 end, float overextendDistance)
+    {
+        var offset = end - start;
+        return end + offset.normalized * overextendDistance;
     }
 }

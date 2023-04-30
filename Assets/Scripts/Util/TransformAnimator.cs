@@ -55,6 +55,11 @@ public class TransformAnimator : MonoBehaviour
         }
     }
 
+    public void Animate()
+    {
+        Animate(true);
+    }
+
     public IEnumerator IAnimate()
     {
         if (!AnyComponentIsAnimating())

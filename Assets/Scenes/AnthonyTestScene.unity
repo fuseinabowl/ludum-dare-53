@@ -307,6 +307,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Station
       objectReference: {fileID: 0}
+    - target: {fileID: 7605798546710701373, guid: 2a1d7c1f15cc648c2a6b301b47e12bcd, type: 3}
+      propertyPath: type
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7773585166904135388, guid: 2a1d7c1f15cc648c2a6b301b47e12bcd, type: 3}
       propertyPath: m_RootOrder
       value: -1

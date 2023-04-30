@@ -4,14 +4,20 @@ using UnityEngine;
 
 public class Station : MonoBehaviour
 {
-    public enum Type { FARM, TOWN }
+    public enum Type
+    {
+        FARM,
+        TOWN
+    }
+
     public Type type = Type.FARM;
     public GameObject front;
 
     [HideInInspector]
-    public VertexPath stationPath;
+    public Vector3 rootVertex;
 
-    private void Start() {
+    private void Start()
+    {
         SingletonProvider.Get<VertexNetwork>().AddStation(this);
     }
 }

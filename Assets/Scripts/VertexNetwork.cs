@@ -15,6 +15,7 @@ public class VertexNetwork : MonoBehaviour
     public GameObject trainPrefab;
 
     [Header("Gizmos")]
+    public bool gizmoVertices;
     public bool gizmoEdges;
 
     [Header("Edge config")]
@@ -35,12 +36,14 @@ public class VertexNetwork : MonoBehaviour
     private bool canDeleteClosestEdge = false;
     private bool canSplitClosestEdge = false;
     private Vector3 mouseHit;
+    private List<Station> stations = new List<Station>();
     private List<Station> pendingStations = new List<Station>();
 
     public void SetEdgeGraph(EdgeGraph eg)
     {
         edgeGraph = eg;
-        foreach (var pendingStation in pendingStations) {
+        foreach (var pendingStation in pendingStations)
+        {
             InitStation(pendingStation);
         }
         pendingStations.Clear();
@@ -48,14 +51,18 @@ public class VertexNetwork : MonoBehaviour
 
     public void AddStation(Station station)
     {
-        if (edgeGraph == null) {
+        if (edgeGraph == null)
+        {
             pendingStations.Add(station);
-        } else {
+        }
+        else
+        {
             InitStation(station);
         }
     }
 
-    private void InitStation(Station station) {
+    private void InitStation(Station station)
+    {
         var rootVertex = edgeGraph.ClosestVertex(station.transform.position);
         if (station.front == null)
         {
@@ -67,6 +74,8 @@ public class VertexNetwork : MonoBehaviour
         var vertexPath = Instantiate(vertexPathPrefab, transform);
         vertexPaths.Add(vertexPath);
         vertexPath.Init(this, rootVertex, edgeGraph.FindEdge(frontVertex, rootVertex));
+        stations.Add(station);
+        station.rootVertex = rootVertex;
     }
 
     private void Start()
@@ -122,13 +131,6 @@ public class VertexNetwork : MonoBehaviour
                 else if (joinPath == null)
                 {
                     joinPath = path;
-                }
-                else
-                {
-                    Debug.LogWarning(
-                        "Trying to join 3+ paths together, no thanks, need to disable this in CanPlaceEdge"
-                    );
-                    return;
                 }
             }
         }
@@ -187,11 +189,7 @@ public class VertexNetwork : MonoBehaviour
                 && !lastEdgeNonDirectional.Equals(Lists.Circ(adjacentEdges, i + 1))
             )
             {
-                var edge = adjacentEdges[i];
-                if (!rootVectors.Contains(edge.left) && !rootVectors.Contains(edge.right))
-                {
-                    connectableEdges.Add(edge);
-                }
+                connectableEdges.Add(adjacentEdges[i]);
             }
         }
 
@@ -221,11 +219,6 @@ public class VertexNetwork : MonoBehaviour
 
     private bool CanPlaceEdge(Edge edge)
     {
-        if (rootVectors.Contains(edge.left) || rootVectors.Contains(edge.right))
-        {
-            return false;
-        }
-
         foreach (var path in vertexPaths)
         {
             if (path.HasInternalVertexOnEdge(edge))
@@ -233,6 +226,9 @@ public class VertexNetwork : MonoBehaviour
                 return false;
             }
         }
+
+        VertexPath connectPath = null;
+        VertexPath joinPath = null;
 
         foreach (var path in vertexPaths)
         {
@@ -242,11 +238,44 @@ public class VertexNetwork : MonoBehaviour
             }
             if (path.CanConnect(edge))
             {
-                return true;
+                if (connectPath == null)
+                {
+                    connectPath = path;
+                }
+                else if (joinPath == null)
+                {
+                    joinPath = path;
+                }
+                else
+                {
+                    // too many connections
+                    return false;
+                }
             }
         }
 
+        if (connectPath)
+        {
+            if (joinPath)
+            {
+                return FindStartStation(connectPath).type != FindStartStation(joinPath).type;
+            }
+            return true;
+        }
+
         return false;
+    }
+
+    private Station FindStartStation(VertexPath path)
+    {
+        foreach (var station in stations)
+        {
+            if (station.rootVertex == path.vertices[0])
+            {
+                return station;
+            }
+        }
+        return null;
     }
 
     private bool CanDeleteEdge(Edge edge)
@@ -302,10 +331,13 @@ public class VertexNetwork : MonoBehaviour
     {
         if (edgeGraph != null)
         {
-            foreach (var vertex in edgeGraph.vertices)
+            if (gizmoVertices)
             {
-                Gizmos.color = rootVectors.Contains(vertex) ? Color.red : Color.blue;
-                Gizmos.DrawSphere(vertex, travelerScale / 2f);
+                foreach (var vertex in edgeGraph.vertices)
+                {
+                    Gizmos.color = Color.blue;
+                    Gizmos.DrawSphere(vertex, travelerScale / 2f);
+                }
             }
 
             if (closestEdge != null)

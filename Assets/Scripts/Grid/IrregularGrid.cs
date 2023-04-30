@@ -37,13 +37,24 @@ public class IrregularGrid : MonoBehaviour
     [SerializeField]
     private float relaxStrength = 1e-3f;
 
+    [SerializeField]
+    private Material[] combinedMaterials = new Material[0];
+
     private void Awake() {
         vertexNetwork = GetComponent<VertexNetwork>();
     }
 
     private void Start()
     {
-        Generate();
+
+        if (Application.IsPlaying(gameObject))
+        {
+            GenerateAndCombineMeshes();
+        }
+        else
+        {
+            Generate();
+        }
     }
 
     public void Regenerate()
@@ -81,6 +92,39 @@ public class IrregularGrid : MonoBehaviour
         }
     }
 
+    private void GenerateAndCombineMeshes()
+    {
+        meshData = GenerateMeshData();
+
+        if (vertexNetwork) {
+            vertexNetwork.SetEdgeGraph(CreateEdgeGraph(meshData.vertices, meshData.indices[0]));
+        }
+
+        Assert.AreEqual(meshData.topologies.Length, 1);
+        Assert.AreEqual(meshData.topologies[0], Sylves.MeshTopology.Quads);
+        Assert.AreEqual(meshData.indices[0].Length % 4, 0, "Topology was quads but indices array didn't have a multiple of 4 elements");
+
+        var indices = meshData.indices[0];
+
+        for (var quadIndex = 0; quadIndex < indices.Length / 4; ++quadIndex)
+        {
+            AppendWarpedSlotPrefabToMeshDataAndSpawnProps(quadIndex);
+        }
+
+        var mesh = new Mesh();
+
+        var meshFilter = gameObject.AddComponent<MeshFilter>();
+        meshFilter.sharedMesh = mesh;
+
+        var meshRenderer = gameObject.AddComponent<MeshRenderer>();
+        meshRenderer.sharedMaterials = combinedMaterials;
+    }
+
+    private void AppendWarpedSlotPrefabToMeshDataAndSpawnProps(int quadIndex)
+    {
+        var warpedData = InstantiateAndWarpTilePrefab(quadIndex);
+    }
+
     private GridData.QuadOverride GetOverrideForQuad(int quadIndex)
     {
         if (quadIndex < gridData.matchingOrderPrefabOverrides.Count)
@@ -113,14 +157,49 @@ public class IrregularGrid : MonoBehaviour
 
     public void CreatePrefabInSlot(int quadIndex)
     {
+        // on recompile, mesh data is lost
+        // recreate it here if it doesn't exist
+        EnsureMeshDataValid();
+
+        var warpedData = InstantiateAndWarpTilePrefab(quadIndex);
+        var meshFilter = warpedData.tileInstance.GetComponent<MeshFilter>();
+        var mesh = meshFilter.sharedMesh;
+        mesh.vertices = warpedData.vertices;
+        mesh.normals = warpedData.normals;
+
+        mesh.RecalculateBounds();
+
+        var quadIndexRegister = warpedData.tileInstance.AddComponent<GridQuadIndexRegister>();
+        quadIndexRegister.quadIndex = quadIndex;
+
+        var rotationMatrix = GetTileTransform(quadIndex);
+        SpawnPropsOnObject(warpedData.tileInstance, rotationMatrix, warpedData.warper);
+    }
+
+    private class WarpedMeshData
+    {
+        public GameObject tileInstance;
+        public Vector3[] vertices;
+        public Vector3[] normals;
+        public int[] subMesh0Indices;
+        public CageWarper warper;
+    }
+
+    private Matrix4x4 GetTileTransform(int quadIndex)
+    {
+        var quadOverride = GetOverrideForQuad(quadIndex);
+        var rotationIndex = quadOverride?.rotationIndex ?? 0;
+        return Matrix4x4.Translate(new Vector3(0.5f, 0f, 0.5f))
+             * Matrix4x4.Rotate(Quaternion.AngleAxis(90f * rotationIndex, Vector3.up))
+             * Matrix4x4.Translate(new Vector3(-0.5f, 0f, -0.5f));
+    }
+
+    private WarpedMeshData InstantiateAndWarpTilePrefab(int quadIndex)
+    {
         var quadOverride = GetOverrideForQuad(quadIndex);
         var selectedPrefab = quadOverride?.prefab != null ? quadOverride.prefab : gridData.defaultSpawnedModel;
 
-        var rotationIndex = quadOverride?.rotationIndex ?? 0;
-        var rotationMatrix =
-              Matrix4x4.Translate(new Vector3(0.5f, 0f, 0.5f))
-            * Matrix4x4.Rotate(Quaternion.AngleAxis(90f * rotationIndex, Vector3.up))
-            * Matrix4x4.Translate(new Vector3(-0.5f, 0f, -0.5f));
+        var rotationMatrix = GetTileTransform(quadIndex);
 
         // on recompile, mesh data is lost
         // recreate it here if it doesn't exist
@@ -179,16 +258,13 @@ public class IrregularGrid : MonoBehaviour
             localVertices[vertexIndex] = cageWarper.WarpVertex(localVertices[vertexIndex]);
         }
 
-        // upload mesh back into mesh filter
-        mesh.vertices = localVertices;
-        mesh.normals = localNormals;
-
-        mesh.RecalculateBounds();
-
-        var quadIndexRegister = spawnedObject.AddComponent<GridQuadIndexRegister>();
-        quadIndexRegister.quadIndex = meshStartIndex / 4;
-
-        SpawnPropsOnObject(spawnedObject, rotationMatrix, cageWarper);
+        return new WarpedMeshData{
+            tileInstance = spawnedObject,
+            vertices = localVertices,
+            normals = localNormals,
+            subMesh0Indices = mesh.GetIndices(0),
+            warper = cageWarper,
+        };
     }
 
     private void SpawnPropsOnObject(GameObject instance, Matrix4x4 preWarpTransform, CageWarper warper)

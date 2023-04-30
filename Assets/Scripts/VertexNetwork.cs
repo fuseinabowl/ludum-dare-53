@@ -10,12 +10,12 @@ public class VertexNetwork : MonoBehaviour
     public float minEdgeAngle = 90f;
 
     [Header("Objects")]
-    public List<Station> stations = new List<Station>();
     public VertexPath vertexPathPrefab;
     public GameObject edgeModelPrefab;
     public GameObject trainPrefab;
 
     [Header("Gizmos")]
+    public bool gizmoVertices;
     public bool gizmoEdges;
 
     [Header("Edge config")]
@@ -33,44 +33,50 @@ public class VertexNetwork : MonoBehaviour
     private Edge closestEdge = null;
     private bool canPlaceClosestEdge = false;
     private bool canDeleteClosestEdge = false;
+    private bool canSplitClosestEdge = false;
     private Vector3 mouseHit;
+    private List<Station> stations = new List<Station>();
+    private List<Station> pendingStations = new List<Station>();
 
     public void SetEdgeGraph(EdgeGraph eg)
     {
         edgeGraph = eg;
-        InitStations();
-    }
-
-    private void Start()
-    {
-    }
-
-    private void InitStations()
-    {
-        if (!Application.isPlaying) {
-            return;
-        }
-        foreach (var station in stations)
+        foreach (var pendingStation in pendingStations)
         {
-            var rootVertex = edgeGraph.ClosestVertex(station.transform.position);
-            if (station.front == null) {
-                Debug.LogWarning("station has no front object, cannot create path");
-                continue;
-            }
-            var frontVertex = edgeGraph.ClosestVertex(station.front.transform.position);
-            rootVectors.Add(rootVertex);
-            var vertexPath = Instantiate(vertexPathPrefab, transform);
-            vertexPaths.Add(vertexPath);
-            vertexPath.Init(
-                this,
-                rootVertex,
-                edgeGraph.FindEdge(frontVertex, rootVertex),
-                travelerScale,
-                minEdgeAngle
-            );
+            InitStation(pendingStation);
+        }
+        pendingStations.Clear();
+    }
+
+    public void AddStation(Station station)
+    {
+        if (edgeGraph == null)
+        {
+            pendingStations.Add(station);
+        }
+        else
+        {
+            InitStation(station);
+        }
+    }
+
+    private void InitStation(Station station)
+    {
+        var rootVertex = edgeGraph.ClosestVertex(station.transform.position);
+        if (station.front == null)
+        {
+            Debug.LogWarning("station has no front object, cannot create path");
+            return;
         }
 
         onAvailableEdgesChanged?.Invoke();
+        var frontVertex = edgeGraph.ClosestVertex(station.front.transform.position);
+        rootVectors.Add(rootVertex);
+        var vertexPath = Instantiate(vertexPathPrefab, transform);
+        vertexPaths.Add(vertexPath);
+        vertexPath.Init(this, rootVertex, edgeGraph.FindEdge(frontVertex, rootVertex));
+        stations.Add(station);
+        station.rootVertex = rootVertex;
     }
 
     private void Update()
@@ -81,6 +87,7 @@ public class VertexNetwork : MonoBehaviour
         closestEdge = edgeGraph.ClosestEdge(mouseHit);
         canPlaceClosestEdge = CanPlaceEdge(closestEdge);
         canDeleteClosestEdge = CanDeleteEdge(closestEdge);
+        canSplitClosestEdge = CanSplitEdge(closestEdge);
 
         if (Input.GetMouseButtonDown(0) && canPlaceClosestEdge)
         {
@@ -90,42 +97,49 @@ public class VertexNetwork : MonoBehaviour
         {
             DeleteEdge(closestEdge);
         }
+        else if (Input.GetMouseButtonDown(1) && canSplitClosestEdge)
+        {
+            SplitEdge(closestEdge);
+        }
     }
 
     private void PlaceEdge(Edge edge)
     {
         VertexPath connectPath = null;
         VertexPath joinPath = null;
-        
+
         foreach (var path in vertexPaths)
         {
             if (path.CanConnect(edge))
             {
-                if (connectPath == null) {
+                if (connectPath == null)
+                {
                     connectPath = path;
-                } else if (joinPath == null) {
+                }
+                else if (joinPath == null)
+                {
                     joinPath = path;
-                } else {
-                    Debug.LogWarning("Trying to join 3+ paths together, no thanks, need to disable this in CanPlaceEdge");
-                    return;
                 }
             }
         }
 
-        if (connectPath == null) {
+        if (connectPath == null)
+        {
             Debug.LogError("couldn't find a path to connect the edge to!!!!!!!");
             return;
         }
 
         connectPath.Connect(edge);
 
-        if (joinPath) {
+        if (joinPath)
+        {
             connectPath.Join(joinPath);
             vertexPaths.Remove(joinPath);
             GameObject.Destroy(joinPath);
         }
 
-        if (connectPath.IsComplete()) {
+        if (connectPath.IsComplete())
+        {
             connectPath.StartMoving();
         }
 
@@ -163,10 +177,7 @@ public class VertexNetwork : MonoBehaviour
                 && !lastEdgeNonDirectional.Equals(Lists.Circ(adjacentEdges, i + 1))
             )
             {
-                var edge = adjacentEdges[i];
-                if (!rootVectors.Contains(edge.left) && !rootVectors.Contains(edge.right)) {
-                    connectableEdges.Add(edge);
-                }
+                connectableEdges.Add(adjacentEdges[i]);
             }
         }
 
@@ -196,11 +207,6 @@ public class VertexNetwork : MonoBehaviour
 
     private bool CanPlaceEdge(Edge edge)
     {
-        if (rootVectors.Contains(edge.left) || rootVectors.Contains(edge.right))
-        {
-            return false;
-        }
-
         foreach (var path in vertexPaths)
         {
             if (path.HasInternalVertexOnEdge(edge))
@@ -208,6 +214,9 @@ public class VertexNetwork : MonoBehaviour
                 return false;
             }
         }
+
+        VertexPath connectPath = null;
+        VertexPath joinPath = null;
 
         foreach (var path in vertexPaths)
         {
@@ -217,11 +226,44 @@ public class VertexNetwork : MonoBehaviour
             }
             if (path.CanConnect(edge))
             {
-                return true;
+                if (connectPath == null)
+                {
+                    connectPath = path;
+                }
+                else if (joinPath == null)
+                {
+                    joinPath = path;
+                }
+                else
+                {
+                    // too many connections
+                    return false;
+                }
             }
         }
 
+        if (connectPath)
+        {
+            if (joinPath)
+            {
+                return FindStartStation(connectPath).type != FindStartStation(joinPath).type;
+            }
+            return true;
+        }
+
         return false;
+    }
+
+    private Station FindStartStation(VertexPath path)
+    {
+        foreach (var station in stations)
+        {
+            if (station.rootVertex == path.vertices[0])
+            {
+                return station;
+            }
+        }
+        return null;
     }
 
     private bool CanDeleteEdge(Edge edge)
@@ -248,14 +290,42 @@ public class VertexNetwork : MonoBehaviour
         }
     }
 
+    private bool CanSplitEdge(Edge edge)
+    {
+        foreach (var path in vertexPaths)
+        {
+            if (path.CanSplit(edge))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void SplitEdge(Edge edge)
+    {
+        foreach (var path in vertexPaths)
+        {
+            var vertexPath = path.Split(edge);
+            if (vertexPath)
+            {
+                vertexPaths.Add(vertexPath);
+                return;
+            }
+        }
+    }
+
     private void OnDrawGizmos()
     {
         if (edgeGraph != null)
         {
-            foreach (var vertex in edgeGraph.vertices)
+            if (gizmoVertices)
             {
-                Gizmos.color = rootVectors.Contains(vertex) ? Color.red : Color.blue;
-                Gizmos.DrawSphere(vertex, travelerScale / 2f);
+                foreach (var vertex in edgeGraph.vertices)
+                {
+                    Gizmos.color = Color.blue;
+                    Gizmos.DrawSphere(vertex, travelerScale / 2f);
+                }
             }
 
             if (closestEdge != null)

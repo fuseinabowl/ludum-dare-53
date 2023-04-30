@@ -6,9 +6,6 @@ using UnityEngine.Assertions;
 [ExecuteInEditMode]
 public class VertexPath : MonoBehaviour
 {
-    [Header("Edge placement")]
-    public float minEdgeAngle = 90f;
-
     public class EdgeAndInstanceData
     {
         public Edge edge;
@@ -22,32 +19,30 @@ public class VertexPath : MonoBehaviour
     public List<Vector3> vertices = new List<Vector3>();
 
     private VertexNetwork net;
-    private float travelerScale = 1f;
-    private float distance;
-    private bool running;
-    private bool runningLeft;
     private GameObject train;
+    private float trainDistance;
+    private bool trainRunning;
+    private bool trainRunningLeft;
 
-    public void Init(
-        VertexNetwork vertexNetwork,
-        Vector3 root,
-        Edge edge,
-        float travelerScale,
-        float minEdgeAngle
-    )
+    public void Init(VertexNetwork vertexNetwork, Vector3 root, Edge edge)
     {
         Debug.Assert(vertices.Count == 0);
         Debug.Assert(edges.Count == 0);
         net = vertexNetwork;
-        this.travelerScale = travelerScale;
-        this.minEdgeAngle = minEdgeAngle;
         edge = edge.DirectionalFrom(root);
-        vertices.Add(edge.fromVertex);
-        vertices.Add(edge.toVertex);
         AddEdge(edge);
+        BuildVertices();
     }
 
-    private Dictionary<Edge, GameObject> edgeModels;
+    private void BuildVertices()
+    {
+        vertices.Clear();
+        vertices.Add(edges[0].edge.fromVertex);
+        foreach (var edge in edges)
+        {
+            vertices.Add(edge.edge.toVertex);
+        }
+    }
 
     private void AddEdge(Edge edge)
     {
@@ -63,6 +58,8 @@ public class VertexPath : MonoBehaviour
             edge = edge,
             tracksObject = edgeModel,
         });
+
+        BuildVertices();
     }
 
     private static Vector3 CalculateOverExtendedVertex(Vector3 start, Vector3 end, float overextendDistance)
@@ -93,7 +90,6 @@ public class VertexPath : MonoBehaviour
     {
         if (!IsValidPath())
         {
-            Debug.Log("can't connect, isn't a valid path");
             return false;
         }
 
@@ -153,6 +149,33 @@ public class VertexPath : MonoBehaviour
         return false;
     }
 
+    public bool CanSplit(Edge splitEdge)
+    {
+        if (!IsComplete())
+        {
+            return false;
+        }
+
+        int i;
+        var foundEdge = FindDirectionalEdge(splitEdge, out i);
+        if (foundEdge == null)
+        {
+            return false;
+        }
+
+        if (edges[0].Equals(foundEdge) || edges[edges.Count].Equals(foundEdge))
+        {
+            return false;
+        }
+
+        if (TrainIsOnEdge(foundEdge.edge))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
     public bool CanDeleteEdge(Edge edge)
     {
         if (edges.Count == 1)
@@ -160,7 +183,7 @@ public class VertexPath : MonoBehaviour
             // can't delete the last edge
             return false;
         }
-        if (distance > TotalTrackLength() - edge.length)
+        if (train != null && trainDistance > TotalTrackLength() - edge.length)
         {
             // can't delete edge if the train is on it
             return false;
@@ -169,9 +192,59 @@ public class VertexPath : MonoBehaviour
         return lastEdge.NonDirectional().Equals(edge);
     }
 
-    public bool EndsWith(Vector3 vertex)
+    /// <summary>
+    /// Splits the path at an edge and returns the new path. The split edge is deleted.
+    /// </summary>
+    public VertexPath Split(Edge splitEdge)
     {
-        return LastVertex() == vertex;
+        Debug.Assert(CanSplit(splitEdge));
+        int edgeIndex;
+        var foundEdge = FindDirectionalEdge(splitEdge, out edgeIndex);
+
+        var vertexPath = Instantiate(net.vertexPathPrefab, transform);
+        vertexPath.Init(net, LastVertex(), LastEdge());
+
+        for (int i = edges.Count - 2; i > edgeIndex; i--)
+        {
+            vertexPath.AddEdge(edges[i].edge);
+            DestroyEdge(edges[i]);
+        }
+
+        DestroyEdge(foundEdge);
+        GameObject.Destroy(train);
+        trainRunning = false;
+
+        return vertexPath;
+    }
+
+    private EdgeAndInstanceData FindDirectionalEdge(Edge nonDirEdge, out int index)
+    {
+        Debug.Assert(nonDirEdge.direction == Edge.Direction.NONE);
+        for (int i = 0; i < edges.Count; i++)
+        {
+            if (edges[i].edge.NonDirectional().Equals(nonDirEdge))
+            {
+                index = i;
+                return edges[i];
+            }
+        }
+        index = -1;
+        return null;
+    }
+
+    private bool TrainIsOnEdge(Edge onEdge)
+    {
+        float len = 0;
+        foreach (var edge in edges)
+        {
+            len += edge.edge.length;
+            if (trainDistance < len)
+            {
+                return edge.edge == onEdge;
+            }
+        }
+        Debug.LogWarning("didn't find edge?");
+        return false;
     }
 
     public bool DeleteEdge(Edge edge)
@@ -180,10 +253,16 @@ public class VertexPath : MonoBehaviour
         {
             return false;
         }
-        GameObject.Destroy(edges[edges.Count - 1].tracksObject);
-        edges.RemoveAt(edges.Count - 1);
-        vertices.RemoveAt(vertices.Count - 1);
+
+        DestroyEdge(FindDirectionalEdge(edge, out var i));
         return true;
+    }
+
+    private void DestroyEdge(EdgeAndInstanceData edgeData)
+    {
+        GameObject.Destroy(edgeData.tracksObject);
+        edges.Remove(edgeData);
+        BuildVertices();
     }
 
     /// <summary>
@@ -197,7 +276,6 @@ public class VertexPath : MonoBehaviour
         }
         Debug.Assert(edge.direction == Edge.Direction.NONE);
         var directionalEdge = edge.DirectionalFrom(LastVertex());
-        vertices.Add(directionalEdge.toVertex);
         AddEdge(directionalEdge);
         return true;
     }
@@ -240,7 +318,7 @@ public class VertexPath : MonoBehaviour
         Gizmos.color = Color.green;
         foreach (var vertex in vertices)
         {
-            Gizmos.DrawSphere(vertex, travelerScale);
+            Gizmos.DrawSphere(vertex, net.travelerScale);
         }
         Gizmos.color = Color.blue;
         foreach (var edgeData in edges)
@@ -253,7 +331,7 @@ public class VertexPath : MonoBehaviour
     private void SpawnTrain()
     {
         train = GameObject.Instantiate(net.trainPrefab, transform);
-        train.transform.localScale *= travelerScale;
+        train.transform.localScale *= net.travelerScale;
         train.transform.position = vertices[0];
     }
 
@@ -261,45 +339,45 @@ public class VertexPath : MonoBehaviour
     {
         SpawnTrain();
         train.transform.position = vertices[0];
-        distance = 0;
-        running = true;
-        runningLeft = false;
+        trainDistance = 0;
+        trainRunning = true;
+        trainRunningLeft = false;
         StartCoroutine(MoveCoroutine());
     }
 
     private IEnumerator MoveCoroutine()
     {
-        while (running)
+        while (trainRunning)
         {
             if (!IsValidPath())
             {
                 yield return null;
             }
 
-            if (runningLeft)
+            if (trainRunningLeft)
             {
-                distance -= net.moveSpeed * Time.deltaTime;
+                trainDistance -= net.moveSpeed * Time.deltaTime;
             }
             else
             {
-                distance += net.moveSpeed * Time.deltaTime;
+                trainDistance += net.moveSpeed * Time.deltaTime;
             }
 
             float totalTrackLength = TotalTrackLength();
 
-            if (runningLeft && distance < 0)
+            if (trainRunningLeft && trainDistance < 0)
             {
-                runningLeft = false;
-                distance = 0;
+                trainRunningLeft = false;
+                trainDistance = 0;
             }
-            else if (!runningLeft && distance > totalTrackLength)
+            else if (!trainRunningLeft && trainDistance > totalTrackLength)
             {
-                runningLeft = true;
-                distance = totalTrackLength;
+                trainRunningLeft = true;
+                trainDistance = totalTrackLength;
                 CompletedTrip();
             }
 
-            MoveTraveler(distance);
+            MoveTraveler(trainDistance);
             yield return null;
         }
     }

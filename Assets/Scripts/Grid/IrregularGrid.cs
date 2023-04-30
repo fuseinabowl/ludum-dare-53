@@ -125,6 +125,8 @@ public class IrregularGrid : MonoBehaviour
         mesh.SetUVs(1, accumulatingUv1s.ToArray());
         mesh.SetIndices(accumulatingIndices.ToArray(), UnityEngine.MeshTopology.Triangles, 0);
 
+        mesh.RecalculateBounds();
+
         var meshFilter = gameObject.AddComponent<MeshFilter>();
         meshFilter.sharedMesh = mesh;
 

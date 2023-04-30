@@ -37,4 +37,22 @@ public class Lists
             }
         }
     }
+
+    /// <summary>
+    /// Gets the list item at an index while treating it as a circular list.
+    /// /// This means that accesses that are usually out of bounds (negative, greater than length)
+    /// actually resolve to their circular value.
+    /// </summary>
+    /// <param name="list"></param>
+    /// <param name="i"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public static T Circ<T>(List<T> list, int i)
+    {
+        while (i < 0)
+        {
+            i += list.Count;
+        }
+        return list[i % list.Count];
+    }
 }

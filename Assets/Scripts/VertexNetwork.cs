@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -36,7 +37,8 @@ public class VertexNetwork : MonoBehaviour
         }
     }
 
-    private void Start() {
+    private void Start()
+    {
         economy = SingletonProvider.Get<EconomyController>();
     }
 
@@ -51,10 +53,13 @@ public class VertexNetwork : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0) && canPlaceClosestEdge)
         {
-            if (economy.CanBuyTrack()) {
+            if (economy.CanBuyTrack())
+            {
                 economy.BuyAndPlaceTrack();
                 PlaceEdge(closestEdge);
-            } else {
+            }
+            else
+            {
                 economy.CannotBuy();
             }
         }
@@ -93,6 +98,84 @@ public class VertexNetwork : MonoBehaviour
         vertexPaths.Add(vertexPath);
         vertexPath.Init(this, root, edge, travelerScale, minEdgeAngle);
         vertexPath.StartMoving();
+    }
+
+    public List<Edge> ConnectableEdges(VertexPath path)
+    {
+        var lastVertex = path.LastVertex();
+        var lastEdge = path.LastEdge();
+        var adjacentEdges = edgeGraph.AdjacentEdges(lastVertex);
+
+        // Sort the edges to be continuous around the last vertex.
+        Comparison<Edge> compare = (edgeA, edgeB) =>
+        {
+            var directionalA = edgeA.DirectionalFrom(lastVertex);
+            var directionalB = edgeB.DirectionalFrom(lastVertex);
+            var angleA = Vector3.SignedAngle(directionalA.extent, lastEdge.extent, Vector3.up);
+            var angleB = Vector3.SignedAngle(directionalB.extent, lastEdge.extent, Vector3.up);
+            return angleA.CompareTo(angleB);
+        };
+        adjacentEdges.Sort(compare);
+
+        // The connectable edges are those that aren't adjacent to the graph's last edge.
+        // Convert the last edge to non-directional since adjacentEdges are non-directional
+        // and we want Equals to work.
+        var lastEdgeNonDirectional = lastEdge.NonDirectional();
+        var connectableEdges = new List<Edge>();
+
+        for (int i = 0; i < adjacentEdges.Count; i++)
+        {
+            if (
+                !lastEdgeNonDirectional.Equals(Lists.Circ(adjacentEdges, i - 1))
+                && !lastEdgeNonDirectional.Equals(adjacentEdges[i])
+                && !lastEdgeNonDirectional.Equals(Lists.Circ(adjacentEdges, i + 1))
+            )
+            {
+                connectableEdges.Add(adjacentEdges[i]);
+            }
+        }
+
+        return connectableEdges;
+    }
+
+    /// <summary>
+    /// Returns the set of all non-directional edges that can be connected to on any path,
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    public HashSet<Edge> AllConnectableEdges()
+    {
+        var all = new HashSet<Edge>();
+
+        foreach (var path in vertexPaths)
+        {
+            foreach (var edge in ConnectableEdges(path))
+            {
+                Debug.Assert(edge.direction == Edge.Direction.NONE);
+                all.Add(edge);
+            }
+        }
+
+        foreach (var root in rootVectors) {
+            foreach (var edge in edgeGraph.AdjacentEdges(root)) {
+                if (!AnyPathHasEdge(edge)) {
+                    all.Add(edge);
+                }
+            }
+        }
+
+        return all;
+    }
+
+    private bool AnyPathHasEdge(Edge edge) {
+        foreach (var path in vertexPaths) {
+            foreach (var pathEdge in path.edges) {
+                if (pathEdge.NonDirectional().Equals(edge)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private bool CanPlaceEdge(Edge edge)
@@ -190,6 +273,15 @@ public class VertexNetwork : MonoBehaviour
                         ? Color.yellow
                         : Color.red;
                 Gizmos.DrawLine(closestEdge.left, closestEdge.right);
+            }
+
+            foreach (var edge in AllConnectableEdges())
+            {
+                if (edge != closestEdge)
+                {
+                    Gizmos.color = Color.cyan;
+                    Gizmos.DrawLine(edge.left, edge.right);
+                }
             }
 
             if (gizmoEdges)

@@ -158,8 +158,10 @@ public class Edge : IEquatable<Edge>, IComparable<Edge>
     /// implies an LTR direction.
     /// </summary>
     /// <returns></returns>
-    public Edge NonDirectional() {
-        if (direction == Direction.RTL) {
+    public Edge NonDirectional()
+    {
+        if (direction == Direction.RTL)
+        {
             return new Edge(right, left, Direction.NONE);
         }
         return new Edge(left, right, Direction.NONE);
@@ -202,5 +204,10 @@ public class Edge : IEquatable<Edge>, IComparable<Edge>
             return aCompare;
         }
         return Vectors.Compare(b, otherB);
+    }
+
+    public override string ToString()
+    {
+        return string.Format("Edge(l={0},r={1},d={2})", left, right, direction);
     }
 }

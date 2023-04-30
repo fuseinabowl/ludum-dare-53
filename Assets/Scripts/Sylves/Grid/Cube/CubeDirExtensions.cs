@@ -1,7 +1,5 @@
 ﻿using System;
-#if UNITY
 using UnityEngine;
-#endif
 
 namespace Sylves
 {

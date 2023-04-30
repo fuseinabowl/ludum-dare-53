@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-#if UNITY
 using UnityEngine;
-#endif
 
 namespace Sylves
 {

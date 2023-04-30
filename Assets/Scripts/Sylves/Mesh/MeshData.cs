@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-#if UNITY
 using UnityEngine;
-#endif
 
 namespace Sylves
 {
@@ -25,7 +23,6 @@ namespace Sylves
 
         }
 
-#if UNITY
         public MeshData(Mesh mesh)
         {
             this.indices = Enumerable.Range(0, mesh.subMeshCount).Select(mesh.GetIndices).ToArray();
@@ -59,7 +56,6 @@ namespace Sylves
             }
             return m;
         }
-#endif
 
         // Shallow clone
         public MeshData Clone()

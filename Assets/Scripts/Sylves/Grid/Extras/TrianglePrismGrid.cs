@@ -1,7 +1,5 @@
 ﻿using System.Text;
-#if UNITY
 using UnityEngine;
-#endif
 
 namespace Sylves
 {

@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-#if UNITY
 using UnityEngine;
-#endif
 
 
 namespace Sylves

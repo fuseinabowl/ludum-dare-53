@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-#if UNITY
 using UnityEngine;
-#endif
 
 using static Sylves.MathUtils;
 

@@ -12,6 +12,7 @@ public class VertexNetwork : MonoBehaviour
     [Header("Objects")]
     public List<Station> stations = new List<Station>();
     public VertexPath vertexPathPrefab;
+    public GameObject edgeModelPrefab;
 
     [Header("Gizmos")]
     public bool gizmoEdges;
@@ -125,6 +126,10 @@ public class VertexNetwork : MonoBehaviour
             connectPath.Join(joinPath);
             vertexPaths.Remove(joinPath);
             GameObject.Destroy(joinPath);
+        }
+
+        if (connectPath.IsComplete()) {
+            connectPath.StartMoving();
         }
     }
 

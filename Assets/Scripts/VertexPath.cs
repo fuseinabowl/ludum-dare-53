@@ -34,15 +34,27 @@ public class VertexPath : MonoBehaviour
     {
         Debug.Assert(vertices.Count == 0);
         Debug.Assert(edges.Count == 0);
-        edge = edge.DirectionalFrom(root);
-        vertices.Add(edge.fromVertex);
-        vertices.Add(edge.toVertex);
-        edges.Add(edge);
         net = vertexNetwork;
         this.travelerScale = travelerScale;
         this.minEdgeAngle = minEdgeAngle;
+        edge = edge.DirectionalFrom(root);
+        vertices.Add(edge.fromVertex);
+        vertices.Add(edge.toVertex);
+        AddEdge(edge);
         traveler.transform.localScale = travelerScale * Vector3.one;
         traveler.transform.position = vertices[0];
+    }
+
+    private void AddEdge(Edge edge) {
+        edges.Add(edge);
+        var edgeModel = Instantiate(net.edgeModelPrefab, transform);
+        edgeModel.transform.localScale = new Vector3(
+            travelerScale,
+            travelerScale / 2f,
+            edge.length
+        );
+        edgeModel.transform.position = edge.middle;
+        edgeModel.transform.rotation = Quaternion.LookRotation(edge.extent, Vector3.up);
     }
 
     public Edge LastEdge()
@@ -163,7 +175,7 @@ public class VertexPath : MonoBehaviour
         Debug.Assert(edge.direction == Edge.Direction.NONE);
         var directionalEdge = edge.DirectionalFrom(LastVertex());
         vertices.Add(directionalEdge.toVertex);
-        edges.Add(directionalEdge);
+        AddEdge(directionalEdge);
         return true;
     }
 
@@ -171,9 +183,8 @@ public class VertexPath : MonoBehaviour
         path.vertices.Reverse();
         path.edges.Reverse();
         vertices.AddRange(path.vertices);
-        // for (int i = path.edges.Count - 1; i >= 0; i--) {
         foreach (var edge in path.edges) {
-            edges.Add(edge.DirectionalFrom(LastEdge().toVertex));
+            AddEdge(edge.DirectionalFrom(LastEdge().toVertex));
         }
     }
 

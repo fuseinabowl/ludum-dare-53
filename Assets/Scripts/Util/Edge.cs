@@ -27,6 +27,13 @@ public class Edge : IEquatable<Edge>, IComparable<Edge>
     /// </summary>
     public Vector3 right { get; private set; }
 
+    public Vector3 middle {
+        get {
+            return (left + right) / 2f;
+        }
+        private set {}
+    }
+
     /// <summary>
     /// The vertex that the extent starts from. This will be either left or right depending on
     /// the edge's direction. NONE direction defaults to LTR.

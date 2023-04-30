@@ -78,7 +78,7 @@ public class TrainMover : MonoBehaviour
         }
 
         var finalEdge = path.edges[path.edges.Count - 1].edge;
-        result[path.edges.Count - 1 * smoothSegmentsPerPathSegment] = new SmoothPathSegment{
+        result[(path.edges.Count - 1) * smoothSegmentsPerPathSegment] = new SmoothPathSegment{
             startPosition = finalEdge.middle,
             facingDirection = (finalEdge.toVertex - finalEdge.middle).normalized,
             length = 0f,

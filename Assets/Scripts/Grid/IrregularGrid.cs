@@ -274,6 +274,6 @@ public class IrregularGrid : MonoBehaviour
             }
         }
         
-        return new EdgeGraph(vertices, edges);
+        return new EdgeGraph(vertices.ToList(), edges);
     }
 }

@@ -69,6 +69,8 @@ public class VertexNetwork : MonoBehaviour
                 minEdgeAngle
             );
         }
+
+        onAvailableEdgesChanged?.Invoke();
     }
 
     private void Update()

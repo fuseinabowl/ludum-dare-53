@@ -60,3 +60,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   path: {fileID: 8314416547386774449}
   smoothSegmentsPerPathSegment: 8
+  trainData: {fileID: 11400000, guid: 3c396a6f2f235f240b744d7a027a5809, type: 2}

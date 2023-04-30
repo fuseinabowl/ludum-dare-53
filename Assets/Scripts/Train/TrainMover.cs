@@ -12,7 +12,10 @@ public class TrainMover : MonoBehaviour
     [Min(1)]
     private int smoothSegmentsPerPathSegment = 1;
 
-    private GameObject train;
+    [SerializeField]
+    private TrainData trainData;
+
+    private GameObject locomotive;
     private float trainDistance;
     private bool trainRunning;
     private bool trainRunningLeft;
@@ -30,7 +33,7 @@ public class TrainMover : MonoBehaviour
 
     private void OnFullTrackBroken()
     {
-        GameObject.Destroy(train);
+        GameObject.Destroy(locomotive);
         trainRunning = false;
     }
 
@@ -38,7 +41,7 @@ public class TrainMover : MonoBehaviour
     {
         var smoothPath = CalculateSmoothPath();
         SpawnTrain();
-        train.transform.position = path.vertices[0];
+        locomotive.transform.position = path.vertices[0];
         trainDistance = 0;
         trainRunning = true;
         trainRunningLeft = false;
@@ -118,9 +121,8 @@ public class TrainMover : MonoBehaviour
 
     private void SpawnTrain()
     {
-        train = GameObject.Instantiate(path.Net.trainPrefab, transform);
-        train.transform.localScale *= path.Net.travelerScale;
-        train.transform.position = path.vertices[0];
+        locomotive = GameObject.Instantiate(trainData.locomotive, transform);
+        locomotive.transform.position = path.vertices[0];
     }
 
     private IEnumerator MoveCoroutine(SmoothPath smoothPath)
@@ -148,7 +150,7 @@ public class TrainMover : MonoBehaviour
                 CompletedTrip();
             }
 
-            PlaceTrainCar(train, trainDistance, smoothPath);
+            PlaceTrainCar(locomotive, trainDistance, smoothPath);
             yield return null;
         }
     }

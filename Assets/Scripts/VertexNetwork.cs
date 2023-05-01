@@ -97,7 +97,6 @@ public class VertexNetwork : MonoBehaviour
     private void PlaceEdge(Edge edge)
     {
         VertexPath connectPath = null;
-        VertexPath joinPath = null;
 
         foreach (var path in vertexPaths)
         {
@@ -106,10 +105,6 @@ public class VertexNetwork : MonoBehaviour
                 if (connectPath == null)
                 {
                     connectPath = path;
-                }
-                else if (joinPath == null)
-                {
-                    joinPath = path;
                 }
             }
         }
@@ -121,13 +116,6 @@ public class VertexNetwork : MonoBehaviour
         }
 
         connectPath.Connect(edge);
-
-        if (joinPath)
-        {
-            connectPath.Join(joinPath);
-            vertexPaths.Remove(joinPath);
-            GameObject.Destroy(joinPath);
-        }
 
         if (connectPath.IsComplete())
         {
@@ -212,7 +200,6 @@ public class VertexNetwork : MonoBehaviour
         }
 
         VertexPath connectPath = null;
-        VertexPath joinPath = null;
 
         foreach (var path in vertexPaths)
         {
@@ -226,10 +213,6 @@ public class VertexNetwork : MonoBehaviour
                 {
                     connectPath = path;
                 }
-                else if (joinPath == null)
-                {
-                    joinPath = path;
-                }
                 else
                 {
                     // too many connections
@@ -240,10 +223,6 @@ public class VertexNetwork : MonoBehaviour
 
         if (connectPath)
         {
-            if (joinPath)
-            {
-                return FindStartStation(connectPath).type != FindStartStation(joinPath).type;
-            }
             return true;
         }
 

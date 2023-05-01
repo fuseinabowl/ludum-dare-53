@@ -8,8 +8,9 @@ public class VertexNetwork : MonoBehaviour
 {
     [Header("Config")]
     public float travelerScale = 1f;
-    public float minEdgeAngle = 90f;
     public bool triIsPassable = false;
+    [Range(0, 1)]
+    public float trackCompletedAnimPeriod = 0.1f;
 
     [Header("Objects")]
     public VertexPath vertexPathPrefab;

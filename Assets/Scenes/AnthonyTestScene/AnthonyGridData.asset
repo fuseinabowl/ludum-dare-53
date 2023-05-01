@@ -81,10 +81,10 @@ MonoBehaviour:
   - prefab: {fileID: 0}
     rotationIndex: 0
     isFlippedAcrossX: 0
-  - prefab: {fileID: 0}
-    rotationIndex: 0
+  - prefab: {fileID: 6817244548919748188, guid: 94cd1d1b4d70bd74d9546af5b4ffb5fd, type: 3}
+    rotationIndex: 1
     isFlippedAcrossX: 0
-  - prefab: {fileID: 6817244548919748188, guid: 0170e8096d04acd43848c772bc50f431, type: 3}
+  - prefab: {fileID: 6817244548919748188, guid: 94cd1d1b4d70bd74d9546af5b4ffb5fd, type: 3}
     rotationIndex: 3
     isFlippedAcrossX: 0
   - prefab: {fileID: 0}
@@ -9348,7 +9348,7 @@ MonoBehaviour:
   - prefab: {fileID: 0}
     rotationIndex: 0
     isFlippedAcrossX: 0
-  - prefab: {fileID: 6817244548919748188, guid: 0170e8096d04acd43848c772bc50f431, type: 3}
+  - prefab: {fileID: 6817244548919748188, guid: e268ddfd56e632042b2422a64f7bd579, type: 3}
     rotationIndex: 3
     isFlippedAcrossX: 0
   - prefab: {fileID: 6817244548919748188, guid: 4c8c870e035ec294aa18cf8b4d3163f7, type: 3}
@@ -9882,11 +9882,11 @@ MonoBehaviour:
   - prefab: {fileID: 0}
     rotationIndex: 0
     isFlippedAcrossX: 0
-  - prefab: {fileID: 6817244548919748188, guid: 0170e8096d04acd43848c772bc50f431, type: 3}
-    rotationIndex: 3
+  - prefab: {fileID: 6817244548919748188, guid: 94cd1d1b4d70bd74d9546af5b4ffb5fd, type: 3}
+    rotationIndex: 1
     isFlippedAcrossX: 0
-  - prefab: {fileID: 0}
-    rotationIndex: 0
+  - prefab: {fileID: 6817244548919748188, guid: 5eb9da1c924f8944fbe3598adc5d2abb, type: 3}
+    rotationIndex: 2
     isFlippedAcrossX: 0
   - prefab: {fileID: 6817244548919748188, guid: 86f21cb4b9027cf4a9615cfed2018f2b, type: 3}
     rotationIndex: 0

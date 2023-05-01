@@ -53,21 +53,48 @@ public class VertexNetwork : MonoBehaviour
 
     private void InitStation(Station station)
     {
-        var rootVertex = edgeGraph.ClosestVertex(station.transform.position);
         if (station.front == null)
         {
             Debug.LogWarning("station has no front object, cannot create path");
             return;
         }
 
-        onAvailableEdgesChanged?.Invoke();
-        var frontVertex = edgeGraph.ClosestVertex(station.front.transform.position);
-        rootVectors.Add(rootVertex);
-        var vertexPath = Instantiate(vertexPathPrefab, transform);
-        vertexPaths.Add(vertexPath);
-        vertexPath.Init(this, rootVertex, edgeGraph.FindEdge(frontVertex, rootVertex));
-        stations.Add(station);
-        station.rootVertex = rootVertex;
+        switch (station.type)
+        {
+            case Station.Type.FARM:
+            {
+                var rootVertex = edgeGraph.ClosestVertex(station.transform.position);
+
+                onAvailableEdgesChanged?.Invoke();
+                var frontVertex = edgeGraph.ClosestVertex(station.front.transform.position);
+                rootVectors.Add(rootVertex);
+                var vertexPath = Instantiate(vertexPathPrefab, transform);
+                vertexPaths.Add(vertexPath);
+                vertexPath.Init(this, rootVertex, edgeGraph.FindEdge(frontVertex, rootVertex));
+                stations.Add(station);
+                station.rootVertex = rootVertex;
+
+                break;
+            }
+            case Station.Type.TOWN:
+            {
+                var rootVertex = edgeGraph.ClosestVertex(station.transform.position);
+                var frontVertex = edgeGraph.ClosestVertex(station.front.transform.position);
+                RemoveAllEdgesExceptEdgeToward(rootVertex, frontVertex);
+                break;
+            }
+        }
+    }
+
+    private void RemoveAllEdgesExceptEdgeToward(Vector3 fromVertex, Vector3 toVertex)
+    {
+        edgeGraph.edges.RemoveAll(edge =>
+        {
+            var matchingDirectionResult = edge.fromVertex == fromVertex && edge.toVertex != toVertex;
+            var inverseDirectionResult = edge.toVertex == fromVertex && edge.fromVertex != toVertex;
+
+            return matchingDirectionResult || inverseDirectionResult;
+        });
     }
 
     private void Update()

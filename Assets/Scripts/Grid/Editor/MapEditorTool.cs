@@ -203,7 +203,14 @@ public class MapEditorTool : EditorTool
     {
         if (requiredIndex >= gridDataOverridesArray.arraySize)
         {
+            var oldArraySize = gridDataOverridesArray.arraySize;
             gridDataOverridesArray.arraySize = requiredIndex + 1;
+
+            foreach (var newElementIndex in Enumerable.Range(oldArraySize, gridDataOverridesArray.arraySize))
+            {
+                var newElement = gridDataOverridesArray.GetArrayElementAtIndex(newElementIndex);
+                newElement.FindPropertyRelative(nameof(GridData.QuadOverride.prefab)).objectReferenceValue = null;
+            }
         }
     }
 

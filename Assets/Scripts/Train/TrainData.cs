@@ -12,4 +12,11 @@ public class TrainData : ScriptableObject
 
     [Min(0)]
     public int numberOfCarriages = 3;
+
+    public string locomotiveAnimatorShownName = "show";
+    public string carriageAnimatorFilledName = "filled";
+
+    public float timeBetweenHidingLocomotiveAndLoadingCarriages = 0.1f;
+    public float timeBetweenLoadingCarriages = 0.1f;
+    public float timeBetweenShowingLocomotiveAndStartingMoving = 0.1f;
 }

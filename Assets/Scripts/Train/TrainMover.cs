@@ -161,6 +161,10 @@ public class TrainMover : MonoBehaviour
             {
                 trainRunningLeft = false;
                 trainDistance = 0;
+
+                PlaceTrainCarsAtStartOfPath(smoothPath);
+
+                yield return LoadCarriagesAndShowHeadLocomotive();
             }
             else if (!trainRunningLeft && trainDistance + TrainLength > smoothPath.totalDistance)
             {
@@ -168,18 +172,73 @@ public class TrainMover : MonoBehaviour
                 trainDistance = smoothPath.totalDistance - TrainLength;
                 CompletedTrip();
             }
-
-            PlaceTrainCar(tailLocomotive, trainDistance, smoothPath);
-
-            for (var carriageIndex = 0; carriageIndex < carriages.Count; ++carriageIndex)
+            else
             {
-                var carriage = carriages[carriageIndex];
-                PlaceTrainCar(carriage, trainDistance + trainData.carriageLength * (carriageIndex + 1), smoothPath);
+                PlaceTrainCarsAlongPath(smoothPath, trainDistance);
             }
 
-            PlaceTrainCar(headLocomotive, trainDistance + trainData.carriageLength * (carriages.Count + 1), smoothPath);
             yield return null;
         }
+    }
+
+    private void PlaceTrainCarsAtStartOfPath(SmoothPath smoothPath)
+    {
+        PlaceTrainCarsAlongPath(smoothPath, 0f);
+    }
+
+    private void PlaceTrainCarsAlongPath(SmoothPath smoothPath, float distanceAlongPath)
+    {
+        PlaceTrainCar(tailLocomotive, distanceAlongPath, smoothPath);
+        for (var carriageIndex = 0; carriageIndex < carriages.Count; ++carriageIndex)
+        {
+            var carriage = carriages[carriageIndex];
+            PlaceTrainCar(carriage, distanceAlongPath + trainData.carriageLength * (carriageIndex + 1), smoothPath);
+        }
+        PlaceTrainCar(headLocomotive, distanceAlongPath + trainData.carriageLength * (carriages.Count + 1), smoothPath);
+    }
+
+    private IEnumerator LoadCarriagesAndShowHeadLocomotive()
+    {
+        HideTailLocomotive();
+
+        yield return new WaitForSeconds(trainData.timeBetweenHidingLocomotiveAndLoadingCarriages);
+
+        foreach (var carriage in carriages)
+        {
+            LoadCarriage(carriage);
+            yield return new WaitForSeconds(trainData.timeBetweenLoadingCarriages);
+        }
+
+        ShowHeadLocomotive();
+
+        yield return new WaitForSeconds(trainData.timeBetweenShowingLocomotiveAndStartingMoving);
+    }
+
+    private void HideTailLocomotive()
+    {
+        SetLocomotiveShown(tailLocomotive, false);
+    }
+
+    private void ShowHeadLocomotive()
+    {
+        SetLocomotiveShown(headLocomotive, true);
+    }
+
+    private void SetLocomotiveShown(GameObject locomotive, bool shouldBeShown)
+    {
+        var animator = locomotive.GetComponent<Animator>();
+        animator.SetBool(trainData.locomotiveAnimatorShownName, shouldBeShown);
+    }
+
+    private void LoadCarriage(GameObject carriage)
+    {
+        SetCarriageFilled(carriage, true);
+    }
+
+    private void SetCarriageFilled(GameObject carriage, bool shouldBeFilled)
+    {
+        var animator = carriage.GetComponent<Animator>();
+        animator.SetBool(trainData.carriageAnimatorFilledName, shouldBeFilled);
     }
 
     private void PlaceTrainCar(GameObject trainCar, float distance, SmoothPath path)

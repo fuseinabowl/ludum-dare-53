@@ -16,3 +16,8 @@ MonoBehaviour:
   carriage: {fileID: 4263812648893780629, guid: eaab7781d7237e54bb80621647ee422d, type: 3}
   carriageLength: 0.7
   numberOfCarriages: 3
+  locomotiveAnimatorShownName: Shown
+  carriageAnimatorFilledName: Filled
+  timeBetweenHidingLocomotiveAndLoadingCarriages: 0.2
+  timeBetweenLoadingCarriages: 0.2
+  timeBetweenShowingLocomotiveAndStartingMoving: 0.2

@@ -12,5 +12,16 @@ public class TownStation : MonoBehaviour
     private void Start()
     {
         SingletonProvider.Get<VertexNetwork>().AddTownStation(this);
+        SingletonProvider.Get<TownStatuses>().RegisterTown(this);
+    }
+
+    public void OnConnected()
+    {
+        SingletonProvider.Get<TownStatuses>().OnTownIsFedChanged(this, true);
+    }
+
+    public void OnDisconnected()
+    {
+        SingletonProvider.Get<TownStatuses>().OnTownIsFedChanged(this, false);
     }
 }

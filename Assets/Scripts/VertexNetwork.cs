@@ -95,6 +95,11 @@ public class VertexNetwork : MonoBehaviour
         return towns.Any(town => town.rootVertex == vertex);
     }
 
+    public TownStation GetTownAt(Vector3 vertex)
+    {
+        return towns.First(town => town.rootVertex == vertex);
+    }
+
     private void RemoveAllEdgesExceptEdgeToward(Vector3 fromVertex, Vector3 toVertex)
     {
         edgeGraph.edges.RemoveAll(edge =>

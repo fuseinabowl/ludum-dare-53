@@ -179,6 +179,8 @@ public class VertexPath : MonoBehaviour
 
         if (IsComplete())
         {
+            var town = net.GetTownAt(LastEdge().toVertex);
+            town.OnDisconnected();
             fullTrackBroken?.Invoke();
         }
 
@@ -241,6 +243,8 @@ public class VertexPath : MonoBehaviour
 
     public void NotifyCompleted()
     {
+        var town = net.GetTownAt(LastEdge().toVertex);
+        town.OnConnected();
         fullTrackEstablished?.Invoke();
         StartCoroutine(TrackCompletedAnimation());
     }

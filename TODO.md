@@ -1,13 +1,12 @@
 # MUST
 
-- Preview track deletion
-- Preview track addition
-- Fix track split and rejoin bug
-- Obstacles
+- Critical bugs to fix:
+    - can build out the back of the track when they're joined
+- Preview track deletion SOMEHOW
+- Remove 2-way track building
 - Reward feedback for completing a road
 - SFX. Critical:
     - Track placed and deleted
-    - Track completed
     - Delivery "buy"
     - Delivery "sell"
     - Train chugging
@@ -19,17 +18,17 @@
 - Music. Critical:
     - A loop
 - Ambience. Critical:
-    - Birds. Wind. Anything. I have all of these sounds already do just need to grab them.
+    - Birds. Wind. Anything. I have all of these sounds from past jams so just need to grab them.
 - Camera. Critical:
-    - make it faster, constants better... needs tuning based on the level size.
+    - make it move faster, constants better... needs tuning based on the level size, when complete. this should only take a minute or so.
 - Modeling. Critical:
-    - train
     - 2 station types, can tell them apart somehow
 - Graphicsy stuff. Critical:
-    - make it not look so flat
+    - none?
 
 ### MAYBE
 
+- Preview track addition/deletion NICELY
 - SOME kind of tutorial thing
 - Saw an adjacent edge bug where it wasn't generating until later. adjacent stations
 - Smooth train movement
@@ -45,9 +44,10 @@
 - Modeling. non-critical:
     - nice little model placement around villages and farms
 - Graphicsy stuff. non-critical:
+    - make it not look so flat
     - placement arrow moves a teeny tiny bit (bounces) - not distraction, but obvious that it can be interacted with
     - train smoke or other particles
-    - Track placement animation.
     - lighting
     - make tiles not all completely flat, so that the lighting bounces off them a bit differently??? somehow.
     - more particles, baby
+    - make it POP

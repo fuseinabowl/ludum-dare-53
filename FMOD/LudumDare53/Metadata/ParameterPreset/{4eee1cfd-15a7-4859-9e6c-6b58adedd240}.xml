@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="ParameterPreset" id="{4eee1cfd-15a7-4859-9e6c-6b58adedd240}">
+		<property name="name">
+			<value>SpawnTotal</value>
+		</property>
+		<relationship name="folder">
+			<destination>{f7be2f90-be5a-441e-ac54-b2419b1fcf1d}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{f615db96-fc3f-4ced-baab-30ab688715de}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{f615db96-fc3f-4ced-baab-30ab688715de}">
+		<property name="parameterType">
+			<value>1</value>
+		</property>
+		<property name="minimum">
+			<value>1</value>
+		</property>
+		<property name="maximum">
+			<value>31</value>
+		</property>
+		<property name="initialValue">
+			<value>1</value>
+		</property>
+	</object>
+</objects>

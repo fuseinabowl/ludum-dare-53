@@ -281,6 +281,7 @@ public class VertexPath : MonoBehaviour
     public void NotifyCompleted()
     {
         fullTrackEstablished?.Invoke();
+        StartCoroutine(TrackCompletedAnimation());
     }
 
     private bool IsValidPath()
@@ -300,6 +301,19 @@ public class VertexPath : MonoBehaviour
         {
             var edge = edgeData.edge;
             Gizmos.DrawLine(edge.left, edge.right);
+        }
+    }
+
+    private IEnumerator TrackCompletedAnimation() {
+        var sfx = SingletonProvider.Get<SFX>();
+        sfx.trackComplete.Play();
+        sfx.trackComplete.SetParameter("SpawnRate", 0.1f / net.trackCompletedAnimPeriod);
+        sfx.trackComplete.SetParameter("SpawnTotal", edges.Count - 2);
+
+        for (int i = 1; i < edges.Count - 1; i++) {
+            var edge = edges[i];
+            edge.tracksObject.GetComponent<TransformAnimator>().Animate();
+            yield return new WaitForSeconds(net.trackCompletedAnimPeriod);
         }
     }
 }

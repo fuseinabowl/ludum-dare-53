@@ -118,7 +118,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 90
+  field of view: 70
   orthographic: 0
   orthographic size: 7
   m_Depth: -1
@@ -197,7 +197,7 @@ MonoBehaviour:
   minOrthoZoom: 4
   maxOrthoZoom: 10
   minY: 3
-  maxY: 40
+  maxY: 50
   minXSkew: 45
   maxXSkew: 90
 --- !u!114 &5360432616395567245

@@ -15,7 +15,8 @@ public class TrainMover : MonoBehaviour
     [SerializeField]
     private TrainData trainData;
 
-    private GameObject locomotive;
+    private GameObject headLocomotive;
+    private GameObject tailLocomotive;
     private List<GameObject> carriages = new List<GameObject>();
     private float trainDistance;
     private bool trainRunning;
@@ -34,7 +35,8 @@ public class TrainMover : MonoBehaviour
 
     private void OnFullTrackBroken()
     {
-        GameObject.Destroy(locomotive);
+        GameObject.Destroy(headLocomotive);
+        GameObject.Destroy(tailLocomotive);
         foreach (var carriage in carriages)
         {
             GameObject.Destroy(carriage);
@@ -47,7 +49,7 @@ public class TrainMover : MonoBehaviour
     {
         var smoothPath = CalculateSmoothPath();
         SpawnTrain();
-        locomotive.transform.position = path.vertices[0];
+        headLocomotive.transform.position = path.vertices[0];
         trainDistance = 0;
         trainRunning = true;
         trainRunningLeft = false;
@@ -127,16 +129,20 @@ public class TrainMover : MonoBehaviour
 
     private void SpawnTrain()
     {
-        locomotive = GameObject.Instantiate(trainData.locomotive, transform);
-        locomotive.transform.position = path.vertices[0];
+        headLocomotive = GameObject.Instantiate(trainData.locomotive, transform);
+        headLocomotive.transform.position = path.vertices[0];
 
         for (var carriageIndex = 0; carriageIndex < trainData.numberOfCarriages; ++carriageIndex)
         {
             carriages.Add(GameObject.Instantiate(trainData.carriage, transform));
         }
+
+        tailLocomotive = GameObject.Instantiate(trainData.locomotive, transform);
+        tailLocomotive.transform.position = path.vertices[0];
+        tailLocomotive.transform.localScale = new Vector3(-1f, 1f, -1f);
     }
 
-    private float TrainLength => trainData.carriageLength * (trainData.numberOfCarriages + 1);
+    private float TrainLength => trainData.carriageLength * (trainData.numberOfCarriages + 2);
 
     private IEnumerator MoveCoroutine(SmoothPath smoothPath)
     {
@@ -163,13 +169,15 @@ public class TrainMover : MonoBehaviour
                 CompletedTrip();
             }
 
+            PlaceTrainCar(tailLocomotive, trainDistance, smoothPath);
+
             for (var carriageIndex = 0; carriageIndex < carriages.Count; ++carriageIndex)
             {
                 var carriage = carriages[carriageIndex];
-                PlaceTrainCar(carriage, trainDistance + trainData.carriageLength * carriageIndex, smoothPath);
+                PlaceTrainCar(carriage, trainDistance + trainData.carriageLength * (carriageIndex + 1), smoothPath);
             }
 
-            PlaceTrainCar(locomotive, trainDistance + trainData.carriageLength * carriages.Count, smoothPath);
+            PlaceTrainCar(headLocomotive, trainDistance + trainData.carriageLength * (carriages.Count + 1), smoothPath);
             yield return null;
         }
     }

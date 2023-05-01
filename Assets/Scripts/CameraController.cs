@@ -14,8 +14,10 @@ public class CameraController : MonoBehaviour
     public float zoomSpeed = 10f;
     public float minOrthoZoom = 4;
     public float maxOrthoZoom = 10;
-    public float minFOVZoom = 50;
-    public float maxFOVZoom = 80;
+    public float minY = 3f;
+    public float maxY = 60f;
+    public float minXSkew = 40;
+    public float maxXSkew = 75;
 
     private Camera cam;
     private Vector3 prevPosition;
@@ -30,7 +32,7 @@ public class CameraController : MonoBehaviour
     {
         prevPosition = transform.position;
         cam.orthographicSize = (minOrthoZoom + maxOrthoZoom) / 2f;
-        SafeApplyFieldOfView(cam.fieldOfView);
+        SafeApplyCameraZoom(transform.position.y);
         UpdateLookTarget();
     }
 
@@ -79,16 +81,18 @@ public class CameraController : MonoBehaviour
             maxOrthoZoom
         );
 
-        SafeApplyFieldOfView(cam.fieldOfView + zoomInput * zoomSpeed * 10f * Time.deltaTime);
+        SafeApplyCameraZoom(transform.position.y + zoomInput * zoomSpeed * Time.deltaTime);
     }
 
-    private void SafeApplyFieldOfView(float fov)
+    private void SafeApplyCameraZoom(float y)
     {
-        cam.fieldOfView = Mathf.Clamp(
-            fov,
-            minFOVZoom,
-            maxFOVZoom
+        transform.position = Vectors.Y(Mathf.Clamp(y, minY, maxY), transform.position);
+        var rot = transform.rotation.eulerAngles;
+        rot = Vectors.X(
+            Mathf.SmoothStep(minXSkew, maxXSkew, (transform.position.y - minY) / (maxY - minY)),
+            rot
         );
+        transform.rotation = Quaternion.Euler(rot);
     }
 
     private Vector3 InputPan()
@@ -108,19 +112,25 @@ public class CameraController : MonoBehaviour
 
     private float InputRotation()
     {
-        return CameraPlayerPrefs.CameraRotationMultiplier * (Input.GetKey(KeyCode.Q)
-            ? -1
-            : Input.GetKey(KeyCode.E)
-                ? 1
-                : 0);
+        return CameraPlayerPrefs.CameraRotationMultiplier
+            * (
+                Input.GetKey(KeyCode.Q)
+                    ? -1
+                    : Input.GetKey(KeyCode.E)
+                        ? 1
+                        : 0
+            );
     }
 
     private float InputZoom()
     {
-        return CameraPlayerPrefs.CameraZoomMultiplier * (Input.GetKey(KeyCode.Z)
-            ? -1
-            : Input.GetKey(KeyCode.C)
-                ? 1
-                : 0);
+        return CameraPlayerPrefs.CameraZoomMultiplier
+            * (
+                Input.GetKey(KeyCode.Z)
+                    ? -1
+                    : Input.GetKey(KeyCode.C)
+                        ? 1
+                        : 0
+            );
     }
 }

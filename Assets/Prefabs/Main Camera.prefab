@@ -193,11 +193,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   panSpeed: 10
   rotationSpeed: 90
-  zoomSpeed: 10
+  zoomSpeed: 13
   minOrthoZoom: 4
   maxOrthoZoom: 10
-  minFOVZoom: 40
-  maxFOVZoom: 100
+  minY: 3
+  maxY: 40
+  minXSkew: 45
+  maxXSkew: 90
 --- !u!114 &5360432616395567245
 MonoBehaviour:
   m_ObjectHideFlags: 0

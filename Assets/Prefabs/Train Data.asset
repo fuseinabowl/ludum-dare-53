@@ -18,6 +18,6 @@ MonoBehaviour:
   numberOfCarriages: 3
   locomotiveAnimatorShownName: Shown
   carriageAnimatorFilledName: Filled
-  timeBetweenHidingLocomotiveAndLoadingCarriages: 0.2
+  timeBetweenHidingLocomotiveAndLoadingCarriages: 0.35
   timeBetweenLoadingCarriages: 0.2
   timeBetweenShowingLocomotiveAndStartingMoving: 0.2

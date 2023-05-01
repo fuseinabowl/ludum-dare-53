@@ -1,59 +1,53 @@
-# Tweaks
+# MUST
 
-- Get the track grid size to be ~1 unity dimension
+- Preview track deletion
+- Preview track addition
+- Fix track split and rejoin bug
+- Obstacles
+- Reward feedback for completing a road
+- SFX. Critical:
+    - Track placed and deleted
+    - Track completed
+    - Delivery "buy"
+    - Delivery "sell"
+    - Train chugging
+- Level design. Critical:
+    - Decide on final layout: grid size and layouts
+    - 10 routes
+- UI canvas shows the number of tracks completed
+- SOME kind of "win" feedback. it can be anything! Just a popup that says "congrats :-)" and then a "keep playing" button
+- Music. Critical:
+    - A loop
+- Ambience. Critical:
+    - Birds. Wind. Anything. I have all of these sounds already do just need to grab them.
+- Camera. Critical:
+    - make it faster, constants better... needs tuning based on the level size.
+- Modeling. Critical:
+    - train
+    - 2 station types, can tell them apart somehow
+- Graphicsy stuff. Critical:
+    - make it not look so flat
 
-# Track building
+### MAYBE
 
-- Only allow connecting "roots" of different types. Currently villages can be connected to villages and farms can be connected to farms.
-- Bridges
-
-# Level building
-
-- I think random world would be really really really nice to add some variety. we have the ability to generate these interesting tiled levels
-- Can have a difficulty mode which generates more obstacles.
-- Use FairRandom to generate a distribution of obstacles (houses, unpassable terrain) and villages and stuff
-- Rivers? (hard to randomly generate, but would provide a difficulty spike)
-- Multiple tiers of farms
-- Quarries?
-
-# Train moving
-
-- Smoothing at ends aka accelleration
-
-# Economy
-
-- Get money when train arrives
-- Get stone when train from quarry arrives
-- Placing tracks costs money
-- Placing bridges costs stone + money
-- Upgradeable trains - speed, larger loads
-
-# Gameify it
-
-- Village happiness meter
-- Village population increases but needs more food
-- Efficiency meter
-- Parts of map are gated on having bridges
-
-# Glue
-
-- Tutorial flow like prompts (may want other things like a tutorial fog)
-- HUD
-- Menus
-
-# Fun stuff
-
-- Day/night cycle
-- Weather cycle
-
-# Graphics
-
-- Models, animations
-- particles
-- terrain textures
-- transitions
-
-# Sound
-
-- Music
-- Effects
+- SOME kind of tutorial thing
+- Saw an adjacent edge bug where it wasn't generating until later. adjacent stations
+- Smooth train movement
+- SFX non-critical:
+    - Train movement
+- Ambience non-critical:
+    - Town ambience when zoomed in
+- Camera
+    - mouse controls
+    - zoom affects the x angle
+- Level design. Non-critical:
+    - As many routes as possible!!
+- Modeling. non-critical:
+    - nice little model placement around villages and farms
+- Graphicsy stuff. non-critical:
+    - placement arrow moves a teeny tiny bit (bounces) - not distraction, but obvious that it can be interacted with
+    - train smoke or other particles
+    - Track placement animation.
+    - lighting
+    - make tiles not all completely flat, so that the lighting bounces off them a bit differently??? somehow.
+    - more particles, baby

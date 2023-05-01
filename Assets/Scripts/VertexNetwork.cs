@@ -8,6 +8,7 @@ public class VertexNetwork : MonoBehaviour
     [Header("Config")]
     public float travelerScale = 1f;
     public float minEdgeAngle = 90f;
+    public bool triIsPassable = false;
 
     [Header("Objects")]
     public VertexPath vertexPathPrefab;
@@ -171,13 +172,18 @@ public class VertexNetwork : MonoBehaviour
 
         for (int i = 0; i < adjacentEdges.Count; i++)
         {
-            if (
-                !lastEdgeNonDirectional.Equals(Lists.Circ(adjacentEdges, i - 1))
-                && !lastEdgeNonDirectional.Equals(adjacentEdges[i])
-                && !lastEdgeNonDirectional.Equals(Lists.Circ(adjacentEdges, i + 1))
-            )
+            if (!lastEdgeNonDirectional.Equals(adjacentEdges[i]))
             {
-                connectableEdges.Add(adjacentEdges[i]);
+                if (
+                    (adjacentEdges.Count == 3 && triIsPassable)
+                    || (
+                        !lastEdgeNonDirectional.Equals(Lists.Circ(adjacentEdges, i - 1))
+                        && !lastEdgeNonDirectional.Equals(Lists.Circ(adjacentEdges, i + 1))
+                    )
+                )
+                {
+                    connectableEdges.Add(adjacentEdges[i]);
+                }
             }
         }
 

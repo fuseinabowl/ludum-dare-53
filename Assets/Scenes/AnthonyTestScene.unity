@@ -448,7 +448,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   travelerScale: 0.2
   triIsPassable: 1
-  trackCompletedAnimPeriod: 0.133
+  trackCompletedAnimPeriod: 0.1
   vertexPathPrefab: {fileID: 8314416547386774449, guid: 7228ecdfb28f349fbb56d13894439cd4, type: 3}
   edgeModelPrefab: {fileID: 353253216238958770, guid: d33a651214683c84186651ba6c34be6c, type: 3}
   trainPrefab: {fileID: 4263812648893780629, guid: d56bd571a39374b098ccfcb53a2ee901, type: 3}

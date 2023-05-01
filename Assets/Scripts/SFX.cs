@@ -6,6 +6,7 @@ public class SFX : MonoBehaviour
 {
     public FMODUnity.StudioEventEmitter trackComplete;
     public FMODUnity.StudioEventEmitter trackPlaced;
+    public FMODUnity.StudioEventEmitter trackDeleted;
 
     public static SFX singleton {
         get {

@@ -6,7 +6,6 @@
 - Remove 2-way track building
 - Reward feedback for completing a road
 - SFX. Critical:
-    - Track placed and deleted
     - Delivery "buy"
     - Delivery "sell"
     - Train chugging

@@ -84,7 +84,7 @@ public class VertexNetwork : MonoBehaviour
 
         var rootVertex = edgeGraph.ClosestVertex(station.transform.position);
         var frontVertex = edgeGraph.ClosestVertex(station.front.transform.position);
-        RemoveAllEdgesExceptEdgeToward(rootVertex, frontVertex);
+        BlockAllEdgesExceptEdgeToward(rootVertex, frontVertex);
 
         towns.Add(station);
         station.rootVertex = rootVertex;
@@ -100,15 +100,18 @@ public class VertexNetwork : MonoBehaviour
         return towns.First(town => town.rootVertex == vertex);
     }
 
-    private void RemoveAllEdgesExceptEdgeToward(Vector3 fromVertex, Vector3 toVertex)
+    private void BlockAllEdgesExceptEdgeToward(Vector3 fromVertex, Vector3 toVertex)
     {
-        edgeGraph.edges.RemoveAll(edge =>
+        foreach (var edge in edgeGraph.edges.Where(edge =>
         {
             var matchingDirectionResult = edge.fromVertex == fromVertex && edge.toVertex != toVertex;
             var inverseDirectionResult = edge.toVertex == fromVertex && edge.fromVertex != toVertex;
 
             return matchingDirectionResult || inverseDirectionResult;
-        });
+        }))
+        {
+            edge.blocked = true;
+        }
     }
 
     private void Update()
@@ -364,5 +367,11 @@ public class VertexNetwork : MonoBehaviour
     {
         Assert.IsNotNull(edgeGraph);
         edgeGraph.RemoveClosestVertex(pos);
+    }
+
+    public void BlockClosestVertex(Vector3 pos)
+    {
+        Assert.IsNotNull(edgeGraph);
+        edgeGraph.BlockClosestVertex(pos);
     }
 }

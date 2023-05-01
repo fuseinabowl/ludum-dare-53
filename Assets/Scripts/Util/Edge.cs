@@ -217,4 +217,6 @@ public class Edge : IEquatable<Edge>, IComparable<Edge>
     {
         return string.Format("Edge(l={0},r={1},d={2})", left, right, direction);
     }
+
+    public bool blocked;
 }

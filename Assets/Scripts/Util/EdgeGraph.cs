@@ -84,6 +84,27 @@ public class EdgeGraph
         return findEdge;
     }
 
+    public void BlockClosestVertex(Vector3 target)
+    {
+        if (vertices == null || vertices.Count == 0)
+        {
+            return;
+        }
+
+        var closestVertex = ClosestVertex(target);
+
+        foreach (var edge in edges)
+        {
+            if (
+                edge.left == closestVertex
+                || edge.right == closestVertex
+            )
+            {
+                edge.blocked = true;
+            }
+        }
+    }
+
     public void RemoveClosestVertex(Vector3 target)
     {
         if (vertices == null || vertices.Count == 0)

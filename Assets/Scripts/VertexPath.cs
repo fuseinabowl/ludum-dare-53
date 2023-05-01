@@ -87,6 +87,11 @@ public class VertexPath : MonoBehaviour
             return false;
         }
 
+        if (edge.blocked)
+        {
+            return false;
+        }
+
         var lastVertex = LastVertex();
         if (edge.left != lastVertex && edge.right != lastVertex)
         {

@@ -9,7 +9,7 @@ public class VertexObstacle : MonoBehaviour
     private void Start()
     {
         var net = SingletonProvider.Get<VertexNetwork>();
-        net.RemoveClosestVertex(transform.position);
+        net.BlockClosestVertex(transform.position);
     }
 
     private void OnDrawGizmos()

@@ -168,10 +168,10 @@ public class IrregularGrid : MonoBehaviour
 
         var meshData = triangleGrid.ToMeshData();
 
-        var seededRng = new System.Random(gridData.seed);
+        UnityEngine.Random.InitState(gridData.seed);
 
         // change this to make a pairing that doesn't generate tris
-        meshData = meshData.RandomPairing(() => seededRng.NextDouble());
+        meshData = meshData.RandomPairing(() => UnityEngine.Random.value);
 
         meshData = ConwayOperators.Ortho(meshData);
 

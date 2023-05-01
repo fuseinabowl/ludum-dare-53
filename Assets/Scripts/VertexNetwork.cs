@@ -8,6 +8,7 @@ public class VertexNetwork : MonoBehaviour
     [Header("Config")]
     public float travelerScale = 1f;
     public float minEdgeAngle = 90f;
+    public bool triIsPassable = false;
 
     [Header("Objects")]
     public VertexPath vertexPathPrefab;
@@ -37,6 +38,7 @@ public class VertexNetwork : MonoBehaviour
     private Vector3 mouseHit;
     private List<Station> stations = new List<Station>();
     private List<Station> pendingStations = new List<Station>();
+    private List<Vector3> pendingRemoveMidpointEdges = new List<Vector3>();
 
     public void SetEdgeGraph(EdgeGraph eg)
     {
@@ -46,6 +48,10 @@ public class VertexNetwork : MonoBehaviour
             InitStation(pendingStation);
         }
         pendingStations.Clear();
+        foreach (var mid in pendingRemoveMidpointEdges) {
+            edgeGraph.RemoveMidpointEdges(mid);
+        }
+        pendingRemoveMidpointEdges.Clear();
     }
 
     public void AddStation(Station station)
@@ -171,13 +177,18 @@ public class VertexNetwork : MonoBehaviour
 
         for (int i = 0; i < adjacentEdges.Count; i++)
         {
-            if (
-                !lastEdgeNonDirectional.Equals(Lists.Circ(adjacentEdges, i - 1))
-                && !lastEdgeNonDirectional.Equals(adjacentEdges[i])
-                && !lastEdgeNonDirectional.Equals(Lists.Circ(adjacentEdges, i + 1))
-            )
+            if (!lastEdgeNonDirectional.Equals(adjacentEdges[i]))
             {
-                connectableEdges.Add(adjacentEdges[i]);
+                if (
+                    (adjacentEdges.Count == 3 && triIsPassable)
+                    || (
+                        !lastEdgeNonDirectional.Equals(Lists.Circ(adjacentEdges, i - 1))
+                        && !lastEdgeNonDirectional.Equals(Lists.Circ(adjacentEdges, i + 1))
+                    )
+                )
+                {
+                    connectableEdges.Add(adjacentEdges[i]);
+                }
             }
         }
 
@@ -371,6 +382,15 @@ public class VertexNetwork : MonoBehaviour
                 mouseHit + travelerScale / 10f * Vector3.back,
                 mouseHit + travelerScale / 10f * Vector3.forward
             );
+        }
+    }
+
+    public void RemoveMidpointEdges(Vector3 pos)
+    {
+        if (edgeGraph != null) {
+            edgeGraph.RemoveMidpointEdges(pos);
+        } else {
+            pendingRemoveMidpointEdges.Add(pos);
         }
     }
 }

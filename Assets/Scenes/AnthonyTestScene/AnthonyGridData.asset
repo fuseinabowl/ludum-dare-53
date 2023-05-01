@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: AnthonyGridData
   m_EditorClassIdentifier: 
   defaultSpawnedModel: {fileID: 6817244548919748188, guid: e268ddfd56e632042b2422a64f7bd579, type: 3}
-  seed: 0
-  mapSize: 4
-  cellSide: 2
-  relaxSize: 0.6
+  seed: 5
+  mapSize: 20
+  cellSide: 5
+  relaxSize: 2
   matchingOrderPrefabOverrides:
   - prefab: {fileID: 0}
     rotationIndex: 0

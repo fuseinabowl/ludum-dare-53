@@ -45,17 +45,20 @@ public class HighlightManager : MonoBehaviour
         {
             foreach (var edge in network.ConnectableEdges(path))
             {
-                var newHighlight = GameObject.Instantiate(highlightPrefab);
+                if (path.CanConnect(edge))
+                {
+                    var newHighlight = GameObject.Instantiate(highlightPrefab);
 
-                newHighlight.transform.localScale = new Vector3(
-                    1f,
-                    1f,
-                    edge.length
-                );
-                newHighlight.transform.position = edge.middle;
-                newHighlight.transform.rotation = Quaternion.LookRotation(path.LastVertex() - edge.middle, Vector3.up);
+                    newHighlight.transform.localScale = new Vector3(
+                        1f,
+                        1f,
+                        edge.length
+                    );
+                    newHighlight.transform.position = edge.middle;
+                    newHighlight.transform.rotation = Quaternion.LookRotation(path.LastVertex() - edge.middle, Vector3.up);
 
-                highlights.Add(newHighlight);
+                    highlights.Add(newHighlight);
+                }
             }
         }
     }

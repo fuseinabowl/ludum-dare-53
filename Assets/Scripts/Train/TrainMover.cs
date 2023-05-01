@@ -167,6 +167,9 @@ public class TrainMover : MonoBehaviour
 
     private IEnumerator MoveCoroutine(SmoothPath smoothPath)
     {
+        PlaceTrainCarsAtStartOfPath(smoothPath);
+        yield return LoadCarriagesAndShowHeadLocomotive();
+
         while (trainRunning)
         {
             if (trainRunningLeft)

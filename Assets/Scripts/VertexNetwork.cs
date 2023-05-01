@@ -111,7 +111,7 @@ public class VertexNetwork : MonoBehaviour
 
         if (connectPath == null)
         {
-            Debug.LogError("couldn't find a path to connect the edge to!!!!!!!");
+            Debug.LogError("couldn't find a path to connect the edge to");
             return;
         }
 

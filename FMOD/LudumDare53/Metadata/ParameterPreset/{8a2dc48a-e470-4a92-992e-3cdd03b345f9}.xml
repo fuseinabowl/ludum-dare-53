@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="ParameterPreset" id="{8a2dc48a-e470-4a92-992e-3cdd03b345f9}">
+		<property name="name">
+			<value>ChugSpeed</value>
+		</property>
+		<relationship name="folder">
+			<destination>{f7be2f90-be5a-441e-ac54-b2419b1fcf1d}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{c5882315-2cdb-4f3d-be65-06f32cfa0937}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{c5882315-2cdb-4f3d-be65-06f32cfa0937}">
+		<property name="initialValue">
+			<value>0</value>
+		</property>
+	</object>
+</objects>

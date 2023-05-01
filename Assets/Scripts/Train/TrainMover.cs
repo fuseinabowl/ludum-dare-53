@@ -72,7 +72,9 @@ public class TrainMover : MonoBehaviour
 
     private SmoothPath CalculateSmoothPath()
     {
-        var result = new SmoothPathSegment[(path.edges.Count - 1) * smoothSegmentsPerPathSegment + 1];
+        var result = new SmoothPathSegment[
+            (path.edges.Count - 1) * smoothSegmentsPerPathSegment + 1
+        ];
 
         var cumulativeDistance = 0f;
 
@@ -90,19 +92,23 @@ public class TrainMover : MonoBehaviour
         }
 
         var finalEdge = path.edges[path.edges.Count - 1].edge;
-        result[(path.edges.Count - 1) * smoothSegmentsPerPathSegment] = new SmoothPathSegment{
+        result[(path.edges.Count - 1) * smoothSegmentsPerPathSegment] = new SmoothPathSegment
+        {
             startPosition = finalEdge.middle,
             facingDirection = (finalEdge.toVertex - finalEdge.middle).normalized,
             length = 0f,
         };
 
-        return new SmoothPath{
-            path = result,
-            totalDistance = cumulativeDistance,
-        };
+        return new SmoothPath { path = result, totalDistance = cumulativeDistance, };
     }
 
-    private static void SetSmoothPathSubArray(SmoothPathSegment[] outputPaths, int startIndex, int segments, Vector3 start, Vector3 control, Vector3 end,
+    private static void SetSmoothPathSubArray(
+        SmoothPathSegment[] outputPaths,
+        int startIndex,
+        int segments,
+        Vector3 start,
+        Vector3 control,
+        Vector3 end,
         ref float cumulativeDistance
     )
     {
@@ -113,12 +119,17 @@ public class TrainMover : MonoBehaviour
             var inSegmentStartProportion = (float)smoothPathInnerIndex / segments;
             var inSegmentEndProportion = (float)(smoothPathInnerIndex + 1) / segments;
 
-            var segmentStartPosition = Bezier.Calculate(start, control, end, inSegmentStartProportion).point;
-            var segmentEndPosition = Bezier.Calculate(start, control, end, inSegmentEndProportion).point;
+            var segmentStartPosition = Bezier
+                .Calculate(start, control, end, inSegmentStartProportion)
+                .point;
+            var segmentEndPosition = Bezier
+                .Calculate(start, control, end, inSegmentEndProportion)
+                .point;
 
             var distance = (segmentEndPosition - segmentStartPosition).magnitude;
 
-            outputPaths[outputIndex] = new SmoothPathSegment{
+            outputPaths[outputIndex] = new SmoothPathSegment
+            {
                 startPosition = segmentStartPosition,
                 facingDirection = (segmentEndPosition - segmentStartPosition).normalized, // not accurate, should be from the previous start to this end
                 length = distance,
@@ -203,16 +214,28 @@ public class TrainMover : MonoBehaviour
         for (var carriageIndex = 0; carriageIndex < carriages.Count; ++carriageIndex)
         {
             var carriage = carriages[carriageIndex];
-            PlaceTrainCar(carriage, distanceAlongPath + trainData.carriageLength * (carriageIndex + 1), smoothPath);
+            PlaceTrainCar(
+                carriage,
+                distanceAlongPath + trainData.carriageLength * (carriageIndex + 1),
+                smoothPath
+            );
         }
-        PlaceTrainCar(headLocomotive, distanceAlongPath + trainData.carriageLength * (carriages.Count + 1), smoothPath);
+        PlaceTrainCar(
+            headLocomotive,
+            distanceAlongPath + trainData.carriageLength * (carriages.Count + 1),
+            smoothPath
+        );
     }
 
     private IEnumerator LoadCarriagesAndShowHeadLocomotive()
     {
+        headLocomotive.GetComponent<LocomotiveController>().DidPause();
+
         HideTailLocomotive();
 
         yield return new WaitForSeconds(trainData.timeBetweenHidingLocomotiveAndLoadingCarriages);
+
+        headLocomotive.GetComponent<LocomotiveController>().DidLoad();
 
         foreach (var carriage in carriages)
         {
@@ -223,13 +246,19 @@ public class TrainMover : MonoBehaviour
         ShowHeadLocomotive();
 
         yield return new WaitForSeconds(trainData.timeBetweenShowingLocomotiveAndStartingMoving);
+
+        headLocomotive.GetComponent<LocomotiveController>().DidResume();
     }
 
     private IEnumerator UnloadCarriagesAndShowTailLocomotive()
     {
+        headLocomotive.GetComponent<LocomotiveController>().DidPause();
+
         HideHeadLocomotive();
 
         yield return new WaitForSeconds(trainData.timeBetweenHidingLocomotiveAndLoadingCarriages);
+
+        headLocomotive.GetComponent<LocomotiveController>().DidUnload();
 
         foreach (var carriage in Enumerable.Reverse(carriages))
         {
@@ -240,6 +269,8 @@ public class TrainMover : MonoBehaviour
         ShowTailLocomotive();
 
         yield return new WaitForSeconds(trainData.timeBetweenShowingLocomotiveAndStartingMoving);
+
+        headLocomotive.GetComponent<LocomotiveController>().DidResume();
     }
 
     private void HideTailLocomotive()
@@ -296,22 +327,34 @@ public class TrainMover : MonoBehaviour
             if (remainingDistance <= segment.length)
             {
                 var proportionThroughThisSegment = remainingDistance / segment.length;
-                trainCar.transform.position = Vector3.Lerp(segment.startPosition, nextSegment.startPosition, proportionThroughThisSegment);
-                var facingDirection = Vector3.Lerp(segment.facingDirection, nextSegment.facingDirection, proportionThroughThisSegment);
+                trainCar.transform.position = Vector3.Lerp(
+                    segment.startPosition,
+                    nextSegment.startPosition,
+                    proportionThroughThisSegment
+                );
+                var facingDirection = Vector3.Lerp(
+                    segment.facingDirection,
+                    nextSegment.facingDirection,
+                    proportionThroughThisSegment
+                );
                 trainCar.transform.rotation = Quaternion.LookRotation(facingDirection, Vector3.up);
                 return;
             }
             remainingDistance -= segment.length;
         }
 
-        Assert.IsTrue(remainingDistance > 0f, "If edge distance is less than 0 it should have chosen one of the path segments");
+        Assert.IsTrue(
+            remainingDistance > 0f,
+            "If edge distance is less than 0 it should have chosen one of the path segments"
+        );
 
         var finalSegment = path.path[path.path.Length - 1];
         trainCar.transform.position = finalSegment.startPosition;
-        trainCar.transform.rotation = Quaternion.LookRotation(finalSegment.facingDirection, Vector3.up);
+        trainCar.transform.rotation = Quaternion.LookRotation(
+            finalSegment.facingDirection,
+            Vector3.up
+        );
     }
 
-    private void CompletedTrip()
-    {
-    }
+    private void CompletedTrip() { }
 }

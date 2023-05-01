@@ -198,17 +198,17 @@ MonoBehaviour:
   - prefab: {fileID: 0}
     rotationIndex: 0
     isFlippedAcrossX: 0
-  - prefab: {fileID: 6817244548919748188, guid: 82fff2477e2d8484694ec625931924ff, type: 3}
-    rotationIndex: 0
-    isFlippedAcrossX: 0
-  - prefab: {fileID: 0}
-    rotationIndex: 0
-    isFlippedAcrossX: 0
-  - prefab: {fileID: 0}
-    rotationIndex: 0
+  - prefab: {fileID: 6817244548919748188, guid: 9b09c069b1661a3498fe2db96dbc8888, type: 3}
+    rotationIndex: 2
     isFlippedAcrossX: 0
   - prefab: {fileID: 6817244548919748188, guid: 82fff2477e2d8484694ec625931924ff, type: 3}
-    rotationIndex: 0
+    rotationIndex: 3
+    isFlippedAcrossX: 0
+  - prefab: {fileID: 6817244548919748188, guid: 9b09c069b1661a3498fe2db96dbc8888, type: 3}
+    rotationIndex: 2
+    isFlippedAcrossX: 0
+  - prefab: {fileID: 6817244548919748188, guid: 82fff2477e2d8484694ec625931924ff, type: 3}
+    rotationIndex: 3
     isFlippedAcrossX: 0
   - prefab: {fileID: 0}
     rotationIndex: 0
@@ -310,7 +310,7 @@ MonoBehaviour:
     rotationIndex: 3
     isFlippedAcrossX: 0
   - prefab: {fileID: 0}
-    rotationIndex: 0
+    rotationIndex: 1
     isFlippedAcrossX: 0
   - prefab: {fileID: 0}
     rotationIndex: 0

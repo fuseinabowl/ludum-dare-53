@@ -533,8 +533,10 @@ MonoBehaviour:
     prefab: {fileID: 6817244548919748188, guid: f1cdc3ac48eb4864aa0bb5be52837b0c, type: 3}
   - isSelected: 0
     prefab: {fileID: 6817244548919748188, guid: 0170e8096d04acd43848c772bc50f431, type: 3}
-  - isSelected: 1
+  - isSelected: 0
     prefab: {fileID: 6817244548919748188, guid: 82fff2477e2d8484694ec625931924ff, type: 3}
+  - isSelected: 1
+    prefab: {fileID: 6817244548919748188, guid: 9b09c069b1661a3498fe2db96dbc8888, type: 3}
   relaxIterations: 1000
   relaxStrength: 0.1
   combinedMaterials:

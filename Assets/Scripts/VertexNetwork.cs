@@ -39,28 +39,16 @@ public class VertexNetwork : MonoBehaviour
     private bool canSplitClosestEdge = false;
     private Vector3 mouseHit;
     private List<Station> stations = new List<Station>();
-    private List<Station> pendingStations = new List<Station>();
 
     public void SetEdgeGraph(EdgeGraph eg)
     {
         edgeGraph = eg;
-        foreach (var pendingStation in pendingStations)
-        {
-            InitStation(pendingStation);
-        }
-        pendingStations.Clear();
     }
 
     public void AddStation(Station station)
     {
-        if (edgeGraph == null)
-        {
-            pendingStations.Add(station);
-        }
-        else
-        {
-            InitStation(station);
-        }
+        Assert.IsNotNull(edgeGraph);
+        InitStation(station);
     }
 
     private void InitStation(Station station)

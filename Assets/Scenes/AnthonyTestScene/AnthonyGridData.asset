@@ -3642,7 +3642,7 @@ MonoBehaviour:
   - prefab: {fileID: 0}
     rotationIndex: 0
     isFlippedAcrossX: 0
-  - prefab: {fileID: 0}
+  - prefab: {fileID: 6817244548919748188, guid: e268ddfd56e632042b2422a64f7bd579, type: 3}
     rotationIndex: 0
     isFlippedAcrossX: 0
   - prefab: {fileID: 0}
@@ -13059,10 +13059,10 @@ MonoBehaviour:
   - prefab: {fileID: 0}
     rotationIndex: 0
     isFlippedAcrossX: 0
-  - prefab: {fileID: 6817244548919748188, guid: 0170e8096d04acd43848c772bc50f431, type: 3}
+  - prefab: {fileID: 6817244548919748188, guid: e268ddfd56e632042b2422a64f7bd579, type: 3}
     rotationIndex: 1
     isFlippedAcrossX: 0
-  - prefab: {fileID: 6817244548919748188, guid: 0170e8096d04acd43848c772bc50f431, type: 3}
+  - prefab: {fileID: 6817244548919748188, guid: e268ddfd56e632042b2422a64f7bd579, type: 3}
     rotationIndex: 1
     isFlippedAcrossX: 0
   - prefab: {fileID: 6817244548919748188, guid: 664c3fb68577a6743b92aad435e7e017, type: 3}

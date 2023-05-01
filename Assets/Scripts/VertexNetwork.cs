@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 public class VertexNetwork : MonoBehaviour
 {
@@ -383,6 +384,12 @@ public class VertexNetwork : MonoBehaviour
                 mouseHit + travelerScale / 10f * Vector3.forward
             );
         }
+    }
+
+    public void RemoveClosestVertex(Vector3 pos)
+    {
+        Assert.IsNotNull(edgeGraph);
+        edgeGraph.RemoveClosestVertex(pos);
     }
 
     public void RemoveMidpointEdges(Vector3 pos)

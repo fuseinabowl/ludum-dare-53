@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class EdgeGraph
@@ -81,6 +82,31 @@ public class EdgeGraph
         }
         Debug.LogError("couldn't find an edge!!!!!! this is going to break in unexpected ways");
         return findEdge;
+    }
+
+    public void RemoveClosestVertex(Vector3 target)
+    {
+        if (vertices == null || vertices.Count == 0)
+        {
+            return;
+        }
+
+        var closestVertex = ClosestVertex(target);
+
+        var newEdges = new List<Edge>();
+        foreach (var edge in edges)
+        {
+            if (
+                edge.left != closestVertex
+                && edge.right != closestVertex
+            )
+            {
+                newEdges.Add(edge);
+            }
+        }
+
+        edges = newEdges;
+        RebuildVertices();
     }
 
     public void RemoveMidpointEdges(Vector3 mid)

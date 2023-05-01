@@ -146,7 +146,6 @@ GameObject:
   - component: {fileID: 3481378080806532256}
   - component: {fileID: 7544095612683852653}
   - component: {fileID: 6969863129957277642}
-  - component: {fileID: 5423823227378962528}
   m_Layer: 0
   m_Name: Obstacle Corner mound
   m_TagString: Untagged
@@ -223,18 +222,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &5423823227378962528
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6817244548919748188}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 288bcffa3a40b42128c13709a6ad2fa1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &7724865012271578081
 GameObject:
   m_ObjectHideFlags: 0

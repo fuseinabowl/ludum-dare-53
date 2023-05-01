@@ -276,8 +276,7 @@ public class VertexPath : MonoBehaviour
     public bool IsComplete()
     {
         return IsValidPath()
-            && net.rootVectors.Contains(vertices[0])
-            && net.rootVectors.Contains(LastVertex());
+            && net.IsTownAt(LastVertex());
     }
 
     public void NotifyCompleted()

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -24,9 +25,6 @@ public class VertexNetwork : MonoBehaviour
     [Header("Edge config")]
     public float moveSpeed = 1f;
 
-    [HideInInspector]
-    public HashSet<Vector3> rootVectors = new HashSet<Vector3>();
-
     public delegate void UpdateEvent();
     public UpdateEvent onAvailableEdgesChanged;
 
@@ -38,7 +36,8 @@ public class VertexNetwork : MonoBehaviour
     private bool canDeleteClosestEdge = false;
     private bool canSplitClosestEdge = false;
     private Vector3 mouseHit;
-    private List<Station> stations = new List<Station>();
+    private List<Station> farms = new List<Station>();
+    private List<Station> towns = new List<Station>();
 
     public void SetEdgeGraph(EdgeGraph eg)
     {
@@ -67,11 +66,10 @@ public class VertexNetwork : MonoBehaviour
 
                 onAvailableEdgesChanged?.Invoke();
                 var frontVertex = edgeGraph.ClosestVertex(station.front.transform.position);
-                rootVectors.Add(rootVertex);
                 var vertexPath = Instantiate(vertexPathPrefab, transform);
                 vertexPaths.Add(vertexPath);
                 vertexPath.Init(this, rootVertex, edgeGraph.FindEdge(frontVertex, rootVertex));
-                stations.Add(station);
+                farms.Add(station);
                 station.rootVertex = rootVertex;
 
                 break;
@@ -81,9 +79,18 @@ public class VertexNetwork : MonoBehaviour
                 var rootVertex = edgeGraph.ClosestVertex(station.transform.position);
                 var frontVertex = edgeGraph.ClosestVertex(station.front.transform.position);
                 RemoveAllEdgesExceptEdgeToward(rootVertex, frontVertex);
+
+                towns.Add(station);
+                station.rootVertex = rootVertex;
+
                 break;
             }
         }
+    }
+
+    public bool IsTownAt(Vector3 vertex)
+    {
+        return towns.Any(town => town.rootVertex == vertex);
     }
 
     private void RemoveAllEdgesExceptEdgeToward(Vector3 fromVertex, Vector3 toVertex)
@@ -258,7 +265,7 @@ public class VertexNetwork : MonoBehaviour
 
     private Station FindStartStation(VertexPath path)
     {
-        foreach (var station in stations)
+        foreach (var station in farms)
         {
             if (station.rootVertex == path.vertices[0])
             {

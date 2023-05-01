@@ -13383,7 +13383,7 @@ MonoBehaviour:
   - prefab: {fileID: 6817244548919748188, guid: 5eb9da1c924f8944fbe3598adc5d2abb, type: 3}
     rotationIndex: 2
     isFlippedAcrossX: 0
-  - prefab: {fileID: 6817244548919748188, guid: 1862fec90c9a977479e09215a6b2f970, type: 3}
+  - prefab: {fileID: 6817244548919748188, guid: e268ddfd56e632042b2422a64f7bd579, type: 3}
     rotationIndex: 1
     isFlippedAcrossX: 0
   - prefab: {fileID: 6817244548919748188, guid: 4c8c870e035ec294aa18cf8b4d3163f7, type: 3}

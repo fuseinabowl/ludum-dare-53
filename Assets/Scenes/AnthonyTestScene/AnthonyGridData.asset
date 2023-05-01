@@ -10026,11 +10026,11 @@ MonoBehaviour:
   - prefab: {fileID: 0}
     rotationIndex: 0
     isFlippedAcrossX: 0
-  - prefab: {fileID: 0}
-    rotationIndex: 0
+  - prefab: {fileID: 6817244548919748188, guid: 664c3fb68577a6743b92aad435e7e017, type: 3}
+    rotationIndex: 1
     isFlippedAcrossX: 0
-  - prefab: {fileID: 0}
-    rotationIndex: 0
+  - prefab: {fileID: 6817244548919748188, guid: 664c3fb68577a6743b92aad435e7e017, type: 3}
+    rotationIndex: 3
     isFlippedAcrossX: 0
   - prefab: {fileID: 0}
     rotationIndex: 0

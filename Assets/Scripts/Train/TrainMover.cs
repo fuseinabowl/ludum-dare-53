@@ -208,8 +208,9 @@ public class TrainMover : MonoBehaviour
         PlaceTrainCarsAlongPath(smoothPath, trainPositionForEndOfPath);
     }
 
-    private void PlaceTrainCarsAlongPath(SmoothPath smoothPath, float distanceAlongPath)
+    private void PlaceTrainCarsAlongPath(SmoothPath smoothPath, float tipDistanceAlongPath)
     {
+        var distanceAlongPath = tipDistanceAlongPath + 0.5f * trainData.carriageLength;
         PlaceTrainCar(tailLocomotive, distanceAlongPath, smoothPath);
         for (var carriageIndex = 0; carriageIndex < carriages.Count; ++carriageIndex)
         {

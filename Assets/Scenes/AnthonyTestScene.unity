@@ -414,6 +414,7 @@ MonoBehaviour:
   grid: {fileID: 986006701}
   network: {fileID: 986006705}
   highlightPrefab: {fileID: 3736688304409164999, guid: b22650081d2b2d948b1b5b1783eb0879, type: 3}
+  destroyHighlightPrefab: {fileID: 3736688304409164999, guid: 926bd236004256a4faee85d4dd54b77e, type: 3}
 --- !u!1001 &1130315454
 PrefabInstance:
   m_ObjectHideFlags: 0

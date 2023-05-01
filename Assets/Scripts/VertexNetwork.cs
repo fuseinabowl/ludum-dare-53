@@ -127,7 +127,7 @@ public class VertexNetwork : MonoBehaviour
         {
             PlaceEdge(closestEdge);
         }
-        else if (Input.GetMouseButtonDown(1) && canDeleteClosestEdge)
+        else if (Input.GetMouseButtonDown(0) && canDeleteClosestEdge)
         {
             DeleteEdge(closestEdge);
         }

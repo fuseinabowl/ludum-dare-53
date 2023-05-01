@@ -206,7 +206,7 @@ public class MapEditorTool : EditorTool
             var oldArraySize = gridDataOverridesArray.arraySize;
             gridDataOverridesArray.arraySize = requiredIndex + 1;
 
-            foreach (var newElementIndex in Enumerable.Range(oldArraySize, gridDataOverridesArray.arraySize))
+            foreach (var newElementIndex in Enumerable.Range(oldArraySize, gridDataOverridesArray.arraySize - 1))
             {
                 var newElement = gridDataOverridesArray.GetArrayElementAtIndex(newElementIndex);
                 newElement.FindPropertyRelative(nameof(GridData.QuadOverride.prefab)).objectReferenceValue = null;

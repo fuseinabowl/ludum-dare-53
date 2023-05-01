@@ -14,7 +14,7 @@ public class Timer : MonoBehaviour
 {
     public string timerName = "";
 
-    [Range(0.01f, 10f)] public float period = 1;
+    [Range(0.01f, 30f)] public float period = 1;
 
     public bool autoStart = false;
 

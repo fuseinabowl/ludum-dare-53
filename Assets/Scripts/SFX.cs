@@ -7,12 +7,13 @@ public class SFX : MonoBehaviour
     public FMODUnity.StudioEventEmitter trackComplete;
     public FMODUnity.StudioEventEmitter trackPlaced;
     public FMODUnity.StudioEventEmitter trackDeleted;
+    public FMODUnity.StudioEventEmitter birds;
+    public FMODUnity.StudioEventEmitter wind;
 
-    public static SFX singleton {
-        get {
-            return SingletonProvider.Get<SFX>();
-        }
-        private set {}
+    public static SFX singleton
+    {
+        get { return SingletonProvider.Get<SFX>(); }
+        private set { }
     }
 
     public static void Play(
@@ -31,6 +32,15 @@ public class SFX : MonoBehaviour
         if (param2 != "")
         {
             emitter.SetParameter(param2, value2);
+        }
+    }
+
+    private void OnTimerTick(Timer timer)
+    {
+        if (timer.timerName == "Ambience")
+        {
+            birds.SetParameter("BirdsVolume", Random.Range(0f, 1f));
+            wind.SetParameter("WindSpeed", Random.Range(0f, 4f));
         }
     }
 }

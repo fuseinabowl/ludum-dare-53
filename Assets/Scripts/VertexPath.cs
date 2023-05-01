@@ -247,6 +247,7 @@ public class VertexPath : MonoBehaviour
         Debug.Assert(edge.direction == Edge.Direction.NONE);
         var directionalEdge = edge.DirectionalFrom(LastVertex());
         AddEdge(directionalEdge);
+        SFX.Play(SFX.singleton.trackPlaced);
         return true;
     }
 
@@ -305,10 +306,11 @@ public class VertexPath : MonoBehaviour
     }
 
     private IEnumerator TrackCompletedAnimation() {
-        var sfx = SingletonProvider.Get<SFX>();
-        sfx.trackComplete.Play();
-        sfx.trackComplete.SetParameter("SpawnRate", 0.1f / net.trackCompletedAnimPeriod);
-        sfx.trackComplete.SetParameter("SpawnTotal", edges.Count - 2);
+        SFX.Play(
+            SFX.singleton.trackComplete,
+            "SpawnRate", 0.1f / net.trackCompletedAnimPeriod,
+            "SpawnTotal", edges.Count - 2
+        );
 
         for (int i = 1; i < edges.Count - 1; i++) {
             var edge = edges[i];

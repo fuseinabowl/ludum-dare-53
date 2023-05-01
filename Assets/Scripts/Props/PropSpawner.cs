@@ -19,7 +19,18 @@ public class PropSpawner : MonoBehaviour
             var preWarpPosition = preWarpTransform.MultiplyPoint(localPosition);
             var warpedPosition = warper.WarpVertex(preWarpPosition);
             spawnedObject.transform.localPosition = warpedPosition;
-            spawnedObject.transform.rotation = spawnedObject.transform.rotation * ChooseRandomAroundYAxisRotation();
+            if (options.randomlyRotate)
+            {
+                spawnedObject.transform.rotation = spawnedObject.transform.rotation * ChooseRandomAroundYAxisRotation();
+            }
+            else
+            {
+                var forward = preWarpTransform.MultiplyVector(transform.localRotation * Vector3.forward);
+                var warpedForward = warper.WarpNormal(transform.localPosition, forward);
+                // not quite right. Need to add some more code to the warper to get this to line up with the geo instead
+                // of the normals
+                spawnedObject.transform.rotation = Quaternion.LookRotation(warpedForward, Vector3.up);
+            }
 
             spawnedObject.hideFlags = HideFlags.DontSave;
         }

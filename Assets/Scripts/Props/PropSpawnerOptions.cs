@@ -9,6 +9,8 @@ public class PropSpawnerOptions : ScriptableObject
     [Range(0f,1f)]
     public float spawnChance = 1f;
 
+    public bool randomlyRotate = true;
+
     /// <summary>
     /// X is used for both maximum X and maximum Z variation.
     /// Y is used for maximum Y variation.

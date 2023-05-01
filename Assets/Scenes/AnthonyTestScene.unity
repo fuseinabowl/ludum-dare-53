@@ -527,7 +527,7 @@ MonoBehaviour:
   mapEditorPalette:
   - isSelected: 0
     prefab: {fileID: 6817244548919748188, guid: e268ddfd56e632042b2422a64f7bd579, type: 3}
-  - isSelected: 1
+  - isSelected: 0
     prefab: {fileID: 7468105294721396955, guid: f1f961ae561b6c5459748bde95a2c0a4, type: 3}
   - isSelected: 0
     prefab: {fileID: 5711264294226808743, guid: 44fec5479b6b12e4b9773cdde6dcd0ae, type: 3}
@@ -543,7 +543,7 @@ MonoBehaviour:
     prefab: {fileID: 6817244548919748188, guid: 9b09c069b1661a3498fe2db96dbc8888, type: 3}
   - isSelected: 0
     prefab: {fileID: 6817244548919748188, guid: 5eb9da1c924f8944fbe3598adc5d2abb, type: 3}
-  - isSelected: 0
+  - isSelected: 1
     prefab: {fileID: 6817244548919748188, guid: 94cd1d1b4d70bd74d9546af5b4ffb5fd, type: 3}
   - isSelected: 0
     prefab: {fileID: 6817244548919748188, guid: 664c3fb68577a6743b92aad435e7e017, type: 3}

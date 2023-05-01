@@ -15,8 +15,8 @@ MonoBehaviour:
   defaultSpawnedModel: {fileID: 6817244548919748188, guid: e268ddfd56e632042b2422a64f7bd579, type: 3}
   seed: 5
   mapSize: 20
-  cellSide: 3
-  relaxSize: 0.5
+  cellSide: 2
+  relaxSize: 1
   matchingOrderPrefabOverrides:
   - prefab: {fileID: 0}
     rotationIndex: 0

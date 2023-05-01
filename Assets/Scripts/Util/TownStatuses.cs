@@ -15,19 +15,19 @@ public class TownStatuses : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI hudText;
 
-    private Dictionary<Station, bool> townIsFed = new Dictionary<Station, bool>();
+    private Dictionary<TownStation, bool> townIsFed = new Dictionary<TownStation, bool>();
 
     private void Start()
     {
         UpdateHud();
     }
 
-    public void RegisterTown(Station town)
+    public void RegisterTown(TownStation town)
     {
         townIsFed.Add(town, false);
     }
 
-    public void OnTownIsFedChanged(Station town, bool isFed)
+    public void OnTownIsFedChanged(TownStation town, bool isFed)
     {
         townIsFed[town] = isFed;
 

@@ -35,21 +35,21 @@ public class VertexNetwork : MonoBehaviour
     private bool canPlaceClosestEdge = false;
     private bool canDeleteClosestEdge = false;
     private Vector3 mouseHit;
-    private List<Station> farms = new List<Station>();
-    private List<Station> towns = new List<Station>();
+    private List<FarmStation> farms = new List<FarmStation>();
+    private List<TownStation> towns = new List<TownStation>();
 
     public void SetEdgeGraph(EdgeGraph eg)
     {
         edgeGraph = eg;
     }
 
-    public void AddStation(Station station)
+    public void AddFarmStation(FarmStation station)
     {
         Assert.IsNotNull(edgeGraph);
-        InitStation(station);
+        InitFarmStation(station);
     }
 
-    private void InitStation(Station station)
+    private void InitFarmStation(FarmStation station)
     {
         if (station.front == null)
         {
@@ -57,34 +57,37 @@ public class VertexNetwork : MonoBehaviour
             return;
         }
 
-        switch (station.type)
+        var rootVertex = edgeGraph.ClosestVertex(station.transform.position);
+
+        onAvailableEdgesChanged?.Invoke();
+        var frontVertex = edgeGraph.ClosestVertex(station.front.transform.position);
+        var vertexPath = Instantiate(vertexPathPrefab, transform);
+        vertexPaths.Add(vertexPath);
+        vertexPath.Init(this, rootVertex, edgeGraph.FindEdge(frontVertex, rootVertex));
+        farms.Add(station);
+        station.rootVertex = rootVertex;
+    }
+
+    public void AddTownStation(TownStation station)
+    {
+        Assert.IsNotNull(edgeGraph);
+        InitTownStation(station);
+    }
+
+    private void InitTownStation(TownStation station)
+    {
+        if (station.front == null)
         {
-            case Station.Type.FARM:
-            {
-                var rootVertex = edgeGraph.ClosestVertex(station.transform.position);
-
-                onAvailableEdgesChanged?.Invoke();
-                var frontVertex = edgeGraph.ClosestVertex(station.front.transform.position);
-                var vertexPath = Instantiate(vertexPathPrefab, transform);
-                vertexPaths.Add(vertexPath);
-                vertexPath.Init(this, rootVertex, edgeGraph.FindEdge(frontVertex, rootVertex));
-                farms.Add(station);
-                station.rootVertex = rootVertex;
-
-                break;
-            }
-            case Station.Type.TOWN:
-            {
-                var rootVertex = edgeGraph.ClosestVertex(station.transform.position);
-                var frontVertex = edgeGraph.ClosestVertex(station.front.transform.position);
-                RemoveAllEdgesExceptEdgeToward(rootVertex, frontVertex);
-
-                towns.Add(station);
-                station.rootVertex = rootVertex;
-
-                break;
-            }
+            Debug.LogWarning("station has no front object, cannot create path");
+            return;
         }
+
+        var rootVertex = edgeGraph.ClosestVertex(station.transform.position);
+        var frontVertex = edgeGraph.ClosestVertex(station.front.transform.position);
+        RemoveAllEdgesExceptEdgeToward(rootVertex, frontVertex);
+
+        towns.Add(station);
+        station.rootVertex = rootVertex;
     }
 
     public bool IsTownAt(Vector3 vertex)
@@ -257,13 +260,13 @@ public class VertexNetwork : MonoBehaviour
         return false;
     }
 
-    private Station FindStartStation(VertexPath path)
+    private FarmStation FindStartStation(VertexPath path)
     {
-        foreach (var station in farms)
+        foreach (var farm in farms)
         {
-            if (station.rootVertex == path.vertices[0])
+            if (farm.rootVertex == path.vertices[0])
             {
-                return station;
+                return farm;
             }
         }
         return null;

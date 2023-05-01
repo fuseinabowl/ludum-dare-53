@@ -40,7 +40,6 @@ public class VertexNetwork : MonoBehaviour
     private Vector3 mouseHit;
     private List<Station> stations = new List<Station>();
     private List<Station> pendingStations = new List<Station>();
-    private List<Vector3> pendingRemoveMidpointEdges = new List<Vector3>();
 
     public void SetEdgeGraph(EdgeGraph eg)
     {
@@ -50,10 +49,6 @@ public class VertexNetwork : MonoBehaviour
             InitStation(pendingStation);
         }
         pendingStations.Clear();
-        foreach (var mid in pendingRemoveMidpointEdges) {
-            edgeGraph.RemoveMidpointEdges(mid);
-        }
-        pendingRemoveMidpointEdges.Clear();
     }
 
     public void AddStation(Station station)
@@ -391,14 +386,5 @@ public class VertexNetwork : MonoBehaviour
     {
         Assert.IsNotNull(edgeGraph);
         edgeGraph.RemoveClosestVertex(pos);
-    }
-
-    public void RemoveMidpointEdges(Vector3 pos)
-    {
-        if (edgeGraph != null) {
-            edgeGraph.RemoveMidpointEdges(pos);
-        } else {
-            pendingRemoveMidpointEdges.Add(pos);
-        }
     }
 }

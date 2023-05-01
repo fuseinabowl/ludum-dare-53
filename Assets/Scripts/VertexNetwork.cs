@@ -34,7 +34,6 @@ public class VertexNetwork : MonoBehaviour
     private Edge closestEdge = null;
     private bool canPlaceClosestEdge = false;
     private bool canDeleteClosestEdge = false;
-    private bool canSplitClosestEdge = false;
     private Vector3 mouseHit;
     private List<Station> farms = new List<Station>();
     private List<Station> towns = new List<Station>();
@@ -112,7 +111,6 @@ public class VertexNetwork : MonoBehaviour
         closestEdge = edgeGraph.ClosestEdge(mouseHit);
         canPlaceClosestEdge = CanPlaceEdge(closestEdge);
         canDeleteClosestEdge = CanDeleteEdge(closestEdge);
-        canSplitClosestEdge = CanSplitEdge(closestEdge);
 
         if (Input.GetMouseButtonDown(0) && canPlaceClosestEdge)
         {
@@ -121,10 +119,6 @@ public class VertexNetwork : MonoBehaviour
         else if (Input.GetMouseButtonDown(1) && canDeleteClosestEdge)
         {
             DeleteEdge(closestEdge);
-        }
-        else if (Input.GetMouseButtonDown(1) && canSplitClosestEdge)
-        {
-            SplitEdge(closestEdge);
         }
     }
 
@@ -294,31 +288,6 @@ public class VertexNetwork : MonoBehaviour
             if (path.DeleteEdge(edge))
             {
                 onAvailableEdgesChanged?.Invoke();
-                return;
-            }
-        }
-    }
-
-    private bool CanSplitEdge(Edge edge)
-    {
-        foreach (var path in vertexPaths)
-        {
-            if (path.CanSplit(edge))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void SplitEdge(Edge edge)
-    {
-        foreach (var path in vertexPaths)
-        {
-            var vertexPath = path.Split(edge);
-            if (vertexPath)
-            {
-                vertexPaths.Add(vertexPath);
                 return;
             }
         }

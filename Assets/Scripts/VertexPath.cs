@@ -143,28 +143,6 @@ public class VertexPath : MonoBehaviour
         return false;
     }
 
-    public bool CanSplit(Edge splitEdge)
-    {
-        if (!IsComplete())
-        {
-            return false;
-        }
-
-        int i;
-        var foundEdge = FindDirectionalEdge(splitEdge, out i);
-        if (foundEdge == null)
-        {
-            return false;
-        }
-
-        if (edges[0].Equals(foundEdge) || edges[edges.Count - 1].Equals(foundEdge))
-        {
-            return false;
-        }
-
-        return true;
-    }
-
     public bool CanDeleteEdge(Edge edge)
     {
         if (edges.Count == 1)
@@ -175,30 +153,6 @@ public class VertexPath : MonoBehaviour
 
         var lastEdge = LastEdge();
         return lastEdge.NonDirectional().Equals(edge);
-    }
-
-    /// <summary>
-    /// Splits the path at an edge and returns the new path. The split edge is deleted.
-    /// </summary>
-    public VertexPath Split(Edge splitEdge)
-    {
-        Debug.Assert(CanSplit(splitEdge));
-        int edgeIndex;
-        var foundEdge = FindDirectionalEdge(splitEdge, out edgeIndex);
-
-        var vertexPath = Instantiate(net.vertexPathPrefab, transform);
-        vertexPath.Init(net, LastVertex(), LastEdge());
-
-        for (int i = edges.Count - 2; i > edgeIndex; i--)
-        {
-            vertexPath.AddEdge(edges[i].edge);
-            DestroyEdge(edges[i]);
-        }
-
-        DestroyEdge(foundEdge);
-        fullTrackBroken?.Invoke();
-
-        return vertexPath;
     }
 
     private EdgeAndInstanceData FindDirectionalEdge(Edge nonDirEdge, out int index)

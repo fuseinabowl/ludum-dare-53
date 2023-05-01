@@ -29,13 +29,17 @@ public class IrregularGrid : MonoBehaviour
 
     [SerializeField]
     [HideInInspector]
+    public Mesh bakedGridMesh;
+
     private MeshData meshData;
 
     [SerializeField]
     [Min(0)]
     private int relaxIterations = 10;
+    public int RelaxIterations => relaxIterations;
     [SerializeField]
     private float relaxStrength = 1e-3f;
+    public float RelaxStrength => relaxStrength;
 
     [SerializeField]
     private Material[] combinedMaterials = new Material[0];
@@ -74,7 +78,7 @@ public class IrregularGrid : MonoBehaviour
 
     private void Generate()
     {
-        meshData = GenerateMeshData();
+        meshData = LoadMeshData();
 
         if (vertexNetwork) {
             vertexNetwork.SetEdgeGraph(CreateEdgeGraph(meshData.vertices, meshData.indices[0]));
@@ -92,9 +96,15 @@ public class IrregularGrid : MonoBehaviour
         }
     }
 
+    private Sylves.MeshData LoadMeshData()
+    {
+        Assert.IsNotNull(bakedGridMesh);
+        return new MeshData(bakedGridMesh);
+    }
+
     private void GenerateAndCombineMeshes()
     {
-        meshData = GenerateMeshData();
+        meshData = LoadMeshData();
 
         if (vertexNetwork) {
             vertexNetwork.SetEdgeGraph(CreateEdgeGraph(meshData.vertices, meshData.indices[0]));
@@ -160,26 +170,6 @@ public class IrregularGrid : MonoBehaviour
         }
 
         return null;
-    }
-
-    private MeshData GenerateMeshData()
-    {
-        var triangleGrid = new TriangleGrid(gridData.cellSide, TriangleOrientation.FlatSides, bound: TriangleBound.Hexagon(gridData.mapSize));
-
-        var meshData = triangleGrid.ToMeshData();
-
-        var rng = new LocalRng.Random(gridData.seed);
-
-        // change this to make a pairing that doesn't generate tris
-        meshData = meshData.RandomPairing(() => rng.NextDouble());
-
-        meshData = ConwayOperators.Ortho(meshData);
-
-        meshData = meshData.Weld(tolerance:1e-1f);
-
-        TownscaperRelaxer.Relax(meshData, gridData.relaxSize, relaxIterations, relaxStrength);
-
-        return Matrix4x4.Rotate(Quaternion.Euler(-90f, 0f, 0f)) * meshData;
     }
 
     public void CreatePrefabInSlot(int quadIndex)
@@ -314,7 +304,7 @@ public class IrregularGrid : MonoBehaviour
     {
         if (meshData == null)
         {
-            meshData = GenerateMeshData();
+            meshData = LoadMeshData();
         }
     }
 

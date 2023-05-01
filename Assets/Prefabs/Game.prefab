@@ -435,7 +435,7 @@ GameObject:
   - component: {fileID: 8981691954296543155}
   - component: {fileID: 7908331905365301918}
   m_Layer: 0
-  m_Name: Dollars
+  m_Name: Routes completed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -459,7 +459,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -28, y: -26}
-  m_SizeDelta: {x: 200, y: 50}
+  m_SizeDelta: {x: 300, y: 50}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &1964914107978845445
 CanvasRenderer:
@@ -489,7 +489,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: $0
+  m_text: 0/50 Towns Fed
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -552,7 +552,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: -0.014877319, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -1297,8 +1297,6 @@ MonoBehaviour:
   trackComplete: {fileID: 1929765083148159563}
   trackPlaced: {fileID: 1804076013611902101}
   trackDeleted: {fileID: 4559702553894711608}
-  trainLoaded: {fileID: 3032359128767783514}
-  trainUnloaded: {fileID: 3032359128767783514}
   birds: {fileID: 4211942806440683468}
   wind: {fileID: 697664128121850648}
 --- !u!114 &3835560196627777632

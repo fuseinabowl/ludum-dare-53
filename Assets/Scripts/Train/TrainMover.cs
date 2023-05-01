@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -171,6 +172,10 @@ public class TrainMover : MonoBehaviour
                 trainRunningLeft = true;
                 trainDistance = smoothPath.totalDistance - TrainLength;
                 CompletedTrip();
+
+                PlaceTrainCarsAtEndOfPath(smoothPath);
+
+                yield return UnloadCarriagesAndShowTailLocomotive();
             }
             else
             {
@@ -184,6 +189,12 @@ public class TrainMover : MonoBehaviour
     private void PlaceTrainCarsAtStartOfPath(SmoothPath smoothPath)
     {
         PlaceTrainCarsAlongPath(smoothPath, 0f);
+    }
+
+    private void PlaceTrainCarsAtEndOfPath(SmoothPath smoothPath)
+    {
+        var trainPositionForEndOfPath = smoothPath.totalDistance - TrainLength;
+        PlaceTrainCarsAlongPath(smoothPath, trainPositionForEndOfPath);
     }
 
     private void PlaceTrainCarsAlongPath(SmoothPath smoothPath, float distanceAlongPath)
@@ -214,9 +225,36 @@ public class TrainMover : MonoBehaviour
         yield return new WaitForSeconds(trainData.timeBetweenShowingLocomotiveAndStartingMoving);
     }
 
+    private IEnumerator UnloadCarriagesAndShowTailLocomotive()
+    {
+        HideHeadLocomotive();
+
+        yield return new WaitForSeconds(trainData.timeBetweenHidingLocomotiveAndLoadingCarriages);
+
+        foreach (var carriage in Enumerable.Reverse(carriages))
+        {
+            UnloadCarriage(carriage);
+            yield return new WaitForSeconds(trainData.timeBetweenLoadingCarriages);
+        }
+
+        ShowTailLocomotive();
+
+        yield return new WaitForSeconds(trainData.timeBetweenShowingLocomotiveAndStartingMoving);
+    }
+
     private void HideTailLocomotive()
     {
         SetLocomotiveShown(tailLocomotive, false);
+    }
+
+    private void HideHeadLocomotive()
+    {
+        SetLocomotiveShown(headLocomotive, false);
+    }
+
+    private void ShowTailLocomotive()
+    {
+        SetLocomotiveShown(tailLocomotive, true);
     }
 
     private void ShowHeadLocomotive()
@@ -233,6 +271,11 @@ public class TrainMover : MonoBehaviour
     private void LoadCarriage(GameObject carriage)
     {
         SetCarriageFilled(carriage, true);
+    }
+
+    private void UnloadCarriage(GameObject carriage)
+    {
+        SetCarriageFilled(carriage, false);
     }
 
     private void SetCarriageFilled(GameObject carriage, bool shouldBeFilled)

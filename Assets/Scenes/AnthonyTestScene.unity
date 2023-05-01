@@ -1947,7 +1947,7 @@ MonoBehaviour:
     prefab: {fileID: 6817244548919748188, guid: 0e37260d4c7af224b9dbe930c154126e, type: 3}
   - isSelected: 0
     prefab: {fileID: 6817244548919748188, guid: f1cdc3ac48eb4864aa0bb5be52837b0c, type: 3}
-  - isSelected: 0
+  - isSelected: 1
     prefab: {fileID: 6817244548919748188, guid: 0170e8096d04acd43848c772bc50f431, type: 3}
   - isSelected: 0
     prefab: {fileID: 6817244548919748188, guid: 82fff2477e2d8484694ec625931924ff, type: 3}
@@ -1957,7 +1957,7 @@ MonoBehaviour:
     prefab: {fileID: 6817244548919748188, guid: 5eb9da1c924f8944fbe3598adc5d2abb, type: 3}
   - isSelected: 0
     prefab: {fileID: 6817244548919748188, guid: 94cd1d1b4d70bd74d9546af5b4ffb5fd, type: 3}
-  - isSelected: 1
+  - isSelected: 0
     prefab: {fileID: 6817244548919748188, guid: 664c3fb68577a6743b92aad435e7e017, type: 3}
   - isSelected: 0
     prefab: {fileID: 6817244548919748188, guid: 4c8c870e035ec294aa18cf8b4d3163f7, type: 3}

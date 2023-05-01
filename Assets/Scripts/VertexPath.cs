@@ -177,9 +177,15 @@ public class VertexPath : MonoBehaviour
             return false;
         }
 
+        if (IsComplete())
+        {
+            fullTrackBroken?.Invoke();
+        }
+
         DestroyEdge(FindDirectionalEdge(edge, out var i));
         edges[edges.Count - 1].tracksObject.GetComponentInChildren<TrackModelGeneratorComponent>().SetEndToIdle();
         SFX.Play(SFX.singleton.trackDeleted);
+
         return true;
     }
 

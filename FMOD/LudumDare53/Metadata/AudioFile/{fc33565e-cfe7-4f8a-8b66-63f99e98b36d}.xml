@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{fc33565e-cfe7-4f8a-8b66-63f99e98b36d}">
+		<property name="assetPath">
+			<value>freesound.org/388390__monsieur-renard__birdsounds.wav</value>
+		</property>
+		<property name="isStreaming">
+			<value>true</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>38.751201814058959</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{5a6b5b7f-4faa-4489-944f-b6bf50169d09}</destination>
+		</relationship>
+	</object>
+</objects>

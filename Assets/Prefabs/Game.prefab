@@ -1077,6 +1077,10 @@ GameObject:
   - component: {fileID: 3835560196627777632}
   - component: {fileID: 1804076013611902101}
   - component: {fileID: 1929765083148159563}
+  - component: {fileID: 4559702553894711608}
+  - component: {fileID: 4211942806440683468}
+  - component: {fileID: 697664128121850648}
+  - component: {fileID: 3996607147635758722}
   m_Layer: 0
   m_Name: SFX
   m_TagString: Untagged
@@ -1113,6 +1117,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   trackComplete: {fileID: 1929765083148159563}
   trackPlaced: {fileID: 1804076013611902101}
+  trackDeleted: {fileID: 4559702553894711608}
+  birds: {fileID: 4211942806440683468}
+  wind: {fileID: 697664128121850648}
 --- !u!114 &3835560196627777632
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1188,3 +1195,112 @@ MonoBehaviour:
   OverrideAttenuation: 0
   OverrideMinDistance: 1
   OverrideMaxDistance: 20
+--- !u!114 &4559702553894711608
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9194359120225049468}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -994712610
+      Data2: 1075855726
+      Data3: 75862413
+      Data4: -697851718
+    Path: event:/SFX/TrackDeleted
+  Event: 
+  PlayEvent: 0
+  StopEvent: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  AllowNonRigidbodyDoppler: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
+--- !u!114 &4211942806440683468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9194359120225049468}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: -1406156618
+      Data2: 1093445955
+      Data3: 1099812537
+      Data4: -787571455
+    Path: event:/Ambience/Birds
+  Event: 
+  PlayEvent: 1
+  StopEvent: 2
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  AllowNonRigidbodyDoppler: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
+--- !u!114 &697664128121850648
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9194359120225049468}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 1098739745
+      Data2: 1273944513
+      Data3: -2030541914
+      Data4: -499696261
+    Path: event:/Ambience/Wind
+  Event: 
+  PlayEvent: 1
+  StopEvent: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  AllowNonRigidbodyDoppler: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
+--- !u!114 &3996607147635758722
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9194359120225049468}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60b4303e580364107bd2cadaf03648d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timerName: Ambience
+  period: 20
+  autoStart: 1
+  oneShot: 0

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="ParameterPreset" id="{645c4344-6eb9-494a-99a4-12ec3f272604}">
+		<property name="name">
+			<value>BirdsVolume</value>
+		</property>
+		<relationship name="folder">
+			<destination>{f7be2f90-be5a-441e-ac54-b2419b1fcf1d}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{e9525a2e-241c-41cb-a8e0-51c53692b7bb}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{e9525a2e-241c-41cb-a8e0-51c53692b7bb}">
+		<property name="initialValue">
+			<value>1</value>
+		</property>
+		<property name="seekSpeed">
+			<value>0.25</value>
+		</property>
+	</object>
+</objects>

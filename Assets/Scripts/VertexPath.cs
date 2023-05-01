@@ -225,6 +225,7 @@ public class VertexPath : MonoBehaviour
 
         DestroyEdge(FindDirectionalEdge(edge, out var i));
         edges[edges.Count - 1].tracksObject.GetComponentInChildren<TrackModelGeneratorComponent>().SetEndToIdle();
+        SFX.Play(SFX.singleton.trackDeleted);
         return true;
     }
 

@@ -73,7 +73,7 @@ public class TrainMover : MonoBehaviour
     private SmoothPath CalculateSmoothPath()
     {
         var result = new SmoothPathSegment[
-            (path.edges.Count - 1) * smoothSegmentsPerPathSegment + 1
+            (path.edges.Count - 1) * smoothSegmentsPerPathSegment + 2
         ];
 
         var cumulativeDistance = 0f;
@@ -95,6 +95,15 @@ public class TrainMover : MonoBehaviour
         result[(path.edges.Count - 1) * smoothSegmentsPerPathSegment] = new SmoothPathSegment
         {
             startPosition = finalEdge.middle,
+            facingDirection = (finalEdge.toVertex - finalEdge.middle).normalized,
+            length = Vector3.Distance(finalEdge.middle, finalEdge.toVertex),
+        };
+
+        cumulativeDistance += Vector3.Distance(finalEdge.middle, finalEdge.toVertex);
+        
+        result[(path.edges.Count - 1) * smoothSegmentsPerPathSegment + 1] = new SmoothPathSegment
+        {
+            startPosition = finalEdge.toVertex,
             facingDirection = (finalEdge.toVertex - finalEdge.middle).normalized,
             length = 0f,
         };

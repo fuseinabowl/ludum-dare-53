@@ -285,6 +285,12 @@ public class IrregularGrid : MonoBehaviour
             localVertices[vertexIndex] = cageWarper.WarpVertex(localVertices[vertexIndex]);
         }
 
+        Obstacle obstacle;
+        if (spawnedObject.TryGetComponent<Obstacle>(out obstacle))
+        {
+            obstacle.SetVertices(localVertices, cageWarper.Center());
+        }
+
         var uv0 = new List<Vector2>();
         mesh.GetUVs(0, uv0);
         var uv1 = new List<Vector2>();
@@ -399,6 +405,6 @@ public class IrregularGrid : MonoBehaviour
             }
         }
         
-        return new EdgeGraph(vertices.ToList(), edges);
+        return new EdgeGraph(edges);
     }
 }

@@ -60,6 +60,10 @@ public class CageWarper
         };
     }
 
+    public Vector3 Center() {
+        return (v0 + v1 + v2 + v3) / 4f;
+    }
+
     public Vector3 WarpVertex(Vector3 vertex)
     {
         return BilinearBlend(vertex, v0, v1, v2, v3) + Vector3.up * vertex.y;

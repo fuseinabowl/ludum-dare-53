@@ -6,14 +6,22 @@ public class EdgeGraph
     public List<Vector3> vertices;
     public List<Edge> edges;
 
-    public EdgeGraph(List<Vector3> vert, List<Edge> ed)
+    public EdgeGraph(List<Edge> ed)
     {
-        vertices = new List<Vector3>(vert);
-        vertices.Sort(Vectors.Compare);
-        Lists.Uniq(vertices);
         edges = new List<Edge>(ed);
         edges.Sort();
         Lists.Uniq(edges);
+        RebuildVertices();
+    }
+
+    private void RebuildVertices() {
+        vertices = new List<Vector3>();
+        foreach (var edge in edges) {
+            vertices.Add(edge.left);
+            vertices.Add(edge.right);
+        }
+        vertices.Sort(Vectors.Compare);
+        Lists.Uniq(vertices);
     }
 
     public Edge ClosestEdge(Vector3 point)
@@ -73,5 +81,26 @@ public class EdgeGraph
         }
         Debug.LogError("couldn't find an edge!!!!!! this is going to break in unexpected ways");
         return findEdge;
+    }
+
+    public void RemoveMidpointEdges(Vector3 mid)
+    {
+        // Adjacent edges are ones where both vertices are close to the point - that is,
+        // roughly, less than 1 edge's distance from them.
+        var newEdges = new List<Edge>();
+
+        foreach (var edge in edges)
+        {
+            if (
+                Vector3.Distance(edge.left, mid) > edge.length
+                || Vector3.Distance(edge.right, mid) > edge.length
+            )
+            {
+                newEdges.Add(edge);
+            }
+        }
+
+        edges = newEdges;
+        RebuildVertices();
     }
 }

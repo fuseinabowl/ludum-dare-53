@@ -1289,6 +1289,7 @@ GameObject:
   - component: {fileID: 697664128121850648}
   - component: {fileID: 3996607147635758722}
   - component: {fileID: 3032359128767783514}
+  - component: {fileID: 804167426717286348}
   m_Layer: 0
   m_Name: SFX
   m_TagString: Untagged
@@ -1535,6 +1536,37 @@ MonoBehaviour:
   Event: 
   PlayEvent: 0
   StopEvent: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  AllowNonRigidbodyDoppler: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 5
+  OverrideMaxDistance: 15
+--- !u!114 &804167426717286348
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9194359120225049468}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 1126170509
+      Data2: 1334801466
+      Data3: 2034831763
+      Data4: 310218286
+    Path: event:/Music
+  Event: 
+  PlayEvent: 1
+  StopEvent: 2
   AllowFadeout: 1
   TriggerOnce: 0
   Preload: 0

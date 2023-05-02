@@ -302,7 +302,6 @@
 			<destination>{3b01a2f3-7794-4068-a469-a2aebd188cf2}</destination>
 			<destination>{a6485d6e-35b7-4302-aca9-516526469085}</destination>
 			<destination>{2f436dff-0f25-4348-bedc-2bbf9df12a3f}</destination>
-			<destination>{43106c54-3769-4bdf-848d-22f58b1a179e}</destination>
 		</relationship>
 	</object>
 	<object class="EventMixerGroup" id="{cded1092-accf-4edf-b64d-4faefd1f3930}">
@@ -586,7 +585,6 @@
 			<destination>{15968027-b362-4917-a917-c4255d3d139f}</destination>
 		</relationship>
 	</object>
-	<object class="SilenceSound" id="{43106c54-3769-4bdf-848d-22f58b1a179e}" />
 	<object class="MixerBusEffectChain" id="{33bef5bd-d33b-47e3-944e-6ae2138fd00c}">
 		<relationship name="effects">
 			<destination>{1c69b70d-454a-4c96-8e20-ccba4db422cb}</destination>

@@ -41,8 +41,15 @@ public class TownStatuses : MonoBehaviour
 
         hudText.text = String.Format(formatString, totalTowns, fedTowns);
 
-        if (totalTowns == fedTowns) {
-            SFX.singleton.winJingle.Play();
+        if (totalTowns == fedTowns)
+        {
+            StartCoroutine(PlayJingle());
         }
+    }
+
+    private IEnumerator PlayJingle()
+    {
+        yield return new WaitForSeconds(1f);
+        SFX.singleton.winJingle.Play();
     }
 }

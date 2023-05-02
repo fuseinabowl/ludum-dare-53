@@ -16,12 +16,12 @@ public class TrainMover : MonoBehaviour
     [SerializeField]
     private TrainData trainData;
 
+    private bool trainRunningLeft;
     private GameObject headLocomotive;
     private GameObject tailLocomotive;
     private List<GameObject> carriages = new List<GameObject>();
     private float trainDistance;
     private bool trainRunning;
-    private bool trainRunningLeft;
 
     private void Start()
     {
@@ -100,7 +100,7 @@ public class TrainMover : MonoBehaviour
         };
 
         cumulativeDistance += Vector3.Distance(finalEdge.middle, finalEdge.toVertex);
-        
+
         result[(path.edges.Count - 1) * smoothSegmentsPerPathSegment + 1] = new SmoothPathSegment
         {
             startPosition = finalEdge.toVertex,
@@ -152,6 +152,7 @@ public class TrainMover : MonoBehaviour
     {
         headLocomotive = GameObject.Instantiate(trainData.locomotive, transform);
         headLocomotive.transform.position = path.vertices[0];
+        HeadController().SetIsHead(true);
 
         for (var carriageIndex = 0; carriageIndex < trainData.numberOfCarriages; ++carriageIndex)
         {
@@ -242,13 +243,13 @@ public class TrainMover : MonoBehaviour
 
     private IEnumerator LoadCarriagesAndShowHeadLocomotive()
     {
-        headLocomotive.GetComponent<LocomotiveController>().DidPause();
+        HeadController().DidPause();
 
         HideTailLocomotive();
 
         yield return new WaitForSeconds(trainData.timeBetweenHidingLocomotiveAndLoadingCarriages);
 
-        headLocomotive.GetComponent<LocomotiveController>().DidLoad();
+        HeadController().DidLoad();
 
         foreach (var carriage in carriages)
         {
@@ -260,18 +261,18 @@ public class TrainMover : MonoBehaviour
 
         yield return new WaitForSeconds(trainData.timeBetweenShowingLocomotiveAndStartingMoving);
 
-        headLocomotive.GetComponent<LocomotiveController>().DidResume();
+        HeadController().DidResume();
     }
 
     private IEnumerator UnloadCarriagesAndShowTailLocomotive()
     {
-        headLocomotive.GetComponent<LocomotiveController>().DidPause();
+        HeadController().DidPause();
 
         HideHeadLocomotive();
 
         yield return new WaitForSeconds(trainData.timeBetweenHidingLocomotiveAndLoadingCarriages);
 
-        headLocomotive.GetComponent<LocomotiveController>().DidUnload();
+        HeadController().DidUnload();
 
         foreach (var carriage in Enumerable.Reverse(carriages))
         {
@@ -283,7 +284,7 @@ public class TrainMover : MonoBehaviour
 
         yield return new WaitForSeconds(trainData.timeBetweenShowingLocomotiveAndStartingMoving);
 
-        headLocomotive.GetComponent<LocomotiveController>().DidResume();
+        HeadController().DidResume();
     }
 
     private void HideTailLocomotive()
@@ -370,4 +371,25 @@ public class TrainMover : MonoBehaviour
     }
 
     private void CompletedTrip() { }
+
+    private LocomotiveController HeadController()
+    {
+        return headLocomotive.GetComponent<LocomotiveController>();
+    }
+
+    public bool Running()
+    {
+        return trainRunning;
+    }
+
+    public LocomotiveController ForwardLocomitiveController(out Vector3 forwardTransform)
+    {
+        if (trainRunningLeft)
+        {
+            forwardTransform = -tailLocomotive.transform.forward;
+            return tailLocomotive.GetComponent<LocomotiveController>();
+        }
+        forwardTransform = headLocomotive.transform.forward;
+        return headLocomotive.GetComponent<LocomotiveController>();
+    }
 }

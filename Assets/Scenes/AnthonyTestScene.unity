@@ -567,13 +567,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: MarketFMODEmitter (7)
       objectReference: {fileID: 0}
+    - target: {fileID: 4471775303604244026, guid: 739ddd8634b134d94931723d71589852, type: 3}
+      propertyPath: OverrideAttenuation
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4471775303604244026, guid: 739ddd8634b134d94931723d71589852, type: 3}
+      propertyPath: OverrideMinDistance
+      value: 3.81
+      objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_RootOrder
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 19.796375
+      value: 20.85
       objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_LocalPosition.y
@@ -581,7 +589,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 24.636406
+      value: 25.49
       objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_LocalRotation.w
@@ -689,21 +697,29 @@ PrefabInstance:
       propertyPath: m_Name
       value: MarketFMODEmitter (5)
       objectReference: {fileID: 0}
+    - target: {fileID: 4471775303604244026, guid: 739ddd8634b134d94931723d71589852, type: 3}
+      propertyPath: OverrideAttenuation
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4471775303604244026, guid: 739ddd8634b134d94931723d71589852, type: 3}
+      propertyPath: OverrideMinDistance
+      value: 6.02
+      objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_RootOrder
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 20.558718
+      value: 24.67
       objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.09999943
+      value: 15.74
       objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -6.1563506
+      value: -14.99
       objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_LocalRotation.w
@@ -872,13 +888,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: MarketFMODEmitter (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 4471775303604244026, guid: 739ddd8634b134d94931723d71589852, type: 3}
+      propertyPath: OverrideAttenuation
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4471775303604244026, guid: 739ddd8634b134d94931723d71589852, type: 3}
+      propertyPath: OverrideMinDistance
+      value: 5.72
+      objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_RootOrder
       value: 22
       objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -32.08696
+      value: -33.32
       objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_LocalPosition.y
@@ -886,7 +910,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 11.279448
+      value: 12.47
       objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1175,13 +1199,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: MarketFMODEmitter (6)
       objectReference: {fileID: 0}
+    - target: {fileID: 4471775303604244026, guid: 739ddd8634b134d94931723d71589852, type: 3}
+      propertyPath: OverrideAttenuation
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4471775303604244026, guid: 739ddd8634b134d94931723d71589852, type: 3}
+      propertyPath: OverrideMinDistance
+      value: 4.06
+      objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_RootOrder
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 31.904688
+      value: 35.4
       objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1189,7 +1221,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -10.000329
+      value: -12.24
       objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_LocalRotation.w
@@ -5060,13 +5092,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: MarketFMODEmitter (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 4471775303604244026, guid: 739ddd8634b134d94931723d71589852, type: 3}
+      propertyPath: OverrideAttenuation
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4471775303604244026, guid: 739ddd8634b134d94931723d71589852, type: 3}
+      propertyPath: OverrideMinDistance
+      value: 3.99
+      objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_RootOrder
       value: 23
       objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -34.92547
+      value: -35.88
       objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_LocalPosition.y
@@ -5074,7 +5114,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -5.400136
+      value: -3.67
       objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_LocalRotation.w
@@ -5701,13 +5741,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: MarketFMODEmitter (8)
       objectReference: {fileID: 0}
+    - target: {fileID: 4471775303604244026, guid: 739ddd8634b134d94931723d71589852, type: 3}
+      propertyPath: OverrideAttenuation
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4471775303604244026, guid: 739ddd8634b134d94931723d71589852, type: 3}
+      propertyPath: OverrideMinDistance
+      value: 4.51
+      objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.6644006
+      value: -2.91
       objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_LocalPosition.y
@@ -5715,7 +5763,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 30.102306
+      value: 30.99
       objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_LocalRotation.w
@@ -6136,13 +6184,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: MarketFMODEmitter
       objectReference: {fileID: 0}
+    - target: {fileID: 4471775303604244026, guid: 739ddd8634b134d94931723d71589852, type: 3}
+      propertyPath: OverrideAttenuation
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4471775303604244026, guid: 739ddd8634b134d94931723d71589852, type: 3}
+      propertyPath: OverrideMinDistance
+      value: 3.73
+      objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_RootOrder
       value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -25.638744
+      value: -25.75
       objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_LocalPosition.y
@@ -6150,7 +6206,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -5.388933
+      value: -4.7
       objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_LocalRotation.w

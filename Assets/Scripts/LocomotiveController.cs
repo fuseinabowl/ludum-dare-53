@@ -8,6 +8,15 @@ public class LocomotiveController : MonoBehaviour
     public FMODUnity.StudioEventEmitter loaded;
     public FMODUnity.StudioEventEmitter unloaded;
 
+    private bool head = false;
+
+    public void SetIsHead(bool isHead) {
+        head = isHead;
+        if (head) {
+            chug.Play();
+        }
+    }
+
     public void DidPause()
     {
         chug.SetParameter("TrainSpeed", 0);

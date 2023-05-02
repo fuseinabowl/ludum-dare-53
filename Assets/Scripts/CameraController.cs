@@ -19,9 +19,17 @@ public class CameraController : MonoBehaviour
     public float minXSkew = 40;
     public float maxXSkew = 75;
 
+    [Header("Follow")]
+    public Vector3 followPositionOffset = Vector3.zero;
+
+    [Range(0f, 90f)]
+    public float followXRotation = 45f;
+
     private Camera cam;
     private Vector3 prevPosition;
+    private Quaternion prevRotation;
     private Vector3 lookTarget;
+    private TrainMover followTrain = null;
 
     private void Awake()
     {
@@ -31,6 +39,7 @@ public class CameraController : MonoBehaviour
     private void Start()
     {
         prevPosition = transform.position;
+        prevRotation = transform.rotation;
         cam.orthographicSize = (minOrthoZoom + maxOrthoZoom) / 2f;
         SafeApplyCameraZoom(transform.position.y);
         UpdateLookTarget();
@@ -38,10 +47,31 @@ public class CameraController : MonoBehaviour
 
     private void Update()
     {
-        if (prevPosition != transform.position)
+        if (GameController.singleton.gameOver)
+        {
+            // reward for finishing the game... free camera!
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                if (!FollowNextTrain())
+                {
+                    transform.position = prevPosition;
+                    transform.rotation = prevRotation;
+                }
+            }
+        } else {
+            // just to make sure if a track is deleted, you can't get stuck
+            followTrain = null;
+        }
+
+        if (followTrain != null)
+        {
+            UpdateFollowTarget();
+        }
+        else if (prevPosition != transform.position || prevRotation != transform.rotation)
         {
             UpdateLookTarget();
             prevPosition = transform.position;
+            prevRotation = transform.rotation;
         }
     }
 
@@ -61,6 +91,10 @@ public class CameraController : MonoBehaviour
 
     private void LateUpdate()
     {
+        if (followTrain != null) {
+            return;
+        }
+
         var panInput = InputPan();
         var panDelta = transform.right * (panInput.x * -panSpeed);
         panDelta += transform.up * (panInput.y * -panSpeed);
@@ -132,5 +166,49 @@ public class CameraController : MonoBehaviour
                         ? 1
                         : 0
             );
+    }
+
+    private bool FollowNextTrain()
+    {
+        var trains = GameObject.FindObjectsOfType<TrainMover>();
+        int idx;
+
+        if (followTrain == null)
+        {
+            idx = -1;
+        }
+        else
+        {
+            idx = 0;
+            // find currently running train
+            for (; idx < trains.Length && trains[idx] != followTrain; idx++) { }
+        }
+
+        // find the next running train after that
+        idx++;
+        for (; idx < trains.Length && !trains[idx].Running(); idx++) { }
+
+        if (idx >= trains.Length - 1)
+        {
+            // no trains can be followed, or this was the last train so go back to the free camera
+            followTrain = null;
+            return false;
+        }
+
+        followTrain = trains[idx];
+        return true;
+    }
+
+    private void UpdateFollowTarget()
+    {
+        Vector3 forwardTransform;
+        var forwardTrain = followTrain.ForwardLocomitiveController(out forwardTransform);
+        transform.forward = forwardTransform;
+        transform.position = forwardTrain.transform.position + followPositionOffset;
+        transform.rotation = Quaternion.Euler(
+            followXRotation,
+            transform.rotation.eulerAngles.y,
+            transform.rotation.eulerAngles.z
+        );
     }
 }

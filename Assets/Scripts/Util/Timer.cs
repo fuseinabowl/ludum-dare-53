@@ -5,22 +5,29 @@ using UnityEngine;
 /// <summary>
 /// A `Timer` component that keeps time internally and calls an `OnTimerTick` method on its
 /// gameObject every `period` seconds.
-/// 
+///
 /// Must be started manually with `StartTimer` unless `autoStart` is true.
-/// 
+///
 /// If the frame rate is less than the timer period, `OnTimerTick` will be called once per frame.
 /// </summary>
 public class Timer : MonoBehaviour
 {
     public string timerName = "";
 
-    [Range(0.01f, 30f)] public float period = 1;
+    [Range(0.01f, 30f)]
+    public float period = 1;
 
     public bool autoStart = false;
 
     public bool oneShot = false;
 
     public float nextTick { get; private set; } = float.PositiveInfinity;
+
+    public bool ticked
+    {
+        get { return nextTick == 0; }
+        set { }
+    }
 
     public bool running
     {
@@ -33,7 +40,6 @@ public class Timer : MonoBehaviour
         get { return period - nextTick; }
         set { }
     }
-
 
     /// <summary>
     /// `event` interface to be notified on timer tick. Called at the same time as `OnTimerTick`.
@@ -58,7 +64,11 @@ public class Timer : MonoBehaviour
                 return timer;
             }
         }
-        Debug.LogWarningFormat("Timer \"{0}\" not found on {1}, creating new Timer", timerName, gameObject.name);
+        Debug.LogWarningFormat(
+            "Timer \"{0}\" not found on {1}, creating new Timer",
+            timerName,
+            gameObject.name
+        );
         return Create(gameObject, -1, timerName);
     }
 

@@ -200,6 +200,8 @@ MonoBehaviour:
   maxY: 50
   minXSkew: 45
   maxXSkew: 90
+  followPositionOffset: {x: 0, y: 0.7, z: 0}
+  followXRotation: 35
 --- !u!114 &5360432616395567245
 MonoBehaviour:
   m_ObjectHideFlags: 0

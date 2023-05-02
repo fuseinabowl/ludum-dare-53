@@ -6,36 +6,31 @@ using TMPro;
 
 public class FrameRateLimiter : MonoBehaviour
 {
-    [Serializable]
-    public class FrameRateOption
-    {
-        public int targetFrameRate = -1;
-        public string displayName = "infinite";
-    }
-
-    [SerializeField]
-    private List<FrameRateOption> frameRateOptions = new List<FrameRateOption>();
-
-    private int currentRateIndex = 0;
+    private int currentRateIndex = 2;
 
     private void Start()
     {
         ApplyCurrentlySelectedRate();
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            IncrementAndApplyFrameRate();
+        }
+    }
+
     private void ApplyCurrentlySelectedRate()
     {
-        if (frameRateOptions.Count > currentRateIndex && currentRateIndex >= 0)
-        {
-            var optionData = frameRateOptions[currentRateIndex];
-            Application.targetFrameRate = optionData.targetFrameRate;
-        }
+        Debug.Log($"Applying VSync of {currentRateIndex}");
+        QualitySettings.vSyncCount = currentRateIndex;
     }
 
     public void IncrementAndApplyFrameRate()
     {
         ++currentRateIndex;
-        if (frameRateOptions.Count <= currentRateIndex)
+        if (currentRateIndex > 4) // hard coded limit in Unity: https://docs.unity3d.com/ScriptReference/QualitySettings-vSyncCount.html
         {
             currentRateIndex = 0;
         }

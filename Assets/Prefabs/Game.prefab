@@ -937,16 +937,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   frameRateOptions:
-  - targetFrameRate: 60
+  - targetFrameRate: 5
     displayName: 60
   - targetFrameRate: 30
     displayName: 30
   - targetFrameRate: -1
     displayName: infinite
-  hudText: {fileID: 0}
-  formatString: 'Fix audio stuttering
-
-    FPS target: {0}'
 --- !u!1 &7074423465863420603
 GameObject:
   m_ObjectHideFlags: 0

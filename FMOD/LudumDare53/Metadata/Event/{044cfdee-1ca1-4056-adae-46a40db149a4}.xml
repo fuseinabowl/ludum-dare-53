@@ -61,7 +61,7 @@
 			<value>5</value>
 		</property>
 		<property name="maximumDistance">
-			<value>15</value>
+			<value>25</value>
 		</property>
 	</object>
 	<object class="MarkerTrack" id="{ba2d963b-5600-48a6-8a88-1b5ee7d6dfea}" />
@@ -169,11 +169,14 @@
 	</object>
 	<object class="MixerBusPanner" id="{c56d4c0f-f8dd-49a6-8e73-5811bf102de8}" />
 	<object class="ThreeEQEffect" id="{58a99b5c-d7d0-4c68-a21b-1206caff453f}">
+		<property name="lowGain">
+			<value>4</value>
+		</property>
 		<property name="midGain">
-			<value>1</value>
+			<value>2</value>
 		</property>
 		<property name="highGain">
-			<value>-5</value>
+			<value>-6.5</value>
 		</property>
 	</object>
 	<object class="MixerBusFader" id="{c5f1423c-6a6f-49cb-aad6-7b9b3e8ace69}" />
@@ -182,7 +185,7 @@
 			<value>5</value>
 		</property>
 		<property name="maximumDistance">
-			<value>15</value>
+			<value>25</value>
 		</property>
 	</object>
 	<object class="MultiSound" id="{b240f631-8aef-47b1-adff-683c7b6a9557}">

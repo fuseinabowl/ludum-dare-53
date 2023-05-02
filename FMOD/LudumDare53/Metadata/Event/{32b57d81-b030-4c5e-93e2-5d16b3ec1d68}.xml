@@ -64,9 +64,6 @@
 		<property name="minimumDistance">
 			<value>3</value>
 		</property>
-		<property name="maximumDistance">
-			<value>15</value>
-		</property>
 	</object>
 	<object class="MarkerTrack" id="{626208a5-5321-4e67-aa7c-77285a8f5ee4}" />
 	<object class="GroupTrack" id="{bb0e530d-d5e0-4989-b29d-209a63785e3c}">
@@ -89,7 +86,7 @@
 	</object>
 	<object class="EventMixerMaster" id="{1ca3b1a5-2533-431d-8a2a-630408addcd7}">
 		<property name="volume">
-			<value>-17</value>
+			<value>-17.5</value>
 		</property>
 		<relationship name="effectChain">
 			<destination>{b9b8d2ee-5046-46e7-9109-51f1e15af3fc}</destination>
@@ -180,6 +177,7 @@
 	</object>
 	<object class="MixerBusEffectChain" id="{b9b8d2ee-5046-46e7-9109-51f1e15af3fc}">
 		<relationship name="effects">
+			<destination>{53ecca0a-3380-41cb-9661-428b0238ba49}</destination>
 			<destination>{ece0f065-9cd1-4761-aba0-f8472ffc7d9a}</destination>
 			<destination>{0314d592-3119-4d07-ba9f-8d02c7c2c439}</destination>
 		</relationship>
@@ -252,13 +250,11 @@
 			<destination>{83b26ef6-613a-4380-a244-548bb2b24cbb}</destination>
 		</relationship>
 	</object>
+	<object class="ThreeEQEffect" id="{53ecca0a-3380-41cb-9661-428b0238ba49}" />
 	<object class="MixerBusFader" id="{ece0f065-9cd1-4761-aba0-f8472ffc7d9a}" />
 	<object class="SpatialiserEffect" id="{0314d592-3119-4d07-ba9f-8d02c7c2c439}">
 		<property name="minimumDistance">
 			<value>3</value>
-		</property>
-		<property name="maximumDistance">
-			<value>15</value>
 		</property>
 	</object>
 	<object class="AutomationPoint" id="{787da234-fb3d-4a32-97c9-4c4faed2517a}">

@@ -16,14 +16,6 @@ public class FrameRateLimiter : MonoBehaviour
     [SerializeField]
     private List<FrameRateOption> frameRateOptions = new List<FrameRateOption>();
 
-    [SerializeField]
-    private TextMeshProUGUI hudText;
-    
-    [SerializeField]
-    [Tooltip("{0} is the FPS target name")]
-    [Multiline]
-    private string formatString;
-
     private int currentRateIndex = 0;
 
     private void Start()
@@ -37,7 +29,6 @@ public class FrameRateLimiter : MonoBehaviour
         {
             var optionData = frameRateOptions[currentRateIndex];
             Application.targetFrameRate = optionData.targetFrameRate;
-            hudText.text = String.Format(formatString, optionData.displayName);
         }
     }
 

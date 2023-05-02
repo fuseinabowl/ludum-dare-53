@@ -209,7 +209,6 @@
 			<destination>{2e52f9d4-2bd2-4c0c-a356-d2f55526f6b4}</destination>
 			<destination>{7f9c7cce-8df4-46e8-be52-6510fef5af6f}</destination>
 			<destination>{2e230b02-e761-4e9f-ad8d-2e7f8e050723}</destination>
-			<destination>{1df978c5-bf0e-4d2f-9ab5-9a80a72c888a}</destination>
 			<destination>{21363fb5-8828-4c58-a83f-0b3e3905c98d}</destination>
 		</relationship>
 	</object>
@@ -521,7 +520,6 @@
 			<destination>{50e78e0b-0cda-45aa-823b-f71db1f5f02f}</destination>
 		</relationship>
 	</object>
-	<object class="SilenceSound" id="{1df978c5-bf0e-4d2f-9ab5-9a80a72c888a}" />
 	<object class="SilenceSound" id="{21363fb5-8828-4c58-a83f-0b3e3905c98d}" />
 	<object class="MixerBusEffectChain" id="{e669262f-1a7c-4f08-af9b-21141e0fb67c}">
 		<relationship name="effects">

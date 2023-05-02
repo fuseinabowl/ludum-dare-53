@@ -9,6 +9,7 @@ public class SFX : MonoBehaviour
     public FMODUnity.StudioEventEmitter trackDeleted;
     public FMODUnity.StudioEventEmitter birds;
     public FMODUnity.StudioEventEmitter wind;
+    public FMODUnity.StudioEventEmitter winJingle;
 
     public static SFX singleton
     {

@@ -40,5 +40,9 @@ public class TownStatuses : MonoBehaviour
         var fedTowns = townIsFed.Count(townRecord => townRecord.Value);
 
         hudText.text = String.Format(formatString, totalTowns, fedTowns);
+
+        if (totalTowns == fedTowns) {
+            SFX.singleton.winJingle.Play();
+        }
     }
 }

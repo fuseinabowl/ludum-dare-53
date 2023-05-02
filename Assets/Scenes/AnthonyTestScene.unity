@@ -3663,11 +3663,11 @@ MonoBehaviour:
     prefab: {fileID: 6817244548919748188, guid: 4c8c870e035ec294aa18cf8b4d3163f7, type: 3}
   - isSelected: 0
     prefab: {fileID: 6817244548919748188, guid: 6bfb1254fddc165439a54d4d9da6d450, type: 3}
-  - isSelected: 0
+  - isSelected: 1
     prefab: {fileID: 6817244548919748188, guid: 1862fec90c9a977479e09215a6b2f970, type: 3}
   - isSelected: 0
     prefab: {fileID: 6817244548919748188, guid: e751afd07e7eddc47aa5702798dc23a4, type: 3}
-  - isSelected: 1
+  - isSelected: 0
     prefab: {fileID: 6817244548919748188, guid: 3df6775e1d9d8924e916bb2e9776e700, type: 3}
   - isSelected: 0
     prefab: {fileID: 6817244548919748188, guid: 27bf732175efeff42b782d1a93f0a60e, type: 3}

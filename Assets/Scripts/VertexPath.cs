@@ -48,16 +48,12 @@ public class VertexPath : MonoBehaviour
     private void AddEdge(Edge edge)
     {
         var edgeModel = Instantiate(net.edgeModelPrefab, transform);
-        edgeModel.GetComponentInChildren<TrackModelGeneratorComponent>().SetPoints(
-            edge.middle,
-            edge.toVertex
-        );
+        edgeModel
+            .GetComponentInChildren<TrackModelGeneratorComponent>()
+            .SetPoints(edge.middle, edge.toVertex);
 
         UpdateLastEdgeEndPoint(edge.middle);
-        edges.Add(new EdgeAndInstanceData{
-            edge = edge,
-            tracksObject = edgeModel,
-        });
+        edges.Add(new EdgeAndInstanceData { edge = edge, tracksObject = edgeModel, });
 
         BuildVertices();
     }
@@ -66,7 +62,9 @@ public class VertexPath : MonoBehaviour
     {
         if (edges.Count > 0)
         {
-            edges[edges.Count - 1].tracksObject.GetComponentInChildren<TrackModelGeneratorComponent>().SetEnd(newEndPoint);
+            edges[edges.Count - 1].tracksObject
+                .GetComponentInChildren<TrackModelGeneratorComponent>()
+                .SetEnd(newEndPoint);
         }
     }
 
@@ -190,7 +188,9 @@ public class VertexPath : MonoBehaviour
         }
 
         DestroyEdge(FindDirectionalEdge(edge, out var i));
-        edges[edges.Count - 1].tracksObject.GetComponentInChildren<TrackModelGeneratorComponent>().SetEndToIdle();
+        edges[edges.Count - 1].tracksObject
+            .GetComponentInChildren<TrackModelGeneratorComponent>()
+            .SetEndToIdle();
         SFX.Play(SFX.singleton.trackDeleted);
 
         return true;
@@ -242,8 +242,7 @@ public class VertexPath : MonoBehaviour
 
     public bool IsComplete()
     {
-        return IsValidPath()
-            && net.IsTownAt(LastVertex());
+        return IsValidPath() && net.IsTownAt(LastVertex());
     }
 
     public void NotifyCompleted()
@@ -251,7 +250,10 @@ public class VertexPath : MonoBehaviour
         var town = net.GetTownAt(LastEdge().toVertex);
         town.OnConnected();
         fullTrackEstablished?.Invoke();
-        StartCoroutine(TrackCompletedAnimation());
+        if (!GameController.singleton.gameOver)
+        {
+            StartCoroutine(TrackCompletedAnimation());
+        }
     }
 
     private bool IsValidPath()
@@ -274,14 +276,18 @@ public class VertexPath : MonoBehaviour
         }
     }
 
-    private IEnumerator TrackCompletedAnimation() {
+    private IEnumerator TrackCompletedAnimation()
+    {
         SFX.Play(
             SFX.singleton.trackComplete,
-            "SpawnRate", 0.1f / net.trackCompletedAnimPeriod,
-            "SpawnTotal", edges.Count - 2
+            "SpawnRate",
+            0.1f / net.trackCompletedAnimPeriod,
+            "SpawnTotal",
+            edges.Count - 2
         );
 
-        for (int i = 1; i < edges.Count - 1; i++) {
+        for (int i = 1; i < edges.Count - 1; i++)
+        {
             var edge = edges[i];
             edge.tracksObject.GetComponent<TransformAnimator>().Animate();
             yield return new WaitForSeconds(net.trackCompletedAnimPeriod);

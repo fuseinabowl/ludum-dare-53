@@ -43,13 +43,7 @@ public class TownStatuses : MonoBehaviour
 
         if (totalTowns == fedTowns)
         {
-            StartCoroutine(PlayJingle());
+            GameController.singleton.DidGameOver();
         }
-    }
-
-    private IEnumerator PlayJingle()
-    {
-        yield return new WaitForSeconds(1f);
-        SFX.singleton.winJingle.Play();
     }
 }

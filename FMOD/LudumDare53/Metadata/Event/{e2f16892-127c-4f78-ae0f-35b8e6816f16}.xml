@@ -64,9 +64,6 @@
 		<property name="minimumDistance">
 			<value>3</value>
 		</property>
-		<property name="maximumDistance">
-			<value>15</value>
-		</property>
 	</object>
 	<object class="MarkerTrack" id="{7ebbea7f-9e27-46d5-9856-63aba3ee00ad}" />
 	<object class="GroupTrack" id="{5eb8845b-31a0-479d-9830-f5a6abb259b0}">
@@ -256,9 +253,6 @@
 	<object class="SpatialiserEffect" id="{dda47063-a552-4484-8796-64d3e2bf0b06}">
 		<property name="minimumDistance">
 			<value>3</value>
-		</property>
-		<property name="maximumDistance">
-			<value>15</value>
 		</property>
 	</object>
 	<object class="AutomationPoint" id="{0d5190f0-4dc0-486a-963e-8df1f35543a6}">

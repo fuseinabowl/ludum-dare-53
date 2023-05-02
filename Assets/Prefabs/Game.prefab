@@ -355,7 +355,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44553c0fc4932644fae412e65a2ea5da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  formatString: '{1}/{0} Towns Fed'
+  formatString: '{1}/{0} towns fed'
   hudText: {fileID: 8932602601385829991}
 --- !u!114 &3602577308909449548
 MonoBehaviour:

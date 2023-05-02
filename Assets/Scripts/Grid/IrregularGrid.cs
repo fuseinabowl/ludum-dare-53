@@ -102,6 +102,7 @@ public class IrregularGrid : MonoBehaviour
         return new MeshData(bakedGridMesh);
     }
 
+    private const int vertexDangerLimit = 60000;
     private void GenerateAndCombineMeshes()
     {
         meshData = LoadMeshData();
@@ -125,8 +126,41 @@ public class IrregularGrid : MonoBehaviour
         for (var quadIndex = 0; quadIndex < indices.Length / 4; ++quadIndex)
         {
             AppendWarpedSlotPrefabToMeshDataAndSpawnProps(quadIndex, accumulatingVertices, accumulatingNormals, accumulatingUv0s, accumulatingUv1s, accumulatingIndices);
+
+            if (accumulatingVertices.Count > vertexDangerLimit)
+            {
+                EmitMeshRenderer(
+                    accumulatingVertices,
+                    accumulatingNormals,
+                    accumulatingUv0s,
+                    accumulatingUv1s,
+                    accumulatingIndices
+                );
+                accumulatingVertices.Clear();
+                accumulatingNormals.Clear();
+                accumulatingUv0s.Clear();
+                accumulatingUv1s.Clear();
+                accumulatingIndices.Clear();
+            }
         }
 
+        EmitMeshRenderer(
+            accumulatingVertices,
+            accumulatingNormals,
+            accumulatingUv0s,
+            accumulatingUv1s,
+            accumulatingIndices
+        );
+    }
+
+    private void EmitMeshRenderer(
+        List<Vector3> accumulatingVertices,
+        List<Vector3> accumulatingNormals,
+        List<Vector2> accumulatingUv0s,
+        List<Vector2> accumulatingUv1s,
+        List<int> accumulatingIndices
+    )
+    {
         var mesh = new Mesh();
 
         mesh.vertices = accumulatingVertices.ToArray();
@@ -137,10 +171,13 @@ public class IrregularGrid : MonoBehaviour
 
         mesh.RecalculateBounds();
 
-        var meshFilter = gameObject.AddComponent<MeshFilter>();
+        var meshHolderObject = new GameObject();
+        meshHolderObject.transform.parent = transform;
+
+        var meshFilter = meshHolderObject.AddComponent<MeshFilter>();
         meshFilter.sharedMesh = mesh;
 
-        var meshRenderer = gameObject.AddComponent<MeshRenderer>();
+        var meshRenderer = meshHolderObject.AddComponent<MeshRenderer>();
         meshRenderer.sharedMaterials = combinedMaterials;
     }
 

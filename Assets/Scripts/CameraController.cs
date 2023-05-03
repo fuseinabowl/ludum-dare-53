@@ -36,6 +36,7 @@ public class CameraController : MonoBehaviour
     private Camera cam;
     private Vector3 freePosition;
     private Quaternion freeRotation;
+    private Vector3 freeLookTarget;
     private TrainMover followTrain = null;
     private Vector3 followTarget;
     private Vector3 followForwardVelocity;
@@ -99,7 +100,7 @@ public class CameraController : MonoBehaviour
         if (rotateInput != 0)
         {
             transform.RotateAround(
-                followTarget,
+                freeLookTarget,
                 Vector3.up,
                 rotateInput * rotationSpeed * Time.deltaTime
             );
@@ -143,6 +144,20 @@ public class CameraController : MonoBehaviour
                 ? 1
                 : 0;
         return new Vector3(x, y, 0).normalized;
+    }
+
+    private void UpdateLookTarget()
+    {
+        Ray ray = cam.ViewportPointToRay(new Vector3(0.5F, 0.5F, 0));
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit))
+        {
+            freeLookTarget = hit.point;
+        }
+        else
+        {
+            freeLookTarget = Vector3.zero;
+        }
     }
 
     private float InputRotation()

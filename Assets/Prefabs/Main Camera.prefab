@@ -193,14 +193,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   panSpeed: 10
   rotationSpeed: 90
-  zoomSpeed: 13
-  minOrthoZoom: 4
-  maxOrthoZoom: 10
-  minY: 3
+  zoomSpeed: 5
+  zoomExp: 0.36
+  zoomSpeedExp: 2
+  minY: 1.5
   maxY: 50
-  minXSkew: 45
+  minXSkew: 42
   maxXSkew: 90
   followPositionOffset: {x: 0, y: 0.7, z: 0}
+  followSmoothTime: 0.2
+  alwaysEnableFollowCamera: 0
   followXRotation: 35
 --- !u!114 &5360432616395567245
 MonoBehaviour:

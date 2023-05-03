@@ -7700,30 +7700,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1496111007216314838, guid: 51203979b6965054fb0a32b9daecc688, type: 3}
-      propertyPath: minY
-      value: 1.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1496111007216314838, guid: 51203979b6965054fb0a32b9daecc688, type: 3}
-      propertyPath: zoomExp
-      value: 0.36
-      objectReference: {fileID: 0}
-    - target: {fileID: 1496111007216314838, guid: 51203979b6965054fb0a32b9daecc688, type: 3}
-      propertyPath: minXSkew
-      value: 42
-      objectReference: {fileID: 0}
-    - target: {fileID: 1496111007216314838, guid: 51203979b6965054fb0a32b9daecc688, type: 3}
-      propertyPath: zoomSpeed
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1496111007216314838, guid: 51203979b6965054fb0a32b9daecc688, type: 3}
-      propertyPath: zoomSpeedExp
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1496111007216314838, guid: 51203979b6965054fb0a32b9daecc688, type: 3}
-      propertyPath: followSmoothTime
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4882876494737527314, guid: 51203979b6965054fb0a32b9daecc688, type: 3}
       propertyPath: m_Name
       value: Main Camera

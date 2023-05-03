@@ -26,7 +26,7 @@ public class CameraController : MonoBehaviour
     [Header("Follow")]
     public Vector3 followPositionOffset = Vector3.zero;
 
-    [Range(0.5f, 2f)]
+    [Range(0.1f, 1f)]
     public float followSmoothTime = 1f;
     public bool alwaysEnableFollowCamera = false;
 
@@ -38,7 +38,8 @@ public class CameraController : MonoBehaviour
     private Quaternion freeRotation;
     private TrainMover followTrain = null;
     private Vector3 followTarget;
-    private Vector3 followVelocity;
+    private Vector3 followForwardVelocity;
+    private Vector3 followPositionVelocity;
 
     private void Awake()
     {
@@ -50,7 +51,6 @@ public class CameraController : MonoBehaviour
         freePosition = transform.position;
         freeRotation = transform.rotation;
         SafeApplyCameraZoom(0);
-        UpdateLookTarget();
     }
 
     private void Update()
@@ -76,26 +76,6 @@ public class CameraController : MonoBehaviour
         if (followTrain != null)
         {
             UpdateFollowTarget();
-        }
-        else if (freePosition != transform.position || freeRotation != transform.rotation)
-        {
-            UpdateLookTarget();
-            freePosition = transform.position;
-            freeRotation = transform.rotation;
-        }
-    }
-
-    private void UpdateLookTarget()
-    {
-        Ray ray = cam.ViewportPointToRay(new Vector3(0.5F, 0.5F, 0));
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit))
-        {
-            followTarget = hit.point;
-        }
-        else
-        {
-            followTarget = Vector3.zero;
         }
     }
 
@@ -222,17 +202,20 @@ public class CameraController : MonoBehaviour
 
     private void UpdateFollowTarget()
     {
-        Vector3 forwardTransform;
-        var forwardTrain = followTrain.ForwardLocomitiveController(out forwardTransform);
-        transform.forward = forwardTransform;
-        transform.position = forwardTrain.transform.position + followPositionOffset;
-        var targetRotation = Vectors.X(followXRotation, transform.rotation.eulerAngles);
-        var smoothRotation = Vector3.SmoothDamp(
-            transform.rotation.eulerAngles,
-            targetRotation,
-            ref followVelocity,
+        Vector3 targetForward;
+        var forwardTrain = followTrain.ForwardLocomitiveController(out targetForward);
+        var targetPosition = forwardTrain.transform.position + followPositionOffset;
+        transform.forward = Vector3.SmoothDamp(
+            transform.forward,
+            targetForward,
+            ref followForwardVelocity,
             followSmoothTime
         );
-        transform.rotation = Quaternion.Euler(smoothRotation);
+        transform.position = Vector3.SmoothDamp(
+            transform.position,
+            targetPosition,
+            ref followPositionVelocity,
+            followSmoothTime
+        );
     }
 }

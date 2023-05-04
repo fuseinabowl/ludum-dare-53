@@ -6,10 +6,14 @@ using TMPro;
 
 public class FrameRateLimiter : MonoBehaviour
 {
+    [SerializeField]
+    private int defaultVSync;
+
     private int currentRateIndex = 2;
 
     private void Start()
     {
+        currentRateIndex = defaultVSync;
         ApplyCurrentlySelectedRate();
     }
 

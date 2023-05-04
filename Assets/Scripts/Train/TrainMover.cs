@@ -16,6 +16,9 @@ public class TrainMover : MonoBehaviour
     [SerializeField]
     private TrainData trainData;
 
+    [SerializeField]
+    private TrainAudio trainAudio;
+
     private bool trainRunningLeft;
     private GameObject headLocomotive;
     private GameObject tailLocomotive;
@@ -44,6 +47,7 @@ public class TrainMover : MonoBehaviour
         }
         carriages.Clear();
         trainRunning = false;
+        trainAudio.chug.Stop();
     }
 
     public void StartMoving()
@@ -152,7 +156,6 @@ public class TrainMover : MonoBehaviour
     {
         headLocomotive = GameObject.Instantiate(trainData.locomotive, transform);
         headLocomotive.transform.position = path.vertices[0];
-        HeadController().SetIsHead(true);
 
         for (var carriageIndex = 0; carriageIndex < trainData.numberOfCarriages; ++carriageIndex)
         {
@@ -162,6 +165,8 @@ public class TrainMover : MonoBehaviour
         tailLocomotive = GameObject.Instantiate(trainData.locomotive, transform);
         tailLocomotive.transform.position = path.vertices[0];
         tailLocomotive.transform.localScale = new Vector3(-1f, 1f, -1f);
+
+        trainAudio.chug.Play();
     }
 
     private float TrainLength => trainData.carriageLength * (trainData.numberOfCarriages + 2);
@@ -243,13 +248,13 @@ public class TrainMover : MonoBehaviour
 
     private IEnumerator LoadCarriagesAndShowHeadLocomotive()
     {
-        HeadController().DidPause();
+        trainAudio.pauseChug();
 
         HideTailLocomotive();
 
         yield return new WaitForSeconds(trainData.timeBetweenHidingLocomotiveAndLoadingCarriages);
 
-        HeadController().DidLoad();
+        trainAudio.loaded.Play();
 
         foreach (var carriage in carriages)
         {
@@ -261,18 +266,18 @@ public class TrainMover : MonoBehaviour
 
         yield return new WaitForSeconds(trainData.timeBetweenShowingLocomotiveAndStartingMoving);
 
-        HeadController().DidResume();
+        trainAudio.resumeChug();
     }
 
     private IEnumerator UnloadCarriagesAndShowTailLocomotive()
     {
-        HeadController().DidPause();
+        trainAudio.pauseChug();
 
         HideHeadLocomotive();
 
         yield return new WaitForSeconds(trainData.timeBetweenHidingLocomotiveAndLoadingCarriages);
 
-        HeadController().DidUnload();
+        trainAudio.unloaded.Play();
 
         foreach (var carriage in Enumerable.Reverse(carriages))
         {
@@ -284,7 +289,7 @@ public class TrainMover : MonoBehaviour
 
         yield return new WaitForSeconds(trainData.timeBetweenShowingLocomotiveAndStartingMoving);
 
-        HeadController().DidResume();
+        trainAudio.resumeChug();
     }
 
     private void HideTailLocomotive()
@@ -372,24 +377,28 @@ public class TrainMover : MonoBehaviour
 
     private void CompletedTrip() { }
 
-    private LocomotiveController HeadController()
-    {
-        return headLocomotive.GetComponent<LocomotiveController>();
-    }
-
     public bool Running()
     {
         return trainRunning;
     }
 
-    public LocomotiveController ForwardLocomitiveController(out Vector3 forwardTransform)
+    public Vector3 FrontTrainPosition(out Vector3 forwardTransform)
     {
         if (trainRunningLeft)
         {
             forwardTransform = -tailLocomotive.transform.forward;
-            return tailLocomotive.GetComponent<LocomotiveController>();
+            return tailLocomotive.transform.position;
         }
         forwardTransform = headLocomotive.transform.forward;
-        return headLocomotive.GetComponent<LocomotiveController>();
+        return headLocomotive.transform.position;
+    }
+
+    private void Update()
+    {
+        if (trainRunning)
+        {
+            Vector3 forwardTransform;
+            trainAudio.transform.position = FrontTrainPosition(out forwardTransform);
+        }
     }
 }

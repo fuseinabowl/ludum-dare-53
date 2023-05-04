@@ -266,8 +266,8 @@ public class CameraController : MonoBehaviour
     private void UpdateFollowCamera(Vector3 panInput)
     {
         Vector3 targetForward;
-        var forwardTrain = followTrain.ForwardLocomitiveController(out targetForward);
-        var targetPosition = forwardTrain.transform.position + followPositionOffset;
+        var trainPosition = followTrain.FrontTrainPosition(out targetForward);
+        var targetPosition = trainPosition + followPositionOffset;
 
         float followXSkew = 0;
         if (panInput.x != 0)

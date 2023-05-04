@@ -6,6 +6,7 @@ public class CameraController : MonoBehaviour
 {
     [Header("Free")]
     public float panSpeed = 10f;
+    public float panSpeedExp = 0f;
 
     public float rotationSpeed = 90f;
     public float zoomSpeed = 10f;
@@ -127,8 +128,10 @@ public class CameraController : MonoBehaviour
         else
         {
             followPositionIsTransition = false;
-            var panDelta = transform.right * (panInput.x * -panSpeed);
-            panDelta += transform.up * (panInput.y * panSpeed);
+            var panSpeedForHeight =
+                panSpeed * Mathf.Pow(Mathf.Lerp(0.5f, 1f, HeightFactor()), panSpeedExp);
+            var panDelta = transform.right * (panInput.x * -panSpeedForHeight);
+            panDelta += transform.up * (panInput.y * panSpeedForHeight);
             panDelta = Vectors.Y(0, panDelta);
             transform.position += panDelta;
         }
@@ -160,8 +163,7 @@ public class CameraController : MonoBehaviour
 
     private void UpdateFreeCameraZoom(float yDiff)
     {
-        var adjZoomSpeed =
-            zoomSpeed * Mathf.Pow(HeightFactor() + 1, zoomSpeedExp);
+        var adjZoomSpeed = zoomSpeed * Mathf.Pow(HeightFactor() + 1, zoomSpeedExp);
         var y = transform.position.y + yDiff * adjZoomSpeed;
         transform.position = Vectors.Y(Mathf.Clamp(y, minY, maxY), transform.position);
         var xSkew = Mathf.Pow(HeightFactor(), zoomExp);
@@ -171,8 +173,6 @@ public class CameraController : MonoBehaviour
         );
         transform.rotation = Quaternion.Euler(rot);
     }
-
-    
 
     public float HeightFactor()
     {

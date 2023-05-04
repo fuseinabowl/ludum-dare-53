@@ -4,19 +4,12 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    [Header("Pan")]
+    [Header("Free")]
     public float panSpeed = 10f;
 
-    [Header("Rotate")]
     public float rotationSpeed = 90f;
-
-    [Header("Zoom")]
     public float zoomSpeed = 10f;
-
-    [Range(0f, 1f)]
     public float zoomExp = 1f;
-
-    [Range(0f, 2f)]
     public float zoomSpeedExp = 0f;
     public float minY = 3f;
     public float maxY = 60f;
@@ -29,18 +22,25 @@ public class CameraController : MonoBehaviour
     [Range(0.1f, 1f)]
     public float followSmoothTime = 1f;
     public bool alwaysEnableFollowCamera = false;
+    public float followMinXSkew;
+    public float followMaxXSkew;
+    public float followMaxYSkew;
 
     [Range(0f, 90f)]
     public float followXRotation = 45f;
 
     private Camera cam;
+
     private Vector3 freePosition;
     private Quaternion freeRotation;
     private Vector3 freeLookTarget;
-    private TrainMover followTrain = null;
+
+    private TrainMover followTrain;
     private Vector3 followTarget;
     private Vector3 followForwardVelocity;
     private Vector3 followPositionVelocity;
+    private float followXSkew;
+    private float followYSkew;
 
     private void Awake()
     {
@@ -51,18 +51,19 @@ public class CameraController : MonoBehaviour
     {
         freePosition = transform.position;
         freeRotation = transform.rotation;
-        SafeApplyCameraZoom(0);
+        UpdateFreeCameraZoom(0);
     }
 
     private void Update()
     {
         if (alwaysEnableFollowCamera || GameController.singleton.gameOver)
         {
-            // reward for finishing the game... free camera!
+            // Reward for finishing the game... free camera!
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 if (!FollowNextTrain())
                 {
+                    followXSkew = minXSkew;
                     transform.position = freePosition;
                     transform.rotation = freeRotation;
                 }
@@ -70,55 +71,60 @@ public class CameraController : MonoBehaviour
         }
         else
         {
-            // just to make sure if a track is deleted, you can't get stuck
+            // Make sure if a track is deleted that you can't get stuck.
             followTrain = null;
         }
 
-        if (followTrain != null)
+        if (followTrain == null)
         {
-            UpdateFollowTarget();
+            UpdateFreeLookTarget();
         }
     }
 
     private void LateUpdate()
     {
+        var panInput = InputPan().normalized * Time.deltaTime;
+        var rotateInput = InputRotation() * Time.deltaTime;
+        var zoomInput = InputZoom() * Time.deltaTime;
+
         if (followTrain != null)
         {
-            return;
+            UpdateFollowCamera(panInput, rotateInput, zoomInput);
         }
+        else
+        {
+            UpdateFreeCamera(panInput, rotateInput, zoomInput);
+        }
+    }
 
-        var panInput = InputPan();
+    private void UpdateFreeCamera(Vector3 panInput, float rotateInput, float zoomInput)
+    {
         if (panInput != Vector3.zero)
         {
             var panDelta = transform.right * (panInput.x * -panSpeed);
             panDelta += transform.up * (panInput.y * -panSpeed);
             panDelta = Vectors.Y(0, panDelta);
-            transform.position += panDelta * Time.deltaTime;
+            transform.position += panDelta;
         }
 
-        float rotateInput = InputRotation();
         if (rotateInput != 0)
         {
-            transform.RotateAround(
-                freeLookTarget,
-                Vector3.up,
-                rotateInput * rotationSpeed * Time.deltaTime
-            );
+            transform.RotateAround(freeLookTarget, Vector3.up, rotateInput * rotationSpeed);
         }
 
-        float zoomInput = InputZoom();
         if (zoomInput != 0)
         {
-            SafeApplyCameraZoom(zoomInput * Time.deltaTime);
+            UpdateFreeCameraZoom(zoomInput);
         }
     }
 
-    private void SafeApplyCameraZoom(float yDiff)
+    private void UpdateFreeCameraZoom(float yDiff)
     {
-        var adjZoomSpeed = zoomSpeed * Mathf.Pow(HeightPct(transform.position.y) + 1, zoomSpeedExp);
+        var adjZoomSpeed =
+            zoomSpeed * Mathf.Pow(SkewFactor(transform.position.y) + 1, zoomSpeedExp);
         var y = transform.position.y + yDiff * adjZoomSpeed;
         transform.position = Vectors.Y(Mathf.Clamp(y, minY, maxY), transform.position);
-        var xSkew = Mathf.Pow(HeightPct(transform.position.y), zoomExp);
+        var xSkew = Mathf.Pow(SkewFactor(transform.position.y), zoomExp);
         var rot = Vectors.X(
             Mathf.SmoothStep(minXSkew, maxXSkew, xSkew),
             transform.rotation.eulerAngles
@@ -126,7 +132,7 @@ public class CameraController : MonoBehaviour
         transform.rotation = Quaternion.Euler(rot);
     }
 
-    private float HeightPct(float y)
+    private float SkewFactor(float y)
     {
         return (y - minY) / (maxY - minY);
     }
@@ -143,10 +149,10 @@ public class CameraController : MonoBehaviour
             : Input.GetKey(KeyCode.S)
                 ? 1
                 : 0;
-        return new Vector3(x, y, 0).normalized;
+        return new Vector3(x, y, 0);
     }
 
-    private void UpdateLookTarget()
+    private void UpdateFreeLookTarget()
     {
         Ray ray = cam.ViewportPointToRay(new Vector3(0.5F, 0.5F, 0));
         RaycastHit hit;
@@ -156,7 +162,7 @@ public class CameraController : MonoBehaviour
         }
         else
         {
-            freeLookTarget = Vector3.zero;
+            freeLookTarget = Vectors.Y(minY, transform.position);
         }
     }
 
@@ -215,17 +221,19 @@ public class CameraController : MonoBehaviour
         return true;
     }
 
-    private void UpdateFollowTarget()
+    private void UpdateFollowCamera(Vector3 panInput, float rotateInput, float zoomInput)
     {
         Vector3 targetForward;
         var forwardTrain = followTrain.ForwardLocomitiveController(out targetForward);
         var targetPosition = forwardTrain.transform.position + followPositionOffset;
+
         transform.forward = Vector3.SmoothDamp(
             transform.forward,
             targetForward,
             ref followForwardVelocity,
             followSmoothTime
         );
+
         transform.position = Vector3.SmoothDamp(
             transform.position,
             targetPosition,

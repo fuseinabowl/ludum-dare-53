@@ -27,17 +27,21 @@ public class CameraController : MonoBehaviour
     [Range(0f, 90f)]
     public float followXRotation = 45f;
 
+    [Range(0f, 0.01f)]
+    public float followFreeTransitionEpsilon = 0.01f;
+
     private Camera cam;
 
-    private Vector3 freePosition;
-    private Quaternion freeRotation;
-    private Vector3 freeLookTarget;
+    private Vector3 freeLookAt;
+    private Vector3 freeTargetPosition;
+    private Vector3 freeTargetForward;
 
     private TrainMover followTrain;
     private Vector3 followTarget;
     private Vector3 followForwardVelocity;
+    private bool followForwardIsTransition;
     private Vector3 followPositionVelocity;
-    private float followXSkew;
+    private bool followPositionIsTransition;
 
     private void Awake()
     {
@@ -46,24 +50,21 @@ public class CameraController : MonoBehaviour
 
     private void Start()
     {
-        freePosition = transform.position;
-        freeRotation = transform.rotation;
+        freeTargetPosition = transform.position;
+        freeTargetForward = transform.forward;
         UpdateFreeCameraZoom(0);
     }
 
     private void Update()
     {
+        bool wasFollowingTrain = followTrain != null;
+
         if (alwaysEnableFollowCamera || GameController.singleton.gameOver)
         {
             // Reward for finishing the game... free camera!
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                if (!FollowNextTrain())
-                {
-                    followXSkew = 0;
-                    transform.position = freePosition;
-                    transform.rotation = freeRotation;
-                }
+                FollowNextTrain();
             }
         }
         else
@@ -72,10 +73,26 @@ public class CameraController : MonoBehaviour
             followTrain = null;
         }
 
-        if (followTrain == null)
+        if (!followTrain)
         {
+            if (wasFollowingTrain)
+            {
+                SetIsFreeTransition(true);
+            }
             UpdateFreeLookTarget();
         }
+        else if (followTrain && !wasFollowingTrain)
+        {
+            SetIsFreeTransition(false);
+        }
+    }
+
+    private void SetIsFreeTransition(bool ft)
+    {
+        followForwardVelocity = Vector3.zero;
+        followForwardIsTransition = ft;
+        followPositionVelocity = Vector3.zero;
+        followPositionIsTransition = ft;
     }
 
     private void LateUpdate()
@@ -96,22 +113,48 @@ public class CameraController : MonoBehaviour
 
     private void UpdateFreeCamera(Vector3 panInput, float rotateInput, float zoomInput)
     {
-        if (panInput != Vector3.zero)
+        if (followPositionIsTransition && panInput.magnitude == 0)
         {
+            transform.position = Vector3.SmoothDamp(
+                transform.position,
+                freeTargetPosition,
+                ref followPositionVelocity,
+                followSmoothTime
+            );
+            followPositionIsTransition =
+                followPositionVelocity.magnitude > followFreeTransitionEpsilon;
+        }
+        else
+        {
+            followPositionIsTransition = false;
             var panDelta = transform.right * (panInput.x * -panSpeed);
             panDelta += transform.up * (panInput.y * panSpeed);
             panDelta = Vectors.Y(0, panDelta);
             transform.position += panDelta;
         }
 
-        if (rotateInput != 0)
+        if (followForwardIsTransition && rotateInput == 0 && zoomInput == 0)
         {
-            transform.RotateAround(freeLookTarget, Vector3.up, rotateInput * rotationSpeed);
+            transform.forward = Vector3.SmoothDamp(
+                transform.forward,
+                freeTargetForward,
+                ref followForwardVelocity,
+                followSmoothTime
+            );
+            followForwardIsTransition =
+                followForwardVelocity.magnitude > followFreeTransitionEpsilon;
         }
-
-        if (zoomInput != 0)
+        else
         {
-            UpdateFreeCameraZoom(zoomInput);
+            followForwardIsTransition = false;
+            if (rotateInput != 0)
+            {
+                transform.RotateAround(freeLookAt, Vector3.up, rotateInput * rotationSpeed);
+            }
+            if (zoomInput != 0)
+            {
+                UpdateFreeCameraZoom(zoomInput);
+            }
         }
     }
 
@@ -155,11 +198,11 @@ public class CameraController : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
         {
-            freeLookTarget = hit.point;
+            freeLookAt = hit.point;
         }
         else
         {
-            freeLookTarget = Vectors.Y(minY, transform.position);
+            freeLookAt = Vectors.Y(minY, transform.position);
         }
     }
 
@@ -224,12 +267,11 @@ public class CameraController : MonoBehaviour
         var forwardTrain = followTrain.ForwardLocomitiveController(out targetForward);
         var targetPosition = forwardTrain.transform.position + followPositionOffset;
 
+        float followXSkew = 0;
         if (panInput.x != 0)
         {
-            followXSkew = panInput.x < 0 ? -followMaxXSkew : followMaxXSkew;
+            followXSkew = panInput.x < 0 ? followMaxXSkew : -followMaxXSkew;
             targetForward = Quaternion.Euler(0, followXSkew, 0) * targetForward;
-        } else {
-            followXSkew = 0;
         }
 
         transform.forward = Vector3.SmoothDamp(

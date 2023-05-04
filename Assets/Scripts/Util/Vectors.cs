@@ -99,7 +99,6 @@ public class Vectors
         {
             return left.z < right.z ? -1 : 1;
         }
-        Debug.LogError("argh");
         return 1;
     }
 

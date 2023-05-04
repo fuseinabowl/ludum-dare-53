@@ -194,16 +194,18 @@ MonoBehaviour:
   panSpeed: 10
   rotationSpeed: 90
   zoomSpeed: 5
-  zoomExp: 0.36
+  zoomExp: 0.27
   zoomSpeedExp: 2
   minY: 1.5
   maxY: 50
-  minXSkew: 42
+  minXSkew: 35
   maxXSkew: 90
-  followPositionOffset: {x: 0, y: 0.7, z: 0}
-  followSmoothTime: 0.2
+  followPositionOffset: {x: 0, y: 0.4, z: 0.6}
+  followSmoothTime: 0.5
   alwaysEnableFollowCamera: 0
+  followMaxXSkew: 60
   followXRotation: 35
+  followFreeTransitionEpsilon: 0.01
 --- !u!114 &5360432616395567245
 MonoBehaviour:
   m_ObjectHideFlags: 0

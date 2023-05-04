@@ -4,9 +4,6 @@
 		<property name="assetPath">
 			<value>freesound.org/39413__gadzooks__steam2.wav</value>
 		</property>
-		<property name="isStreaming">
-			<value>true</value>
-		</property>
 		<property name="frequencyInKHz">
 			<value>16</value>
 		</property>

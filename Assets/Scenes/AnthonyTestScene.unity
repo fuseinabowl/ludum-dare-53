@@ -7708,6 +7708,18 @@ PrefabInstance:
       propertyPath: minXSkew
       value: 35
       objectReference: {fileID: 0}
+    - target: {fileID: 1496111007216314838, guid: 51203979b6965054fb0a32b9daecc688, type: 3}
+      propertyPath: followMaxXSkew
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 1496111007216314838, guid: 51203979b6965054fb0a32b9daecc688, type: 3}
+      propertyPath: followMaxYSkew
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 1496111007216314838, guid: 51203979b6965054fb0a32b9daecc688, type: 3}
+      propertyPath: followSmoothTime
+      value: 0.3
+      objectReference: {fileID: 0}
     - target: {fileID: 4882876494737527314, guid: 51203979b6965054fb0a32b9daecc688, type: 3}
       propertyPath: m_Name
       value: Main Camera

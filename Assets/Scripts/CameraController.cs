@@ -22,9 +22,7 @@ public class CameraController : MonoBehaviour
     [Range(0.1f, 1f)]
     public float followSmoothTime = 1f;
     public bool alwaysEnableFollowCamera = false;
-    public float followMinXSkew;
     public float followMaxXSkew;
-    public float followMaxYSkew;
 
     [Range(0f, 90f)]
     public float followXRotation = 45f;
@@ -40,7 +38,6 @@ public class CameraController : MonoBehaviour
     private Vector3 followForwardVelocity;
     private Vector3 followPositionVelocity;
     private float followXSkew;
-    private float followYSkew;
 
     private void Awake()
     {
@@ -63,7 +60,7 @@ public class CameraController : MonoBehaviour
             {
                 if (!FollowNextTrain())
                 {
-                    followXSkew = minXSkew;
+                    followXSkew = 0;
                     transform.position = freePosition;
                     transform.rotation = freeRotation;
                 }
@@ -89,7 +86,7 @@ public class CameraController : MonoBehaviour
 
         if (followTrain != null)
         {
-            UpdateFollowCamera(panInput, rotateInput, zoomInput);
+            UpdateFollowCamera(panInput);
         }
         else
         {
@@ -102,7 +99,7 @@ public class CameraController : MonoBehaviour
         if (panInput != Vector3.zero)
         {
             var panDelta = transform.right * (panInput.x * -panSpeed);
-            panDelta += transform.up * (panInput.y * -panSpeed);
+            panDelta += transform.up * (panInput.y * panSpeed);
             panDelta = Vectors.Y(0, panDelta);
             transform.position += panDelta;
         }
@@ -145,9 +142,9 @@ public class CameraController : MonoBehaviour
                 ? -1
                 : 0;
         float y = Input.GetKey(KeyCode.W)
-            ? -1
+            ? 1
             : Input.GetKey(KeyCode.S)
-                ? 1
+                ? -1
                 : 0;
         return new Vector3(x, y, 0);
     }
@@ -221,11 +218,19 @@ public class CameraController : MonoBehaviour
         return true;
     }
 
-    private void UpdateFollowCamera(Vector3 panInput, float rotateInput, float zoomInput)
+    private void UpdateFollowCamera(Vector3 panInput)
     {
         Vector3 targetForward;
         var forwardTrain = followTrain.ForwardLocomitiveController(out targetForward);
         var targetPosition = forwardTrain.transform.position + followPositionOffset;
+
+        if (panInput.x != 0)
+        {
+            followXSkew = panInput.x < 0 ? -followMaxXSkew : followMaxXSkew;
+            targetForward = Quaternion.Euler(0, followXSkew, 0) * targetForward;
+        } else {
+            followXSkew = 0;
+        }
 
         transform.forward = Vector3.SmoothDamp(
             transform.forward,

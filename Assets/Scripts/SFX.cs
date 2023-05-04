@@ -40,8 +40,8 @@ public class SFX : MonoBehaviour
     {
         if (timer.timerName == "Ambience")
         {
-            birds.SetParameter("BirdsVolume", Random.Range(0f, 1f));
-            wind.SetParameter("WindSpeed", Random.Range(0f, 4f));
+            birds.SetParameter("BirdsVolume", Mathf.Sqrt(Random.Range(0f, 1f)));
+            wind.SetParameter("WindSpeed", Mathf.Pow(Random.Range(0f, 1f), 2f));
         }
     }
 }

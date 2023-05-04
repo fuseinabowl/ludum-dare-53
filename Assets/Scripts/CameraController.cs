@@ -161,10 +161,10 @@ public class CameraController : MonoBehaviour
     private void UpdateFreeCameraZoom(float yDiff)
     {
         var adjZoomSpeed =
-            zoomSpeed * Mathf.Pow(SkewFactor(transform.position.y) + 1, zoomSpeedExp);
+            zoomSpeed * Mathf.Pow(HeightFactor() + 1, zoomSpeedExp);
         var y = transform.position.y + yDiff * adjZoomSpeed;
         transform.position = Vectors.Y(Mathf.Clamp(y, minY, maxY), transform.position);
-        var xSkew = Mathf.Pow(SkewFactor(transform.position.y), zoomExp);
+        var xSkew = Mathf.Pow(HeightFactor(), zoomExp);
         var rot = Vectors.X(
             Mathf.SmoothStep(minXSkew, maxXSkew, xSkew),
             transform.rotation.eulerAngles
@@ -172,9 +172,11 @@ public class CameraController : MonoBehaviour
         transform.rotation = Quaternion.Euler(rot);
     }
 
-    private float SkewFactor(float y)
+    
+
+    public float HeightFactor()
     {
-        return (y - minY) / (maxY - minY);
+        return (transform.position.y - minY) / (maxY - minY);
     }
 
     private Vector3 InputPan()

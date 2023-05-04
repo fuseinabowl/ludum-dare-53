@@ -607,7 +607,7 @@
 	<object class="SilenceSound" id="{7b879bce-a373-40aa-9d8a-921c04f0e630}" />
 	<object class="SingleSound" id="{1eb27752-a718-433d-b01e-252751bd631e}">
 		<property name="volume">
-			<value>-3</value>
+			<value>-4</value>
 		</property>
 		<relationship name="audioFile">
 			<destination>{3213b29f-1165-44af-a06d-8c6ef2063e33}</destination>

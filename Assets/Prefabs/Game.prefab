@@ -936,13 +936,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae4445a31ce012c4dbe0ecf76c27c2d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  frameRateOptions:
-  - targetFrameRate: 5
-    displayName: 60
-  - targetFrameRate: 30
-    displayName: 30
-  - targetFrameRate: -1
-    displayName: infinite
 --- !u!1 &7074423465863420603
 GameObject:
   m_ObjectHideFlags: 0
@@ -1240,6 +1233,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25c031ff7497441ab98182e6e570c489, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windCameraHeightWindow: 0.3
   trackComplete: {fileID: 1929765083148159563}
   trackPlaced: {fileID: 1804076013611902101}
   trackDeleted: {fileID: 4559702553894711608}
@@ -1427,7 +1421,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerName: Ambience
-  period: 20
+  period: 10
   autoStart: 1
   oneShot: 0
 --- !u!114 &3032359128767783514

@@ -7,21 +7,40 @@ using TMPro;
 public class FrameRateLimiter : MonoBehaviour
 {
     [SerializeField]
-    private int defaultVSync;
+    private int defaultVSync = 0;
+
+    [SerializeField]
+    private int targetFrameRate = 0;
 
     private int currentRateIndex = 2;
+    private int framesThisSecond = 0;
 
     private void Start()
     {
         currentRateIndex = defaultVSync;
         ApplyCurrentlySelectedRate();
+
+        if (targetFrameRate != 0)
+        {
+            Application.targetFrameRate = targetFrameRate;
+        }
     }
 
     private void Update()
     {
+        framesThisSecond++;
         if (Input.GetKeyDown(KeyCode.P))
         {
             IncrementAndApplyFrameRate();
+        }
+    }
+
+    private void OnTimerTick(Timer timer)
+    {
+        if (timer.timerName == "FrameRateTimer")
+        {
+            Debug.LogFormat("Frame rate: {0}", framesThisSecond);
+            framesThisSecond = 0;
         }
     }
 

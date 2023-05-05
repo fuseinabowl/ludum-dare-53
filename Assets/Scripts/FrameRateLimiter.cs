@@ -19,11 +19,27 @@ public class FrameRateLimiter : MonoBehaviour
     {
         currentRateIndex = defaultVSync;
         ApplyCurrentlySelectedRate();
+        PrintFMODStats();
 
         if (targetFrameRate != 0)
         {
             Application.targetFrameRate = targetFrameRate;
         }
+    }
+
+    private void PrintFMODStats()
+    {
+        uint dspBufferLength;
+        int dspBufferCount;
+        FMODUnity.RuntimeManager.CoreSystem.getDSPBufferSize(
+            out dspBufferLength,
+            out dspBufferCount
+        );
+        Debug.LogFormat(
+            "FMOD: DSP buffer length = {0}, DSP buffer count = {1}",
+            dspBufferLength,
+            dspBufferCount
+        );
     }
 
     private void Update()

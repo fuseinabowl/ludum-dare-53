@@ -96,6 +96,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6402097286315665080}
   - component: {fileID: 4091439056717073694}
+  - component: {fileID: 7196363040023717870}
   m_Layer: 0
   m_Name: Carriage
   m_TagString: Untagged
@@ -140,6 +141,35 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &7196363040023717870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4263812648893780629}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5334b97780a34dff945ae3375e75c8c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  drawSelf: 1
+  drawPrimary: 1
+  drawSecondary: 1
+  drawTertiary: 1
+  primary: {r: 1, g: 0, b: 0, a: 0.6039216}
+  secondary: {r: 0, g: 1, b: 0, a: 1}
+  tertiary: {r: 0, g: 0, b: 1, a: 1}
+  defaultSize: {x: 1, y: 1, z: 1}
+  sphereCornerSize: 0.03
+  arrowHeadSize: 0.1
+  arrowHeadAngle: 60
+  selfVariant: 0
+  selfShape: 6
+  selfSize: {x: 0.32, y: 0.3, z: 0.61}
+  selfOffset: {x: 0, y: 0.23, z: 0}
+  selfScaleRotation: 1
+  debugLog: 0
 --- !u!1 &6866745573560027812
 GameObject:
   m_ObjectHideFlags: 0

@@ -219,27 +219,6 @@ public class VertexPath : MonoBehaviour
         return true;
     }
 
-    public void Join(VertexPath path)
-    {
-        path.vertices.Reverse();
-        path.edges.Reverse();
-        vertices.AddRange(path.vertices);
-        foreach (var edgeData in path.edges)
-        {
-            AddEdge(edgeData.edge.DirectionalFrom(LastEdge().toVertex));
-        }
-    }
-
-    public float TotalTrackLength()
-    {
-        float len = 0;
-        foreach (var edgeData in edges)
-        {
-            len += edgeData.edge.length;
-        }
-        return len;
-    }
-
     public bool IsComplete()
     {
         return IsValidPath() && net.IsTownAt(LastVertex());
@@ -263,16 +242,17 @@ public class VertexPath : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.green;
+        var gizmos = GetComponent<GizmoRenderer>();
+
         foreach (var vertex in vertices)
         {
-            Gizmos.DrawSphere(vertex, net.travelerScale);
+            gizmos.DrawSphere(vertex, net.travelerScale);
         }
-        Gizmos.color = Color.blue;
+
         foreach (var edgeData in edges)
         {
             var edge = edgeData.edge;
-            Gizmos.DrawLine(edge.left, edge.right);
+            gizmos.DrawLine(edge.left, edge.right, arrow: true, variant: GizmoRenderer.Variant.SECONDARY);
         }
     }
 

@@ -7,9 +7,16 @@ using UnityEngine.Assertions;
 
 public class VertexNetwork : MonoBehaviour
 {
+    public static VertexNetwork singleton
+    {
+        get { return SingletonProvider.Get<VertexNetwork>(); }
+        private set { }
+    }
+
     [Header("Config")]
     public float travelerScale = 1f;
     public bool triIsPassable = false;
+
     [Range(0, 1)]
     public float trackCompletedAnimPeriod = 0.1f;
 
@@ -17,10 +24,6 @@ public class VertexNetwork : MonoBehaviour
     public VertexPath vertexPathPrefab;
     public GameObject edgeModelPrefab;
     public GameObject trainPrefab;
-
-    [Header("Gizmos")]
-    public bool gizmoVertices;
-    public bool gizmoEdges;
 
     [Header("Edge config")]
     public float moveSpeed = 1f;
@@ -34,7 +37,6 @@ public class VertexNetwork : MonoBehaviour
     private Edge closestEdge = null;
     private bool canPlaceClosestEdge = false;
     private bool canDeleteClosestEdge = false;
-    private Vector3 mouseHit;
     private List<FarmStation> farms = new List<FarmStation>();
     private List<TownStation> towns = new List<TownStation>();
 
@@ -102,13 +104,17 @@ public class VertexNetwork : MonoBehaviour
 
     private void BlockAllEdgesExceptEdgeToward(Vector3 fromVertex, Vector3 toVertex)
     {
-        foreach (var edge in edgeGraph.edges.Where(edge =>
-        {
-            var matchingDirectionResult = edge.fromVertex == fromVertex && edge.toVertex != toVertex;
-            var inverseDirectionResult = edge.toVertex == fromVertex && edge.fromVertex != toVertex;
+        foreach (
+            var edge in edgeGraph.edges.Where(edge =>
+            {
+                var matchingDirectionResult =
+                    edge.fromVertex == fromVertex && edge.toVertex != toVertex;
+                var inverseDirectionResult =
+                    edge.toVertex == fromVertex && edge.fromVertex != toVertex;
 
-            return matchingDirectionResult || inverseDirectionResult;
-        }))
+                return matchingDirectionResult || inverseDirectionResult;
+            })
+        )
         {
             edge.blocked = true;
         }
@@ -118,7 +124,7 @@ public class VertexNetwork : MonoBehaviour
     {
         var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        mouseHit = Physics.Raycast(ray, out hit) ? hit.point : Vector3.zero;
+        var mouseHit = Physics.Raycast(ray, out hit) ? hit.point : Vector3.zero;
         closestEdge = edgeGraph.ClosestEdge(mouseHit);
         canPlaceClosestEdge = CanPlaceEdge(closestEdge);
         canDeleteClosestEdge = CanDeleteEdge(closestEdge);
@@ -208,10 +214,8 @@ public class VertexNetwork : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns the set of all non-directional edges that can be connected to on any path,
-    ///
+    /// Returns the set of all non-directional edges that can be connected to on any path.
     /// </summary>
-    /// <returns></returns>
     public HashSet<Edge> AllConnectableEdges()
     {
         var all = new HashSet<Edge>();
@@ -306,60 +310,47 @@ public class VertexNetwork : MonoBehaviour
 
     private void OnDrawGizmos()
     {
+        var gizmos = GetComponent<GizmoRenderer>();
+
         if (edgeGraph != null)
         {
-            if (gizmoVertices)
+            var connectableEdges = AllConnectableEdges();
+
+            foreach (var vertex in edgeGraph.vertices)
             {
-                foreach (var vertex in edgeGraph.vertices)
+                // gizmos.DrawSphere(vertex, travelerScale / 3f);
+            }
+
+            foreach (var edge in edgeGraph.edges)
+            {
+                if (edge != closestEdge && !connectableEdges.Contains(edge))
                 {
-                    Gizmos.color = Color.blue;
-                    Gizmos.DrawSphere(vertex, travelerScale / 2f);
+                    gizmos.DrawLine(edge.left, edge.right, arrow: true);
                 }
             }
 
             if (closestEdge != null)
             {
-                Gizmos.color = canPlaceClosestEdge
-                    ? Color.green
-                    : canDeleteClosestEdge
-                        ? Color.yellow
-                        : Color.red;
-                Gizmos.DrawLine(closestEdge.left, closestEdge.right);
+                gizmos.DrawLine(
+                    closestEdge.left,
+                    closestEdge.right,
+                    GizmoRenderer.Variant.SECONDARY,
+                    arrow: true
+                );
             }
 
-            foreach (var edge in AllConnectableEdges())
+            foreach (var edge in connectableEdges)
             {
                 if (edge != closestEdge)
                 {
-                    Gizmos.color = Color.cyan;
-                    Gizmos.DrawLine(edge.left, edge.right);
+                    gizmos.DrawLine(
+                        edge.left,
+                        edge.right,
+                        GizmoRenderer.Variant.TERTIARY,
+                        arrow: true
+                    );
                 }
             }
-
-            if (gizmoEdges)
-            {
-                foreach (var edge in edgeGraph.edges)
-                {
-                    if (edge != closestEdge)
-                    {
-                        Gizmos.color = Color.yellow;
-                        Gizmos.DrawLine(edge.left, edge.right);
-                    }
-                }
-            }
-        }
-
-        if (mouseHit != Vector3.zero)
-        {
-            Gizmos.color = Color.cyan;
-            Gizmos.DrawLine(
-                mouseHit + travelerScale / 10f * Vector3.left,
-                mouseHit + travelerScale / 10f * Vector3.right
-            );
-            Gizmos.DrawLine(
-                mouseHit + travelerScale / 10f * Vector3.back,
-                mouseHit + travelerScale / 10f * Vector3.forward
-            );
         }
     }
 

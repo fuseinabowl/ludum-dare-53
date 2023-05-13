@@ -12,6 +12,9 @@ public class FrameRateLimiter : MonoBehaviour
     [SerializeField]
     private int targetFrameRate = 0;
 
+    [SerializeField]
+    private bool debugLog = false;
+
     private int currentRateIndex = 2;
     private int framesThisSecond = 0;
 
@@ -55,7 +58,10 @@ public class FrameRateLimiter : MonoBehaviour
     {
         if (timer.timerName == "FrameRateTimer")
         {
-            Debug.LogFormat("Frame rate: {0}", framesThisSecond);
+            if (debugLog)
+            {
+                Debug.LogFormat("Frame rate: {0}", framesThisSecond);
+            }
             framesThisSecond = 0;
         }
     }

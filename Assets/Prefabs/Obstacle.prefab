@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7059216122296138089}
   - component: {fileID: 6337200990292780894}
+  - component: {fileID: 2027268766601787577}
   m_Layer: 0
   m_Name: Obstacle
   m_TagString: Untagged
@@ -30,7 +31,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6337200990292780894
 MonoBehaviour:
@@ -44,3 +45,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5571b6b27082dac4e937f35496872bf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2027268766601787577
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9107369031319737737}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5334b97780a34dff945ae3375e75c8c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  primary: {r: 0.3490566, g: 0.20581168, b: 0.20581168, a: 0.6156863}
+  secondary: {r: 0, g: 0, b: 0, a: 0.7294118}
+  tertiary: {r: 0, g: 0, b: 0, a: 0.33333334}
+  selfRender: 1
+  selfScaleRotation: 1
+  selfColor: 0
+  selfSize: 1
+  selfShape: 0
+  debugLog: 0

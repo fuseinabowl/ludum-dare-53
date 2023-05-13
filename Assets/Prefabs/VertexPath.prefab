@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5551366530426428591}
   - component: {fileID: 8314416547386774449}
   - component: {fileID: 6823236800351751856}
+  - component: {fileID: 6127144800009014753}
   m_Layer: 0
   m_Name: VertexPath
   m_TagString: Untagged
@@ -63,6 +64,35 @@ MonoBehaviour:
   smoothSegmentsPerPathSegment: 8
   trainData: {fileID: 11400000, guid: 3c396a6f2f235f240b744d7a027a5809, type: 2}
   trainAudio: {fileID: 2353011972701727149}
+--- !u!114 &6127144800009014753
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3102221719211983328}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5334b97780a34dff945ae3375e75c8c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  drawSelf: 0
+  drawPrimary: 1
+  drawSecondary: 1
+  drawTertiary: 1
+  primary: {r: 1, g: 0, b: 0, a: 1}
+  secondary: {r: 0, g: 1, b: 0, a: 1}
+  tertiary: {r: 0, g: 0, b: 1, a: 1}
+  defaultSize: {x: 1, y: 1, z: 1}
+  sphereCornerSize: 0.03
+  arrowHeadSize: 0.1
+  arrowHeadAngle: 60
+  selfVariant: 0
+  selfShape: 0
+  selfSize: {x: 1, y: 1, z: 1}
+  selfOffset: {x: 0, y: 0, z: 0}
+  selfScaleRotation: 1
+  debugLog: 0
 --- !u!1 &6656008742732800104
 GameObject:
   m_ObjectHideFlags: 0

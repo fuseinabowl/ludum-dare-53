@@ -37,6 +37,14 @@ public class Vectors
     }
 
     /// <summary>
+    /// Returns `vector` with its y component set to 0.
+    /// </summary>
+    public static Vector3 Y0(Vector3 vector)
+    {
+        return new Vector3(vector.x, 0, vector.z);
+    }
+
+    /// <summary>
     /// Return a vector with z component and 0 all other components.
     /// </summary>
     public static Vector3 Z(float z)
@@ -120,5 +128,13 @@ public class Vectors
         dot = Mathf.Clamp(dot, 0.0F, length);
 
         return lineStart + normalizedLineDirection * dot;
+    }
+
+    /// <summary>
+    /// Returns the max of the vectors x, y, and z components.
+    /// </summary>
+    public static float MaxComponent(Vector3 vector)
+    {
+        return Mathf.Max(vector.x, Mathf.Max(vector.y, vector.z));
     }
 }

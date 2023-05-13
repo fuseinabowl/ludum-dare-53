@@ -66,9 +66,6 @@ public class GizmoRenderer : MonoBehaviour
     public Vector3 selfOffset = Vector3.zero;
     public Space selfSpace = Space.LOCAL;
 
-    [Header("Debug")]
-    public bool debugLog = false;
-
     private List<GizmoData> gizmos = new List<GizmoData>();
 
     public void DrawSphere(

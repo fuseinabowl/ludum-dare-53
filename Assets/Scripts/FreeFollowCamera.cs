@@ -2,34 +2,55 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraController : MonoBehaviour
+public class FreeFollowCamera : MonoBehaviour
 {
     [Header("Free")]
-    public float panSpeed = 10f;
-    public float panSpeedExp = 0f;
+    [SerializeField]
+    private float panSpeed = 10f;
 
-    public float rotationSpeed = 90f;
-    public float zoomSpeed = 10f;
-    public float zoomExp = 1f;
-    public float zoomSpeedExp = 0f;
-    public float minY = 3f;
-    public float maxY = 60f;
-    public float minXSkew = 40;
-    public float maxXSkew = 75;
+    [SerializeField]
+    private float panSpeedExp = 0f;
+
+    [SerializeField]
+    private float rotationSpeed = 90f;
+
+    [SerializeField]
+    private float zoomSpeed = 10f;
+
+    [SerializeField]
+    private float zoomExp = 1f;
+
+    [SerializeField]
+    private float zoomSpeedExp = 0f;
+
+    [SerializeField]
+    private float minY = 3f;
+
+    [SerializeField]
+    private float maxY = 60f;
+
+    [SerializeField]
+    private float minXSkew = 40;
+
+    [SerializeField]
+    private float maxXSkew = 75;
 
     [Header("Follow")]
-    public Vector3 followPositionOffset = Vector3.zero;
+    public bool enableFollowCamera = false;
+
+    [SerializeField]
+    private Vector3 followPositionOffset = Vector3.zero;
 
     [Range(0.1f, 1f)]
-    public float followSmoothTime = 1f;
-    public bool alwaysEnableFollowCamera = false;
-    public float followMaxXSkew;
+    [SerializeField]
+    private float followSmoothTime = 1f;
 
-    [Range(0f, 90f)]
-    public float followXRotation = 45f;
+    [SerializeField]
+    private float followMaxXSkew;
 
     [Range(0f, 0.01f)]
-    public float followFreeTransitionEpsilon = 0.01f;
+    [SerializeField]
+    private float followFreeTransitionEpsilon = 0.01f;
 
     private Camera cam;
 
@@ -37,12 +58,41 @@ public class CameraController : MonoBehaviour
     private Vector3 freeTargetPosition;
     private Vector3 freeTargetForward;
 
-    private TrainMover followTrain;
-    private Vector3 followTarget;
+    private List<GameObject> followTargets = new List<GameObject>();
+    private Dictionary<GameObject, Pose> followTargetPoses = new Dictionary<GameObject, Pose>();
+    private GameObject followTarget;
     private Vector3 followForwardVelocity;
     private bool followForwardIsTransition;
     private Vector3 followPositionVelocity;
     private bool followPositionIsTransition;
+
+    public void AddFollow(GameObject ft, Pose pose = default(Pose))
+    {
+        if (!followTargets.Contains(ft))
+        {
+            followTargets.Add(ft);
+        }
+        followTargetPoses[ft] = pose;
+    }
+
+    public void RemoveFollow(GameObject ft)
+    {
+        if (followTargets.Remove(ft) && ft == followTarget)
+        {
+            FollowNextTarget();
+        }
+        followTargetPoses.Remove(ft);
+    }
+
+    public void SetFollowPose(GameObject ft, Pose pose)
+    {
+        followTargetPoses[ft] = pose;
+    }
+
+    public float HeightFactor()
+    {
+        return (transform.position.y - minY) / (maxY - minY);
+    }
 
     private void Awake()
     {
@@ -58,23 +108,23 @@ public class CameraController : MonoBehaviour
 
     private void Update()
     {
-        bool wasFollowingTrain = followTrain != null;
+        bool wasFollowingTrain = followTarget != null;
 
-        if (alwaysEnableFollowCamera || GameController.singleton.gameOver)
+        if (enableFollowCamera)
         {
             // Reward for finishing the game... free camera!
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                FollowNextTrain();
+                FollowNextTarget();
             }
         }
         else
         {
             // Make sure if a track is deleted that you can't get stuck.
-            followTrain = null;
+            followTarget = null;
         }
 
-        if (!followTrain)
+        if (!followTarget)
         {
             if (wasFollowingTrain)
             {
@@ -82,7 +132,7 @@ public class CameraController : MonoBehaviour
             }
             UpdateFreeLookTarget();
         }
-        else if (followTrain && !wasFollowingTrain)
+        else if (followTarget && !wasFollowingTrain)
         {
             SetIsFreeTransition(false);
         }
@@ -102,7 +152,7 @@ public class CameraController : MonoBehaviour
         var rotateInput = InputRotation() * Time.deltaTime;
         var zoomInput = InputZoom() * Time.deltaTime;
 
-        if (followTrain != null)
+        if (followTarget != null)
         {
             UpdateFollowCamera(panInput);
         }
@@ -174,11 +224,6 @@ public class CameraController : MonoBehaviour
         transform.rotation = Quaternion.Euler(rot);
     }
 
-    public float HeightFactor()
-    {
-        return (transform.position.y - minY) / (maxY - minY);
-    }
-
     private Vector3 InputPan()
     {
         float x = Input.GetKey(KeyCode.A)
@@ -232,42 +277,45 @@ public class CameraController : MonoBehaviour
             );
     }
 
-    private bool FollowNextTrain()
+    private bool FollowNextTarget()
     {
-        var trains = GameObject.FindObjectsOfType<TrainMover>();
-        int idx;
-
-        if (followTrain == null)
+        if (followTargets.Count == 0)
         {
-            idx = -1;
-        }
-        else
-        {
-            idx = 0;
-            // find currently running train
-            for (; idx < trains.Length && trains[idx] != followTrain; idx++) { }
-        }
-
-        // find the next running train after that
-        idx++;
-        for (; idx < trains.Length && !trains[idx].Running(); idx++) { }
-
-        if (idx >= trains.Length - 1)
-        {
-            // no trains can be followed, or this was the last train so go back to the free camera
-            followTrain = null;
+            followTarget = null;
             return false;
         }
 
-        followTrain = trains[idx];
+        if (followTarget == null)
+        {
+            followTarget = followTargets[0];
+            return true;
+        }
+
+        // Find the currently following train and move to the next one.
+        int idx = 0;
+        for (; idx < followTargets.Count && followTargets[idx] != followTarget; idx++) { }
+        idx++;
+
+        if (idx >= followTargets.Count)
+        {
+            // no trains can be followed, or this was the last train so go back to the free camera
+            followTarget = null;
+            return false;
+        }
+
+        followTarget = followTargets[idx];
         return true;
     }
 
     private void UpdateFollowCamera(Vector3 panInput)
     {
-        Vector3 targetForward;
-        var trainPosition = followTrain.FrontTrainPosition(out targetForward);
-        var targetPosition = trainPosition + followPositionOffset;
+        Pose pose;
+        if (!followTargetPoses.TryGetValue(followTarget, out pose)) {
+            pose = Poses.FromTransform(followTarget.transform);
+        }
+
+        var targetPosition = pose.position + followPositionOffset;
+        var targetForward = pose.forward;
 
         float followXSkew = 0;
         if (panInput.x != 0)

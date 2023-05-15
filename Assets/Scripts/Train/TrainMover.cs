@@ -46,8 +46,7 @@ public class TrainMover : MonoBehaviour
             GameObject.Destroy(carriage);
         }
         carriages.Clear();
-        trainRunning = false;
-        trainAudio.chug.Stop();
+        SetTrainRunning(false);
     }
 
     public void StartMoving()
@@ -56,9 +55,25 @@ public class TrainMover : MonoBehaviour
         SpawnTrain();
         headLocomotive.transform.position = path.vertices[0];
         trainDistance = 0;
-        trainRunning = true;
-        trainRunningLeft = false;
+        SetTrainRunning(true);
         StartCoroutine(MoveCoroutine(smoothPath));
+    }
+
+    private void SetTrainRunning(bool running)
+    {
+        trainRunning = running;
+        var camera = SingletonProvider.Get<FreeFollowCamera>();
+        if (running)
+        {
+            trainRunningLeft = false;
+            camera.AddFollow(gameObject, CameraPose());
+            trainAudio.chug.Play();
+        }
+        else
+        {
+            camera.RemoveFollow(gameObject);
+            trainAudio.chug.Stop();
+        }
     }
 
     private class SmoothPath
@@ -165,8 +180,6 @@ public class TrainMover : MonoBehaviour
         tailLocomotive = GameObject.Instantiate(trainData.locomotive, transform);
         tailLocomotive.transform.position = path.vertices[0];
         tailLocomotive.transform.localScale = new Vector3(-1f, 1f, -1f);
-
-        trainAudio.chug.Play();
     }
 
     private float TrainLength => trainData.carriageLength * (trainData.numberOfCarriages + 2);
@@ -200,7 +213,6 @@ public class TrainMover : MonoBehaviour
             {
                 trainRunningLeft = true;
                 trainDistance = smoothPath.totalDistance - TrainLength;
-                CompletedTrip();
 
                 PlaceTrainCarsAtEndOfPath(smoothPath);
 
@@ -375,30 +387,26 @@ public class TrainMover : MonoBehaviour
         );
     }
 
-    private void CompletedTrip() { }
-
     public bool Running()
     {
         return trainRunning;
     }
 
-    public Vector3 FrontTrainPosition(out Vector3 forwardTransform)
+    private Pose CameraPose()
     {
-        if (trainRunningLeft)
-        {
-            forwardTransform = -tailLocomotive.transform.forward;
-            return tailLocomotive.transform.position;
+        if (trainRunningLeft) {
+            return Poses.Reverse(Poses.FromTransform(tailLocomotive.transform));
         }
-        forwardTransform = headLocomotive.transform.forward;
-        return headLocomotive.transform.position;
+        return Poses.FromTransform(headLocomotive.transform);
     }
 
     private void Update()
     {
         if (trainRunning)
         {
-            Vector3 forwardTransform;
-            trainAudio.transform.position = FrontTrainPosition(out forwardTransform);
+            var pose = CameraPose();
+            SingletonProvider.Get<FreeFollowCamera>().SetFollowPose(gameObject, pose);
+            trainAudio.transform.position = pose.position;
         }
     }
 }

@@ -202,11 +202,10 @@ MonoBehaviour:
   maxY: 50
   minXSkew: 35
   maxXSkew: 90
+  enableFollowCamera: 0
   followPositionOffset: {x: 0, y: 0.7, z: 0}
   followSmoothTime: 0.5
-  alwaysEnableFollowCamera: 0
   followMaxXSkew: 60
-  followXRotation: 35
   followFreeTransitionEpsilon: 0.01
 --- !u!114 &5360432616395567245
 MonoBehaviour:

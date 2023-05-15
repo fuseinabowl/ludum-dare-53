@@ -1,8 +1,8 @@
 using UnityEngine;
 using UnityEditor;
 
-[CustomEditor(typeof(CameraController))]
-public class CameraControllerEditor : Editor
+[CustomEditor(typeof(FreeFollowCamera))]
+public class FreeFollowCameraEditor : Editor
 {
     public override void OnInspectorGUI()
     {

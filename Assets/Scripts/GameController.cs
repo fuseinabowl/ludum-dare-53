@@ -38,7 +38,8 @@ public class GameController : MonoBehaviour
     public void DidGameOver()
     {
         gameOver = true;
-        
+        SingletonProvider.Get<FreeFollowCamera>().enableFollowCamera = true;
+
         SFX.singleton.winJingle.Play();
 
         float pauseBefore = 0;
@@ -49,7 +50,12 @@ public class GameController : MonoBehaviour
         }
     }
 
-    private IEnumerator FadeInOut(TextMeshProUGUI ui, float pauseBefore, float fadeIn, float pauseDuring)
+    private IEnumerator FadeInOut(
+        TextMeshProUGUI ui,
+        float pauseBefore,
+        float fadeIn,
+        float pauseDuring
+    )
     {
         float delta = 0;
         while (delta < pauseBefore)

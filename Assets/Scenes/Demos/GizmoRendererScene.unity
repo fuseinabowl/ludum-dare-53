@@ -188,7 +188,6 @@ MonoBehaviour:
   selfSize: {x: 1.1, y: 1.1, z: 1.1}
   selfOffset: {x: 0, y: 0, z: 0}
   selfSpace: 2
-  debugLog: 0
 --- !u!114 &40416270
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -971,7 +970,6 @@ MonoBehaviour:
   selfSize: {x: 1.1, y: 1.1, z: 1.1}
   selfOffset: {x: 0, y: 0, z: 0}
   selfSpace: 0
-  debugLog: 0
 --- !u!114 &191447644
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1077,7 +1075,6 @@ MonoBehaviour:
   selfSize: {x: 1.1, y: 1.1, z: 1.1}
   selfOffset: {x: 0, y: 0, z: 0}
   selfSpace: 0
-  debugLog: 0
 --- !u!114 &246726314
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1297,15 +1294,14 @@ MonoBehaviour:
   tertiary: {r: 0, g: 0, b: 1, a: 1}
   defaultSize: {x: 1, y: 1, z: 1}
   sphereCornerSize: 0.03
-  arrowheadSize: 0.1
-  arrowheadAngle: 60
+  arrowheadSize: 0.5
+  arrowheadAngle: 45
   cameraScale: 0.1
   selfVariant: 0
   selfShape: 3
   selfSize: {x: 1.1, y: 1.1, z: 1.1}
   selfOffset: {x: 0, y: 0, z: 0}
   selfSpace: 1
-  debugLog: 0
 --- !u!114 &281225463
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1394,7 +1390,6 @@ MonoBehaviour:
   selfSize: {x: 1.1, y: 1.1, z: 1.1}
   selfOffset: {x: 0, y: 0, z: 0}
   selfSpace: 1
-  debugLog: 0
 --- !u!114 &309016017
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1949,15 +1944,14 @@ MonoBehaviour:
   tertiary: {r: 0, g: 0, b: 1, a: 1}
   defaultSize: {x: 1, y: 1, z: 1}
   sphereCornerSize: 0.03
-  arrowheadSize: 0.1
-  arrowheadAngle: 60
+  arrowheadSize: 0.5
+  arrowheadAngle: 45
   cameraScale: 0.1
   selfVariant: 0
   selfShape: 6
   selfSize: {x: 2, y: 0, z: 0}
   selfOffset: {x: 0, y: 0, z: 0}
   selfSpace: 0
-  debugLog: 0
 --- !u!114 &423834282
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2063,7 +2057,6 @@ MonoBehaviour:
   selfSize: {x: 1, y: 1, z: 1}
   selfOffset: {x: 0, y: 0, z: 0}
   selfSpace: 1
-  debugLog: 0
 --- !u!114 &449211496
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2359,7 +2352,6 @@ MonoBehaviour:
   selfSize: {x: 1, y: 1, z: 1}
   selfOffset: {x: 0, y: 0, z: 0}
   selfSpace: 0
-  debugLog: 0
 --- !u!114 &652011403
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3021,7 +3013,6 @@ MonoBehaviour:
   selfSize: {x: 1.1, y: 1.1, z: 1.1}
   selfOffset: {x: 0, y: 0, z: 0}
   selfSpace: 2
-  debugLog: 0
 --- !u!114 &813173379
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3318,7 +3309,6 @@ MonoBehaviour:
   selfSize: {x: 1.1, y: 1.1, z: 1.1}
   selfOffset: {x: 0, y: 0, z: 0}
   selfSpace: 1
-  debugLog: 0
 --- !u!114 &1076629417
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3651,7 +3641,6 @@ MonoBehaviour:
   selfSize: {x: 1, y: 1, z: 1}
   selfOffset: {x: 0, y: 0, z: 0}
   selfSpace: 2
-  debugLog: 0
 --- !u!114 &1213255374
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3774,7 +3763,6 @@ MonoBehaviour:
   selfSize: {x: 1, y: 1, z: 1}
   selfOffset: {x: 0, y: 0, z: 0}
   selfSpace: 1
-  debugLog: 0
 --- !u!114 &1255243313
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3997,15 +3985,14 @@ MonoBehaviour:
   tertiary: {r: 0, g: 0, b: 1, a: 1}
   defaultSize: {x: 1, y: 1, z: 1}
   sphereCornerSize: 0.03
-  arrowheadSize: 0.1
-  arrowheadAngle: 60
+  arrowheadSize: 0.5
+  arrowheadAngle: 45
   cameraScale: 0.1
   selfVariant: 0
   selfShape: 6
   selfSize: {x: 2, y: 0, z: 0}
   selfOffset: {x: 0, y: 0, z: 0}
   selfSpace: 1
-  debugLog: 0
 --- !u!114 &1392994058
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4831,15 +4818,14 @@ MonoBehaviour:
   tertiary: {r: 0, g: 0, b: 1, a: 1}
   defaultSize: {x: 1, y: 1, z: 1}
   sphereCornerSize: 0.03
-  arrowheadSize: 0.1
-  arrowheadAngle: 60
+  arrowheadSize: 0.2
+  arrowheadAngle: 45
   cameraScale: 0.1
   selfVariant: 0
   selfShape: 6
   selfSize: {x: 2, y: 0, z: 0}
   selfOffset: {x: 0, y: 0, z: 0}
   selfSpace: 2
-  debugLog: 0
 --- !u!114 &1977789323
 MonoBehaviour:
   m_ObjectHideFlags: 0

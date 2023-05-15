@@ -72,7 +72,7 @@ public class GizmoRenderer : MonoBehaviour
         Vector3 position,
         float radius = 0f,
         Variant variant = Variant.PRIMARY,
-        Space space = Space.WORLD,
+        Space space = Space.LOCAL,
         bool wire = false
     )
     {
@@ -87,7 +87,7 @@ public class GizmoRenderer : MonoBehaviour
         Vector3 position = default(Vector3),
         float radius = 0f,
         Variant variant = Variant.PRIMARY,
-        Space space = Space.WORLD,
+        Space space = Space.LOCAL,
         bool wire = false
     )
     {
@@ -117,7 +117,7 @@ public class GizmoRenderer : MonoBehaviour
         Vector3 direction,
         bool arrow = false,
         Variant variant = Variant.PRIMARY,
-        Space space = Space.WORLD
+        Space space = Space.LOCAL
     )
     {
         if (ShouldDraw(variant))
@@ -131,7 +131,7 @@ public class GizmoRenderer : MonoBehaviour
         Vector3 direction,
         bool arrow = false,
         Variant variant = Variant.PRIMARY,
-        Space space = Space.WORLD
+        Space space = Space.LOCAL
     )
     {
         gizmos.Add(
@@ -151,7 +151,7 @@ public class GizmoRenderer : MonoBehaviour
         Vector3 to,
         Variant variant = Variant.PRIMARY,
         bool arrow = false,
-        Space space = Space.WORLD
+        Space space = Space.LOCAL
     )
     {
         if (ShouldDraw(variant))
@@ -165,7 +165,7 @@ public class GizmoRenderer : MonoBehaviour
         Vector3 to,
         bool arrow = false,
         Variant variant = Variant.PRIMARY,
-        Space space = Space.WORLD
+        Space space = Space.LOCAL
     )
     {
         gizmos.Add(
@@ -419,15 +419,6 @@ public class GizmoRenderer : MonoBehaviour
             var arrowheadScaledSize = arrowheadSize * Vectors.MaxComponent(scale);
             var lineVector = to - from;
 
-            if (
-                true /* space == Space.WORLD */
-            )
-            {
-                // In world space do all calculations in 2D and then convert the arrowhead
-                // back into the space of the line's destination.
-                lineVector = Vectors.Y0(lineVector);
-            }
-
             // This code is to calculate the "arrowhead vector" - a length and rotation that can
             // be rotated from the line to find the arrowhead point.
             //
@@ -438,7 +429,7 @@ public class GizmoRenderer : MonoBehaviour
             // arrowhead that forms a right angle. :-)
             //
             // First, to calculate the length of the arrowhead vector, calculate the length of the
-            // adjacent side of the triangle, then subtract the total line length from that.
+            // adjacent side of the triangle, then subtract that from the total line length.
             var adjacentLength = arrowheadScaledSize * Mathf.Cos(arrowheadAngle * Mathf.Deg2Rad);
             var arrowheadVectorLength = lineVector.magnitude - adjacentLength;
 
@@ -448,42 +439,36 @@ public class GizmoRenderer : MonoBehaviour
             var oppositeLength = arrowheadScaledSize * Mathf.Sin(arrowheadAngle * Mathf.Deg2Rad);
             var arrowheadVectorAngle = Mathf.Atan2(oppositeLength, arrowheadVectorLength);
 
-            // Lastly, to calculate the arrowhead vector, rotate a vector of the arrowhead vector's
-            // projected along the line by the arrowhead vector angle... once per arm.
-            var projectedArrowheadVector = lineVector.normalized * arrowheadVectorLength;
-            var leftArrowheadRotation = Quaternion.Euler(
-                0,
-                arrowheadVectorAngle * Mathf.Rad2Deg,
-                0
-            );
-            var rightArrowheadRotation = Quaternion.Euler(
-                0,
-                -arrowheadVectorAngle * Mathf.Rad2Deg,
-                0
-            );
+            // Lastly, to calculate the final arrowhead vector, project it along the lineVector
+            // then rotate it around an axis which depends on what space it's being drawn in.
+            var axis = Vector3.up;
 
-            // TODO: adjust these if the arrowhead is being rendered in local or camera space.
-            // This code does not work! It's just to show... what values it should use. Maybe.
-            // I suspect that the `Euler(0, angle, 0)` code above makes wrong assumptions.
-            // Also obviously remove the `if (true)` above and below.
-            // leftArrowheadRotation *= rotation;
-            // rightArrowheadRotation *= rotation;
-
-            var leftArrowheadVector = leftArrowheadRotation * projectedArrowheadVector;
-            var leftArrowheadPoint = from + leftArrowheadVector;
-            var rightArrowheadVector = rightArrowheadRotation * projectedArrowheadVector;
-            var rightArrowheadPoint = from + rightArrowheadVector;
-
-            if (
-                true /* space == Space.WORLD */
-            )
+            switch (space)
             {
-                leftArrowheadPoint = Vectors.Y(to.y, leftArrowheadPoint);
-                rightArrowheadPoint = Vectors.Y(to.y, rightArrowheadPoint);
+                case Space.WORLD:
+                    // axis = Vector3.up.
+                    break;
+                case Space.LOCAL:
+                    axis = transform.up;
+                    break;
+                case Space.CAMERA:
+                    float camDistance;
+                    axis = Cam(out camDistance).transform.forward;
+                    break;
             }
 
-            Gizmos.DrawLine(to, leftArrowheadPoint);
-            Gizmos.DrawLine(to, rightArrowheadPoint);
+            // Calculate the rotation.
+            var arrowheadVectorAngleDeg = arrowheadVectorAngle * Mathf.Rad2Deg;
+            var leftArrowheadRotation = Quaternion.AngleAxis(arrowheadVectorAngleDeg, axis);
+            var rightArrowheadRotation = Quaternion.AngleAxis(-arrowheadVectorAngleDeg, axis);
+
+            // Apply rotation to projection.
+            var arrowheadVectorOnLineVector = lineVector.normalized * arrowheadVectorLength;
+            var leftArrowheadVector = leftArrowheadRotation * arrowheadVectorOnLineVector;
+            var rightArrowheadVector = rightArrowheadRotation * arrowheadVectorOnLineVector;
+
+            Gizmos.DrawLine(to, from + leftArrowheadVector);
+            Gizmos.DrawLine(to, from + rightArrowheadVector);
         }
     }
 

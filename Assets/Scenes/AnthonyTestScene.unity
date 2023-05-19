@@ -4052,14 +4052,14 @@ MonoBehaviour:
   tertiary: {r: 0, g: 0, b: 1, a: 1}
   defaultSize: {x: 1, y: 1, z: 1}
   sphereCornerSize: 0.03
-  arrowHeadSize: 0.1
-  arrowHeadAngle: 60
+  arrowheadSize: 0.1
+  arrowheadAngle: 30
+  cameraScale: 0.1
   selfVariant: 0
   selfShape: 0
   selfSize: {x: 1, y: 1, z: 1}
   selfOffset: {x: 0, y: 0, z: 0}
-  selfScaleRotation: 0
-  debugLog: 1
+  selfSpace: 1
 --- !u!1001 &994037438
 PrefabInstance:
   m_ObjectHideFlags: 0

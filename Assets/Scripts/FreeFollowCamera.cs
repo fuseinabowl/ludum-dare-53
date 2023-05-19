@@ -52,11 +52,23 @@ public class FreeFollowCamera : MonoBehaviour
     [SerializeField]
     private float followFreeTransitionEpsilon = 0.01f;
 
+    [Header("Mouse")]
+    [Range(0f, 1f)]
+    [SerializeField]
+    private float mouseJumpSmoothTime = 0.1f;
+
+    [SerializeField]
+    private float mouseZoomFactor = 1f;
+
+    [SerializeField]
+    private float mouseRotateFactor = 1f;
+
     private Camera cam;
 
     private Vector3 freeLookAt;
     private Vector3 freeTargetPosition;
     private Vector3 freeTargetForward;
+    private bool freeJump;
 
     private List<GameObject> followTargets = new List<GameObject>();
     private Dictionary<GameObject, Pose> followTargetPoses = new Dictionary<GameObject, Pose>();
@@ -108,11 +120,10 @@ public class FreeFollowCamera : MonoBehaviour
 
     private void Update()
     {
-        bool wasFollowingTrain = followTarget != null;
+        bool wasFollowing = followTarget != null;
 
         if (enableFollowCamera)
         {
-            // Reward for finishing the game... free camera!
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 FollowNextTarget();
@@ -120,30 +131,39 @@ public class FreeFollowCamera : MonoBehaviour
         }
         else
         {
-            // Make sure if a track is deleted that you can't get stuck.
             followTarget = null;
         }
 
         if (!followTarget)
         {
-            if (wasFollowingTrain)
+            if (wasFollowing)
             {
-                SetIsFreeTransition(true);
+                SwitchCameraType(true, false);
             }
             UpdateFreeLookTarget();
+            UpdateFreeMouseControls();
         }
-        else if (followTarget && !wasFollowingTrain)
+        else if (followTarget && !wasFollowing)
         {
-            SetIsFreeTransition(false);
+            SwitchCameraType(false, false);
         }
     }
 
-    private void SetIsFreeTransition(bool ft)
+    private void SwitchCameraType(bool free, bool jump)
     {
-        followForwardVelocity = Vector3.zero;
-        followForwardIsTransition = ft;
-        followPositionVelocity = Vector3.zero;
-        followPositionIsTransition = ft;
+        if (free)
+        {
+            followForwardIsTransition = true;
+            followPositionIsTransition = true;
+            freeJump = jump;
+        }
+        else
+        {
+            freeTargetPosition = transform.position;
+            freeTargetForward = transform.forward;
+            followForwardVelocity = Vector3.zero;
+            followPositionVelocity = Vector3.zero;
+        }
     }
 
     private void LateUpdate()
@@ -170,7 +190,7 @@ public class FreeFollowCamera : MonoBehaviour
                 transform.position,
                 freeTargetPosition,
                 ref followPositionVelocity,
-                followSmoothTime
+                FreeSmoothTime()
             );
             followPositionIsTransition =
                 followPositionVelocity.magnitude > followFreeTransitionEpsilon;
@@ -192,7 +212,7 @@ public class FreeFollowCamera : MonoBehaviour
                 transform.forward,
                 freeTargetForward,
                 ref followForwardVelocity,
-                followSmoothTime
+                FreeSmoothTime()
             );
             followForwardIsTransition =
                 followForwardVelocity.magnitude > followFreeTransitionEpsilon;
@@ -253,28 +273,50 @@ public class FreeFollowCamera : MonoBehaviour
         }
     }
 
+    private void UpdateFreeMouseControls()
+    {
+        if (Input.GetMouseButtonDown(1))
+        {
+            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit))
+            {
+                freeTargetPosition = transform.position + hit.point - freeLookAt;
+                freeTargetForward = transform.forward;
+                SwitchCameraType(true, true);
+            }
+        }
+    }
+
     private float InputRotation()
     {
+        var mouseRotate = ShiftKey() ? mouseRotateFactor * Input.mouseScrollDelta.y : 0f;
         return CameraPlayerPrefs.CameraRotationMultiplier
             * (
                 Input.GetKey(KeyCode.Q)
                     ? -1
                     : Input.GetKey(KeyCode.E)
                         ? 1
-                        : 0
+                        : mouseRotate
             );
     }
 
     private float InputZoom()
     {
+        var mouseZoom = ShiftKey() ? 0f : mouseZoomFactor * Input.mouseScrollDelta.y;
         return CameraPlayerPrefs.CameraZoomMultiplier
             * (
                 Input.GetKey(KeyCode.Z)
                     ? -1
                     : Input.GetKey(KeyCode.C)
                         ? 1
-                        : 0
+                        : -mouseZoom
             );
+    }
+
+    private bool ShiftKey()
+    {
+        return Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
     }
 
     private bool FollowNextTarget()
@@ -310,7 +352,8 @@ public class FreeFollowCamera : MonoBehaviour
     private void UpdateFollowCamera(Vector3 panInput)
     {
         Pose pose;
-        if (!followTargetPoses.TryGetValue(followTarget, out pose)) {
+        if (!followTargetPoses.TryGetValue(followTarget, out pose))
+        {
             pose = Poses.FromTransform(followTarget.transform);
         }
 
@@ -337,5 +380,14 @@ public class FreeFollowCamera : MonoBehaviour
             ref followPositionVelocity,
             followSmoothTime
         );
+    }
+
+    private float FreeSmoothTime()
+    {
+        if (freeJump)
+        {
+            return mouseJumpSmoothTime;
+        }
+        return followSmoothTime;
     }
 }

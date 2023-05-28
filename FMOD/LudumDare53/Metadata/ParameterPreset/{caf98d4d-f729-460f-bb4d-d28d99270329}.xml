@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="ParameterPreset" id="{caf98d4d-f729-460f-bb4d-d28d99270329}">
+		<property name="name">
+			<value>PlayBling</value>
+		</property>
+		<relationship name="folder">
+			<destination>{f7be2f90-be5a-441e-ac54-b2419b1fcf1d}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{7b16547c-81a0-43e2-9b0a-d022b3b7643b}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{7b16547c-81a0-43e2-9b0a-d022b3b7643b}">
+		<property name="parameterType">
+			<value>1</value>
+		</property>
+		<property name="maximum">
+			<value>2</value>
+		</property>
+		<property name="initialValue">
+			<value>1</value>
+		</property>
+	</object>
+</objects>

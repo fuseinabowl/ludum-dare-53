@@ -99,7 +99,7 @@ Camera:
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
-  m_FOVAxisMode: 0
+  m_FOVAxisMode: 1
   m_Iso: 200
   m_ShutterSpeed: 0.005
   m_Aperture: 16
@@ -119,7 +119,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 70
+  field of view: 63.853554
   orthographic: 0
   orthographic size: 7
   m_Depth: -1
@@ -208,7 +208,7 @@ MonoBehaviour:
   followMaxXSkew: 60
   followFreeTransitionEpsilon: 0.01
   mouseJumpSmoothTime: 0.25
-  mouseZoomFactor: 1.5
+  mouseZoomFactor: 2
   mouseRotateFactor: 1.1
 --- !u!114 &5360432616395567245
 MonoBehaviour:

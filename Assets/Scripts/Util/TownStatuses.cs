@@ -32,25 +32,25 @@ public class TownStatuses : MonoBehaviour
         townIsFed[town] = isFed;
         UpdateHud();
 
-        // When the 4th town is fed, and every second town after that, trigger a music transition.
+        // When the 4th town is fed, and every 3 towns after that, trigger a music transition.
+        // When all towns are fed, musical transitions will be triggered every time the "NextLevel"
+        // timer ticks.
         var fedTowns = FedTownsCount();
-        if (fedTowns >= 4 && fedTowns % 2 == 0)
+        if (fedTowns >= 4 && (fedTowns - 4) % 3 == 0)
         {
-            SFX.singleton.NextLevel();
+            SFX.singleton.DidNextLevel();
+        }
+
+        if (fedTowns == townIsFed.Count)
+        {
+            GameController.singleton.DidGameOver();
+            SFX.singleton.DidGameOver();
         }
     }
 
     private void UpdateHud()
     {
-        var totalTowns = townIsFed.Count;
-        var fedTowns = FedTownsCount();
-
-        hudText.text = String.Format(formatString, totalTowns, fedTowns);
-
-        if (totalTowns == fedTowns)
-        {
-            GameController.singleton.DidGameOver();
-        }
+        hudText.text = String.Format(formatString, townIsFed.Count, FedTownsCount());
     }
 
     private int FedTownsCount()

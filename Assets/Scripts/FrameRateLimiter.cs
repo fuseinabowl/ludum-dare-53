@@ -7,7 +7,10 @@ using TMPro;
 public class FrameRateLimiter : MonoBehaviour
 {
     [SerializeField]
-    private int defaultVSync = 0;
+    private int defaultVSync = 1;
+
+    [SerializeField]
+    private int defaultVSyncWebGL = 0;
 
     [SerializeField]
     private int targetFrameRate = 0;
@@ -15,12 +18,13 @@ public class FrameRateLimiter : MonoBehaviour
     [SerializeField]
     private bool debugLog = false;
 
-    private int currentRateIndex = 2;
+    private int currentRateIndex = 1;
     private int framesThisSecond = 0;
 
     private void Start()
     {
-        currentRateIndex = defaultVSync;
+        currentRateIndex =
+            Application.platform == RuntimePlatform.WebGLPlayer ? defaultVSyncWebGL : defaultVSync;
         ApplyCurrentlySelectedRate();
         PrintFMODStats();
 

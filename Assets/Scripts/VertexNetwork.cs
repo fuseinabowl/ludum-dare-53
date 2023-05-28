@@ -20,6 +20,9 @@ public class VertexNetwork : MonoBehaviour
     [Range(0, 1)]
     public float trackCompletedAnimPeriod = 0.1f;
 
+    [Range(1, 32)]
+    public int trackCompletedFmodMaxSpawn = 32;
+
     [Header("Objects")]
     public VertexPath vertexPathPrefab;
     public GameObject edgeModelPrefab;

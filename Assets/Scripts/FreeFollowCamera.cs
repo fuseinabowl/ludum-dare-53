@@ -184,7 +184,7 @@ public class FreeFollowCamera : MonoBehaviour
 
     private void UpdateFreeCamera(Vector3 panInput, float rotateInput, float zoomInput)
     {
-        if (followPositionIsTransition && panInput.magnitude == 0)
+        if (followPositionIsTransition && panInput.magnitude == 0 && zoomInput == 0)
         {
             transform.position = Vector3.SmoothDamp(
                 transform.position,

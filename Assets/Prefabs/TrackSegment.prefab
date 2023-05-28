@@ -47,8 +47,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   otherTransform: {fileID: 0}
   animation: 4
-  duration: 0.5
-  magnitude: 0.3
+  duration: 0.25
+  magnitude: 0.25
   complexity: 7
   direction: {x: 0, y: 1, z: 0}
   continuous: 0

@@ -231,7 +231,8 @@ public class VertexPath : MonoBehaviour
         fullTrackEstablished?.Invoke();
         if (!GameController.singleton.gameOver)
         {
-            StartCoroutine(TrackCompletedAnimation());
+            SFX.singleton.trackComplete.Play();
+            RunGameOverAnimation();
         }
     }
 
@@ -252,25 +253,58 @@ public class VertexPath : MonoBehaviour
         foreach (var edgeData in edges)
         {
             var edge = edgeData.edge;
-            gizmos.DrawLine(edge.left, edge.right, arrow: true, variant: GizmoRenderer.Variant.SECONDARY);
+            gizmos.DrawLine(
+                edge.left,
+                edge.right,
+                arrow: true,
+                variant: GizmoRenderer.Variant.SECONDARY
+            );
         }
     }
 
-    private IEnumerator TrackCompletedAnimation()
+    private void RunGameOverAnimation()
     {
-        SFX.Play(
-            SFX.singleton.trackComplete,
+        // This method skips the first/last edge because each train station takes up 2 edges.
+
+        for (
+            int i = 0, tapsRemaining = edges.Count - 2;
+            tapsRemaining > 0;
+            i += net.trackCompletedFmodMaxSpawn
+        )
+        {
+            int taps = Mathf.Min(net.trackCompletedFmodMaxSpawn, tapsRemaining);
+            StartCoroutine(PlayTrackCompleteKnocks(net.trackCompletedAnimPeriod * i, taps));
+            tapsRemaining -= taps;
+        }
+
+        for (int i = 0; i < edges.Count - 2; i++)
+        {
+            StartCoroutine(AnimateTrack(i * net.trackCompletedAnimPeriod, edges[i + 1]));
+        }
+    }
+
+    private IEnumerator PlayTrackCompleteKnocks(float delay, int spawnTotal)
+    {
+        if (delay > 0)
+        {
+            yield return new WaitForSeconds(delay);
+        }
+        SFX.PlayOneShot(
+            gameObject,
+            SFX.singleton.trackCompleteKnocks,
             "SpawnRate",
             0.1f / net.trackCompletedAnimPeriod,
             "SpawnTotal",
-            edges.Count - 2
+            spawnTotal
         );
+    }
 
-        for (int i = 1; i < edges.Count - 1; i++)
+    private IEnumerator AnimateTrack(float delay, EdgeAndInstanceData edge)
+    {
+        if (delay > 0)
         {
-            var edge = edges[i];
-            edge.tracksObject.GetComponent<TransformAnimator>().Animate();
-            yield return new WaitForSeconds(net.trackCompletedAnimPeriod);
+            yield return new WaitForSeconds(delay);
         }
+        edge.tracksObject.GetComponent<TransformAnimator>().Animate();
     }
 }

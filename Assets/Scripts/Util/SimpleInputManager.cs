@@ -12,12 +12,6 @@ public class SimpleInputManager : MonoBehaviour
         public bool meta;
     }
 
-    public struct KeyEvent
-    {
-        public Modifiers modifiers;
-        public KeyCode keyCode;
-    }
-
     public struct MouseEvent
     {
         public Modifiers modifiers;
@@ -27,68 +21,11 @@ public class SimpleInputManager : MonoBehaviour
         public System.Nullable<RaycastHit> raycastHit;
     }
 
-    [SerializeField]
-    [Tooltip("Comma-separated list of keys to watch for")]
-    private string keyCodes;
-
-    [SerializeField]
-    [Tooltip("Watch for mouse button events")]
-    private bool mouseEvents;
+    private delegate bool MouseButtonGetter(int button);
 
     [SerializeField]
     [Tooltip("Raycast mouse up/down events (not move)")]
     private bool mouseRaycast;
-
-    private List<KeyCode> keyCodeList = new List<KeyCode>();
-
-    private void Start()
-    {
-        InitKeyboardInput();
-    }
-
-    private void InitKeyboardInput()
-    {
-        if (keyCodes.Trim().Length == 0)
-        {
-            return;
-        }
-
-        foreach (var keyCodeStringIter in keyCodes.Split(","))
-        {
-            var keyCodeString = keyCodeStringIter.Trim().ToLower();
-            if (keyCodeString == "shift")
-            {
-                keyCodeList.Add(KeyCode.LeftShift);
-                keyCodeList.Add(KeyCode.RightShift);
-            }
-            else if (keyCodeString == "control")
-            {
-                keyCodeList.Add(KeyCode.LeftControl);
-                keyCodeList.Add(KeyCode.RightControl);
-            }
-            else if (keyCodeString == "alt")
-            {
-                keyCodeList.Add(KeyCode.LeftAlt);
-                keyCodeList.Add(KeyCode.RightAlt);
-            }
-            else if (keyCodeString == "meta")
-            {
-                keyCodeList.Add(KeyCode.LeftMeta);
-                keyCodeList.Add(KeyCode.RightMeta);
-            }
-            else
-            {
-                try
-                {
-                    keyCodeList.Add(System.Enum.Parse<KeyCode>(keyCodeString, true));
-                }
-                catch (System.Exception)
-                {
-                    Debug.LogErrorFormat("Unrecognised KeyCode {0}", keyCodeStringIter);
-                }
-            }
-        }
-    }
 
     private void Update()
     {
@@ -100,97 +37,66 @@ public class SimpleInputManager : MonoBehaviour
             meta = Input.GetKey(KeyCode.LeftMeta) || Input.GetKey(KeyCode.RightMeta),
         };
 
-        foreach (var keyCode in keyCodeList)
+        var events = new MouseEvent[]
         {
-            if (Input.GetKeyDown(keyCode))
+            new MouseEvent { modifiers = modifiers }, // button down
+            new MouseEvent { modifiers = modifiers }, // button up
+            new MouseEvent { modifiers = modifiers }, // button
+        };
+
+        var getters = new MouseButtonGetter[]
+        {
+            Input.GetMouseButtonDown,
+            Input.GetMouseButtonUp,
+            Input.GetMouseButton
+        };
+
+        System.Nullable<RaycastHit> raycastHit = null;
+
+        if (
+            mouseRaycast
+            && (
+                Input.GetMouseButtonDown(0)
+                || Input.GetMouseButtonDown(1)
+                || Input.GetMouseButtonDown(2)
+                || Input.GetMouseButtonUp(0)
+                || Input.GetMouseButtonUp(1)
+                || Input.GetMouseButtonUp(2)
+            )
+        )
+        {
+            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit))
             {
-                SendMessage(
-                    "OnInputKeyDown",
-                    new KeyEvent { keyCode = keyCode, modifiers = modifiers },
-                    SendMessageOptions.DontRequireReceiver
-                );
-            }
-            if (Input.GetKeyUp(keyCode))
-            {
-                SendMessage(
-                    "OnInputKeyUp",
-                    new KeyEvent { keyCode = keyCode, modifiers = modifiers },
-                    SendMessageOptions.DontRequireReceiver
-                );
-            }
-            if (Input.GetKey(keyCode))
-            {
-                SendMessage(
-                    "OnInputKey",
-                    new KeyEvent { keyCode = keyCode, modifiers = modifiers },
-                    SendMessageOptions.DontRequireReceiver
-                );
+                raycastHit = hit;
             }
         }
 
-        if (mouseEvents)
+        for (int i = 0; i < events.Length; i++)
         {
-            var events = new MouseEvent[]
-            {
-                new MouseEvent { modifiers = modifiers }, // down
-                new MouseEvent { modifiers = modifiers }, // up
-                new MouseEvent { modifiers = modifiers },
-            };
+            MouseButtonGetter getter = getters[i];
+            events[i].left = getter(0);
+            events[i].right = getter(1);
+            events[i].middle = getter(2);
 
-            System.Nullable<RaycastHit> raycastHit = null;
-
-            if (mouseRaycast && HasMouseButtonDownOrUp())
+            if (getter == Input.GetMouseButtonDown || getter == Input.GetMouseButtonUp)
             {
-                var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                RaycastHit hit;
-                if (Physics.Raycast(ray, out hit))
-                {
-                    raycastHit = hit;
-                }
+                events[i].raycastHit = raycastHit;
             }
 
-            for (int i = 0; i < events.Length; i++)
+            if (events[i].left || events[i].right || events[i].middle)
             {
-                MouseButtonGetter getter =
+                SendMessage(
                     i == 0
-                        ? Input.GetMouseButtonDown
+                        ? "OnInputMouseButtonDown"
                         : i == 1
-                            ? Input.GetMouseButtonUp
-                            : Input.GetMouseButton;
-                events[i].left = getter(0);
-                events[i].right = getter(1);
-                events[i].middle = getter(2);
-
-                if (i == 0 || i == 1)
-                {
-                    events[i].raycastHit = raycastHit;
-                }
-
-                if (events[i].left || events[i].right || events[i].middle)
-                {
-                    SendMessage(
-                        i == 0
-                            ? "OnInputMouseButtonDown"
-                            : i == 1
-                                ? "OnInputMouseButtonUp"
-                                : "OnInputMouseButton",
-                        events[i],
-                        SendMessageOptions.DontRequireReceiver
-                    );
-                }
+                            ? "OnInputMouseButtonUp"
+                            : "OnInputMouseButton",
+                    events[i],
+                    SendMessageOptions.DontRequireReceiver
+                );
             }
         }
-    }
-
-    delegate bool MouseButtonGetter(int button);
-
-    bool HasMouseButtonDownOrUp()
-    {
-        return Input.GetMouseButtonDown(0)
-            || Input.GetMouseButtonDown(1)
-            || Input.GetMouseButtonDown(2)
-            || Input.GetMouseButtonUp(0)
-            || Input.GetMouseButtonUp(1)
-            || Input.GetMouseButtonUp(2);
     }
 }

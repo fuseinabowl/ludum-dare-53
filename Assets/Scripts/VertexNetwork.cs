@@ -34,9 +34,6 @@ public class VertexNetwork : MonoBehaviour
     private EdgeGraph edgeGraph = null;
     private List<VertexPath> vertexPaths = new List<VertexPath>();
     public IReadOnlyList<VertexPath> VertexPaths => vertexPaths;
-    private Edge closestEdge = null;
-    private bool canPlaceClosestEdge = false;
-    private bool canDeleteClosestEdge = false;
     private List<FarmStation> farms = new List<FarmStation>();
     private List<TownStation> towns = new List<TownStation>();
 
@@ -120,22 +117,19 @@ public class VertexNetwork : MonoBehaviour
         }
     }
 
-    private void Update()
+    private void OnInputMouseButtonDown(SimpleInputManager.MouseEvent e)
     {
-        var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        var mouseHit = Physics.Raycast(ray, out hit) ? hit.point : Vector3.zero;
-        closestEdge = edgeGraph.ClosestEdge(mouseHit);
-        canPlaceClosestEdge = CanPlaceEdge(closestEdge);
-        canDeleteClosestEdge = CanDeleteEdge(closestEdge);
-
-        if (Input.GetMouseButtonDown(0) && canPlaceClosestEdge)
+        if (e.left)
         {
-            PlaceEdge(closestEdge);
-        }
-        else if (Input.GetMouseButtonDown(0) && canDeleteClosestEdge)
-        {
-            DeleteEdge(closestEdge);
+            var closestEdge = edgeGraph.ClosestEdge(e.raycastHit.Value.point);
+            if (CanPlaceEdge(closestEdge))
+            {
+                PlaceEdge(closestEdge);
+            }
+            else if (CanDeleteEdge(closestEdge))
+            {
+                DeleteEdge(closestEdge);
+            }
         }
     }
 
@@ -310,10 +304,9 @@ public class VertexNetwork : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        var gizmos = GetComponent<GizmoRenderer>();
-
         if (edgeGraph != null)
         {
+            var gizmos = GetComponent<GizmoRenderer>();
             var connectableEdges = AllConnectableEdges();
 
             foreach (var vertex in edgeGraph.vertices)
@@ -323,33 +316,15 @@ public class VertexNetwork : MonoBehaviour
 
             foreach (var edge in edgeGraph.edges)
             {
-                if (edge != closestEdge && !connectableEdges.Contains(edge))
+                if (!connectableEdges.Contains(edge))
                 {
                     gizmos.DrawLine(edge.left, edge.right, arrow: true);
                 }
             }
 
-            if (closestEdge != null)
-            {
-                gizmos.DrawLine(
-                    closestEdge.left,
-                    closestEdge.right,
-                    GizmoRenderer.Variant.SECONDARY,
-                    arrow: true
-                );
-            }
-
             foreach (var edge in connectableEdges)
             {
-                if (edge != closestEdge)
-                {
-                    gizmos.DrawLine(
-                        edge.left,
-                        edge.right,
-                        GizmoRenderer.Variant.TERTIARY,
-                        arrow: true
-                    );
-                }
+                gizmos.DrawLine(edge.left, edge.right, GizmoRenderer.Variant.TERTIARY, arrow: true);
             }
         }
     }

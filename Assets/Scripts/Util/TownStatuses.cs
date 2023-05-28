@@ -30,14 +30,20 @@ public class TownStatuses : MonoBehaviour
     public void OnTownIsFedChanged(TownStation town, bool isFed)
     {
         townIsFed[town] = isFed;
-
         UpdateHud();
+
+        // When the 4th town is fed, and every second town after that, trigger a music transition.
+        var fedTowns = FedTownsCount();
+        if (fedTowns >= 4 && fedTowns % 2 == 0)
+        {
+            SFX.singleton.NextLevel();
+        }
     }
 
     private void UpdateHud()
     {
         var totalTowns = townIsFed.Count;
-        var fedTowns = townIsFed.Count(townRecord => townRecord.Value);
+        var fedTowns = FedTownsCount();
 
         hudText.text = String.Format(formatString, totalTowns, fedTowns);
 
@@ -45,5 +51,10 @@ public class TownStatuses : MonoBehaviour
         {
             GameController.singleton.DidGameOver();
         }
+    }
+
+    private int FedTownsCount()
+    {
+        return townIsFed.Count(townRecord => townRecord.Value);
     }
 }

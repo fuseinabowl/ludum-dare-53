@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="ParameterPreset" id="{034279f0-2bda-45b4-b3fb-9b9487c439df}">
+		<property name="name">
+			<value>_RepeatCount</value>
+		</property>
+		<relationship name="folder">
+			<destination>{f7be2f90-be5a-441e-ac54-b2419b1fcf1d}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{4e7e5e4a-775b-4f9f-ab4b-a73dc83d847a}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{4e7e5e4a-775b-4f9f-ab4b-a73dc83d847a}">
+		<property name="maximum">
+			<value>3</value>
+		</property>
+		<property name="initialValue">
+			<value>0</value>
+		</property>
+	</object>
+</objects>

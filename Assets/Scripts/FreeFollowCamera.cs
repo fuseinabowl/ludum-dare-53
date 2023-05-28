@@ -58,16 +58,28 @@ public class FreeFollowCamera : MonoBehaviour
     private float mouseJumpSmoothTime = 0.1f;
 
     [SerializeField]
-    private float mouseZoomFactor = 1f;
+    [Range(0, 10)]
+    private float mouseZoomFactor = 5f;
 
     [SerializeField]
     private float mouseRotateFactor = 1f;
+
+    [SerializeField]
+    [Range(0f, 1f)]
+    private float mouseSmoothZoomTime = 0.1f;
+
+    [Range(0f, 0.01f)]
+    [SerializeField]
+    private float mouseSmoothZoomEpsilon = 0.01f;
 
     private Camera cam;
 
     private Vector3 freeLookAt;
     private Vector3 freeTargetPosition;
     private Vector3 freeTargetForward;
+    private float freeInputZoomCurrent;
+    private float freeInputZoomTarget;
+    private float freeInputZoomVelocity;
     private bool freeJump;
 
     private List<GameObject> followTargets = new List<GameObject>();
@@ -303,15 +315,52 @@ public class FreeFollowCamera : MonoBehaviour
 
     private float InputZoom()
     {
-        var mouseZoom = ShiftKey() ? 0f : mouseZoomFactor * Input.mouseScrollDelta.y;
-        return CameraPlayerPrefs.CameraZoomMultiplier
-            * (
-                Input.GetKey(KeyCode.Z)
-                    ? -1
-                    : Input.GetKey(KeyCode.C)
-                        ? 1
-                        : -mouseZoom
-            );
+        // Mouse zoom smoothing is implemented as smoothing over the input... which is a bit hacky,
+        // it would be better to update the camera position and smooth over that, but the smooth
+        // camera logic is pretty complex. It's easier this way.
+        float inputZoom;
+
+        if (Input.GetKey(KeyCode.Z) || Input.GetKey(KeyCode.C))
+        {
+            inputZoom =
+                freeInputZoomTarget
+                - freeInputZoomCurrent
+                + CameraPlayerPrefs.CameraRotationMultiplier * (Input.GetKey(KeyCode.Z) ? -1 : 1);
+            freeInputZoomCurrent = 0;
+            freeInputZoomTarget = 0;
+            freeInputZoomVelocity = 0;
+            return inputZoom;
+        }
+
+        if (Input.mouseScrollDelta.y != 0 && !ShiftKey())
+        {
+            freeInputZoomTarget += -mouseZoomFactor * Input.mouseScrollDelta.y;
+        }
+
+        if (freeInputZoomCurrent == 0 && freeInputZoomTarget == 0 && freeInputZoomVelocity == 0)
+        {
+            return 0;
+        }
+
+        float freeInputZoomPrev = freeInputZoomCurrent;
+
+        freeInputZoomCurrent = Mathf.SmoothDamp(
+            freeInputZoomCurrent,
+            freeInputZoomTarget,
+            ref freeInputZoomVelocity,
+            mouseSmoothZoomTime
+        );
+
+        inputZoom = freeInputZoomCurrent - freeInputZoomPrev;
+
+        if (Mathf.Abs(freeInputZoomVelocity) < mouseSmoothZoomEpsilon)
+        {
+            freeInputZoomCurrent = 0;
+            freeInputZoomTarget = 0;
+            freeInputZoomVelocity = 0;
+        }
+
+        return inputZoom;
     }
 
     private bool ShiftKey()

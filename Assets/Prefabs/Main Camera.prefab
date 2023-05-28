@@ -207,9 +207,11 @@ MonoBehaviour:
   followSmoothTime: 0.5
   followMaxXSkew: 60
   followFreeTransitionEpsilon: 0.01
-  mouseJumpSmoothTime: 0.25
-  mouseZoomFactor: 2
+  mouseJumpSmoothTime: 0.2
+  mouseZoomFactor: 5.14
   mouseRotateFactor: 1.1
+  mouseSmoothZoomTime: 0.1
+  mouseSmoothZoomEpsilon: 0.01
 --- !u!114 &5360432616395567245
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -48,7 +48,7 @@ public class FreeFollowCamera : MonoBehaviour
     [SerializeField]
     private float followMaxXSkew;
 
-    [Range(0f, 0.01f)]
+    [Range(0f, 0.1f)]
     [SerializeField]
     private float followFreeTransitionEpsilon = 0.01f;
 
@@ -68,9 +68,9 @@ public class FreeFollowCamera : MonoBehaviour
     [Range(0f, 1f)]
     private float mouseSmoothZoomTime = 0.1f;
 
-    [Range(0f, 0.01f)]
+    [Range(0f, 10f)]
     [SerializeField]
-    private float mouseSmoothZoomEpsilon = 0.01f;
+    private float mouseSmoothZoomEpsilon = 1f;
 
     private Camera cam;
 
@@ -163,9 +163,12 @@ public class FreeFollowCamera : MonoBehaviour
 
     private void SwitchCameraType(bool free, bool jump)
     {
+        CancelInputZoom();
+
         if (free)
         {
-            followForwardIsTransition = true;
+            // Jumping the camera only changes the position, so don't transition forward.
+            followForwardIsTransition = !jump;
             followPositionIsTransition = true;
             freeJump = jump;
         }
@@ -326,9 +329,7 @@ public class FreeFollowCamera : MonoBehaviour
                 freeInputZoomTarget
                 - freeInputZoomCurrent
                 + CameraPlayerPrefs.CameraRotationMultiplier * (Input.GetKey(KeyCode.Z) ? -1 : 1);
-            freeInputZoomCurrent = 0;
-            freeInputZoomTarget = 0;
-            freeInputZoomVelocity = 0;
+            CancelInputZoom();
             return inputZoom;
         }
 
@@ -355,12 +356,17 @@ public class FreeFollowCamera : MonoBehaviour
 
         if (Mathf.Abs(freeInputZoomVelocity) < mouseSmoothZoomEpsilon)
         {
-            freeInputZoomCurrent = 0;
-            freeInputZoomTarget = 0;
-            freeInputZoomVelocity = 0;
+            CancelInputZoom();
         }
 
         return inputZoom;
+    }
+
+    private void CancelInputZoom()
+    {
+        freeInputZoomCurrent = 0;
+        freeInputZoomTarget = 0;
+        freeInputZoomVelocity = 0;
     }
 
     private bool ShiftKey()

@@ -572,6 +572,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4471775303604244026, guid: 739ddd8634b134d94931723d71589852, type: 3}
+      propertyPath: OverrideMaxDistance
+      value: 14.300194
+      objectReference: {fileID: 0}
+    - target: {fileID: 4471775303604244026, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: OverrideMinDistance
       value: 3.81
       objectReference: {fileID: 0}
@@ -702,6 +706,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4471775303604244026, guid: 739ddd8634b134d94931723d71589852, type: 3}
+      propertyPath: OverrideMaxDistance
+      value: 13.8508415
+      objectReference: {fileID: 0}
+    - target: {fileID: 4471775303604244026, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: OverrideMinDistance
       value: 6.02
       objectReference: {fileID: 0}
@@ -711,7 +719,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 24.67
+      value: 31.77
       objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1202,6 +1210,10 @@ PrefabInstance:
     - target: {fileID: 4471775303604244026, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: OverrideAttenuation
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4471775303604244026, guid: 739ddd8634b134d94931723d71589852, type: 3}
+      propertyPath: OverrideMaxDistance
+      value: 11.660763
       objectReference: {fileID: 0}
     - target: {fileID: 4471775303604244026, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: OverrideMinDistance
@@ -4040,7 +4052,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 986006700}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c5334b97780a34dff945ae3375e75c8c, type: 3}
   m_Name: 
@@ -5145,6 +5157,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4471775303604244026, guid: 739ddd8634b134d94931723d71589852, type: 3}
+      propertyPath: OverrideMaxDistance
+      value: 11.604349
+      objectReference: {fileID: 0}
+    - target: {fileID: 4471775303604244026, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: OverrideMinDistance
       value: 3.99
       objectReference: {fileID: 0}
@@ -5795,6 +5811,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4471775303604244026, guid: 739ddd8634b134d94931723d71589852, type: 3}
+      propertyPath: OverrideMaxDistance
+      value: 16.043873
+      objectReference: {fileID: 0}
+    - target: {fileID: 4471775303604244026, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: OverrideMinDistance
       value: 4.51
       objectReference: {fileID: 0}
@@ -6236,6 +6256,10 @@ PrefabInstance:
     - target: {fileID: 4471775303604244026, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: OverrideAttenuation
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4471775303604244026, guid: 739ddd8634b134d94931723d71589852, type: 3}
+      propertyPath: OverrideMaxDistance
+      value: 14.298871
       objectReference: {fileID: 0}
     - target: {fileID: 4471775303604244026, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: OverrideMinDistance

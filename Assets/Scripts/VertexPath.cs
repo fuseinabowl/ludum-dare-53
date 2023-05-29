@@ -231,9 +231,11 @@ public class VertexPath : MonoBehaviour
         fullTrackEstablished?.Invoke();
         if (!GameController.singleton.gameOver)
         {
+            // Don't play the track-complete jingle because it would play over the
+            // game-over jingle.
             SFX.singleton.trackComplete.Play();
-            RunGameOverAnimation();
         }
+        RunGameOverAnimation();
     }
 
     private bool IsValidPath()
@@ -265,7 +267,6 @@ public class VertexPath : MonoBehaviour
     private void RunGameOverAnimation()
     {
         // This method skips the first/last edge because each train station takes up 2 edges.
-
         for (
             int i = 0, tapsRemaining = edges.Count - 2;
             tapsRemaining > 0;

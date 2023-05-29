@@ -85,14 +85,14 @@ MonoBehaviour:
   tertiary: {r: 0, g: 0, b: 1, a: 1}
   defaultSize: {x: 1, y: 1, z: 1}
   sphereCornerSize: 0.03
-  arrowHeadSize: 0.1
-  arrowHeadAngle: 60
+  arrowheadSize: 0.1
+  arrowheadAngle: 30
+  cameraScale: 0.1
   selfVariant: 0
   selfShape: 0
   selfSize: {x: 1, y: 1, z: 1}
   selfOffset: {x: 0, y: 0, z: 0}
-  selfScaleRotation: 1
-  debugLog: 0
+  selfSpace: 1
 --- !u!1 &6656008742732800104
 GameObject:
   m_ObjectHideFlags: 0

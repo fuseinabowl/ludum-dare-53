@@ -211,7 +211,7 @@ MonoBehaviour:
   mouseZoomFactor: 5.14
   mouseRotateFactor: 1.1
   mouseSmoothZoomTime: 0.1
-  mouseSmoothZoomEpsilon: 0.01
+  mouseSmoothZoomEpsilon: 0.5
 --- !u!114 &5360432616395567245
 MonoBehaviour:
   m_ObjectHideFlags: 0

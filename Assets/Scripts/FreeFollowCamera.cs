@@ -2,6 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// A camera that can switch between freely panning/zooming over a 3D landscape and following
+/// objects around. Useful for world-builder type games where you also want a POV camera.
+///
+/// Btw this has a bug where the follow camera doesn't point forwards.
+/// It might be when the camera switches directions?
+/// </summary>
 public class FreeFollowCamera : MonoBehaviour
 {
     [Header("Free")]

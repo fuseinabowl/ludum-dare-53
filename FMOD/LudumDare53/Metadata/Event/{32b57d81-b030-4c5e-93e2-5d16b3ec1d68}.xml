@@ -65,7 +65,7 @@
 			<value>2</value>
 		</property>
 		<property name="voiceStealing">
-			<value>2</value>
+			<value>4</value>
 		</property>
 		<property name="minimumDistance">
 			<value>3</value>

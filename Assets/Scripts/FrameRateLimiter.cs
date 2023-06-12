@@ -16,37 +16,41 @@ public class FrameRateLimiter : MonoBehaviour
     private int targetFrameRate = 0;
 
     [SerializeField]
+    private TextMeshProUGUI debugText;
+
+    [SerializeField]
     private bool debugLog = false;
+
+    [SerializeField]
+    private bool debugUi = false;
 
     private int currentRateIndex = 1;
     private int framesThisSecond = 0;
 
     private void Start()
     {
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        {
+            currentRateIndex = defaultVSyncWebGL;
+        }
+        else
+        {
+            currentRateIndex = defaultVSync;
+        }
+
         currentRateIndex =
             Application.platform == RuntimePlatform.WebGLPlayer ? defaultVSyncWebGL : defaultVSync;
         ApplyCurrentlySelectedRate();
-        PrintFMODStats();
 
         if (targetFrameRate != 0)
         {
             Application.targetFrameRate = targetFrameRate;
         }
-    }
 
-    private void PrintFMODStats()
-    {
-        uint dspBufferLength;
-        int dspBufferCount;
-        FMODUnity.RuntimeManager.CoreSystem.getDSPBufferSize(
-            out dspBufferLength,
-            out dspBufferCount
-        );
-        Debug.LogFormat(
-            "FMOD: DSP buffer length = {0}, DSP buffer count = {1}",
-            dspBufferLength,
-            dspBufferCount
-        );
+        if (debugText)
+        {
+            debugText.gameObject.SetActive(debugUi);
+        }
     }
 
     private void Update()
@@ -66,6 +70,27 @@ public class FrameRateLimiter : MonoBehaviour
             {
                 Debug.LogFormat("Frame rate: {0}", framesThisSecond);
             }
+
+            uint dspBufferLength;
+            int dspBufferCount;
+            FMODUnity.RuntimeManager.CoreSystem.getDSPBufferSize(
+                out dspBufferLength,
+                out dspBufferCount
+            );
+
+            if (debugText && debugUi)
+            {
+                debugText.text = string.Format(
+                    "FPS:{0}/{1} VSync:{2}({3}) FMOD:{4}*{5}",
+                    framesThisSecond,
+                    targetFrameRate,
+                    QualitySettings.vSyncCount,
+                    QualitySettings.vSyncCount == 0 ? "off" : "on",
+                    dspBufferLength,
+                    dspBufferCount
+                );
+            }
+
             framesThisSecond = 0;
         }
     }

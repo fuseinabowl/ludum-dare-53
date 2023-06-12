@@ -60,11 +60,14 @@
 		<property name="maxVoices">
 			<value>2</value>
 		</property>
+		<property name="voiceStealing">
+			<value>4</value>
+		</property>
 		<property name="minimumDistance">
 			<value>5</value>
 		</property>
 		<property name="maximumDistance">
-			<value>25</value>
+			<value>40</value>
 		</property>
 	</object>
 	<object class="MarkerTrack" id="{79de386e-fead-410f-aced-0aeb69490d19}" />
@@ -83,7 +86,7 @@
 	</object>
 	<object class="EventMixerMaster" id="{16cb8210-3696-455e-bd32-f10e2cf020cc}">
 		<property name="volume">
-			<value>-4</value>
+			<value>-2.5</value>
 		</property>
 		<relationship name="effectChain">
 			<destination>{65abd3aa-f8ad-4f91-beef-2c0262714f10}</destination>
@@ -188,7 +191,7 @@
 			<value>5</value>
 		</property>
 		<property name="maximumDistance">
-			<value>25</value>
+			<value>40</value>
 		</property>
 	</object>
 	<object class="MultiSound" id="{3885b0d7-facb-45c2-ad0c-5d81f551ea52}">

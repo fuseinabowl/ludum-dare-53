@@ -4,14 +4,16 @@ using UnityEngine;
 
 public class SFX : MonoBehaviour
 {
+    [Header("SFX")]
     public FMODUnity.EventReference trackCompleteKnocks;
-    public FMODUnity.StudioEventEmitter music;
     public FMODUnity.StudioEventEmitter trackComplete;
     public FMODUnity.StudioEventEmitter trackPlaced;
     public FMODUnity.StudioEventEmitter trackDeleted;
-    public FMODUnity.StudioEventEmitter birds;
-    public FMODUnity.StudioEventEmitter wind;
     public FMODUnity.StudioEventEmitter winJingle;
+
+    [Header("Ambience")]
+    public FMODUnity.EventReference birds;
+    public FMODUnity.EventReference wind;
 
     public static SFX singleton
     {
@@ -21,7 +23,7 @@ public class SFX : MonoBehaviour
 
     public void DidNextLevel()
     {
-        music.SetParameter("NextLevel", 1);
+        SingletonProvider.Get<FMODLoader>().music.setParameterByName("NextLevel", 1);
     }
 
     public void DidGameOver()
@@ -127,8 +129,11 @@ public class SFX : MonoBehaviour
         switch (timer.timerName)
         {
             case "Ambience":
-                birds.SetParameter("BirdsVolume", Mathf.Sqrt(Random.Range(0f, 1f)));
-                wind.SetParameter("WindSpeed", Mathf.Pow(Random.Range(0f, 1f), 2f));
+                var fmod = SingletonProvider.Get<FMODLoader>();
+                fmod.GetAmbienceInstance(birds)
+                    .setParameterByName("BirdsVolume", Mathf.Sqrt(Random.Range(0f, 1f)));
+                fmod.GetAmbienceInstance(wind)
+                    .setParameterByName("WindSpeed", Mathf.Pow(Random.Range(0f, 1f), 2f));
                 break;
             case "NextLevel":
                 DidNextLevel();

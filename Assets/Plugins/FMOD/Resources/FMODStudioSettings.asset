@@ -58,7 +58,7 @@ MonoBehaviour:
     CallbackHandler:
       Value: {fileID: 0}
       HasValue: 0
-  OutputTypeName: 
+  OutputTypeName: AUTODETECT
   threadAffinities:
     Value: []
     HasValue: 0
@@ -125,7 +125,7 @@ MonoBehaviour:
     CallbackHandler:
       Value: {fileID: 0}
       HasValue: 0
-  OutputTypeName: 
+  OutputTypeName: AUTODETECT
   threadAffinities:
     Value: []
     HasValue: 0
@@ -365,7 +365,7 @@ MonoBehaviour:
   BankRefreshCooldown: 1
   ShowBankRefreshWindow: 0
   AutomaticEventLoading: 0
-  BankLoadType: 0
+  BankLoadType: 1
   AutomaticSampleLoading: 1
   EncryptionKey: 
   ImportType: 0
@@ -383,8 +383,12 @@ MonoBehaviour:
   Plugins: []
   MasterBanks:
   - Master
-  Banks: []
-  BanksToLoad: []
+  Banks:
+  - Ambience
+  - Music
+  BanksToLoad:
+  - Master
+  - Master.strings
   LiveUpdatePort: 9264
   EnableMemoryTracking: 0
   AndroidUseOBB: 0
@@ -410,7 +414,7 @@ MonoBehaviour:
   - {fileID: 6949332421131873479}
   - {fileID: 7547980707418178062}
   - {fileID: 7815044853918621546}
-  MigratedPlatforms: 0c000000150000000b0000000a00000009000000120000000800000005000000060000000200000001000000
+  MigratedPlatforms: 0c000000150000000b0000000a0000000900000012000000080000000500000006000000020000000100000000000000
 --- !u!114 &347684206273177710
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -626,7 +630,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   identifier: 46fbfdf3fc43db0458918377fd40293e
   parentIdentifier: default
-  active: 0
+  active: 1
   Properties:
     LiveUpdate:
       Value: 0
@@ -656,11 +660,11 @@ MonoBehaviour:
       Value: 0
       HasValue: 0
     DSPBufferLength:
-      Value: 0
-      HasValue: 0
+      Value: 2048
+      HasValue: 1
     DSPBufferCount:
-      Value: 0
-      HasValue: 0
+      Value: 4
+      HasValue: 1
     Plugins:
       Value: []
       HasValue: 0
@@ -670,7 +674,7 @@ MonoBehaviour:
     CallbackHandler:
       Value: {fileID: 0}
       HasValue: 0
-  OutputTypeName: 
+  OutputTypeName: AUTODETECT
   threadAffinities:
     Value: []
     HasValue: 0

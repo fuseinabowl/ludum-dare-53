@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.02.02.00">
 	<object class="MixerGroup" id="{28d3923f-ddb4-4c10-9ae9-c171af3fd20c}">
 		<property name="volume">
-			<value>-9</value>
+			<value>-14.5</value>
 		</property>
 		<property name="name">
 			<value>Music</value>
@@ -29,6 +29,9 @@
 	<object class="MixerBusPanner" id="{97c49857-d84c-419e-9b5c-e1b1c2e0dee5}" />
 	<object class="MixerBusFader" id="{42ff6c0d-e43e-46e1-a969-ebc714edc82e}" />
 	<object class="CompressorEffect" id="{37ce993b-c8d6-4215-b228-b4fbeb0c72b4}">
+		<property name="bypass">
+			<value>true</value>
+		</property>
 		<property name="threshold">
 			<value>-20</value>
 		</property>

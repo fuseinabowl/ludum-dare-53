@@ -35,7 +35,7 @@
 			<destination>{026a277c-f500-455e-bae7-c1d2c6d780f4}</destination>
 		</relationship>
 		<relationship name="banks">
-			<destination>{3ae7c6a4-143b-4943-87ba-9f304cdc6781}</destination>
+			<destination>{b44379f8-7c89-4a49-9fc5-be5f356b9d8f}</destination>
 		</relationship>
 	</object>
 	<object class="EventMixer" id="{6d2068c8-eed8-4acc-8f46-adc88afbb743}">
@@ -66,7 +66,11 @@
 			<destination>{e172c4b3-7cd1-4a12-952c-7f2b00e31be4}</destination>
 		</relationship>
 	</object>
-	<object class="EventAutomatableProperties" id="{89c8090e-89dc-4732-b5b1-ba6d49aa04e0}" />
+	<object class="EventAutomatableProperties" id="{89c8090e-89dc-4732-b5b1-ba6d49aa04e0}">
+		<property name="maxVoices">
+			<value>1</value>
+		</property>
+	</object>
 	<object class="MarkerTrack" id="{bfc0a72a-3513-4e2f-acfb-c79274180a50}" />
 	<object class="GroupTrack" id="{305dca32-483d-4547-836a-7d646c68f3bb}">
 		<relationship name="modules">
@@ -93,7 +97,7 @@
 	</object>
 	<object class="EventMixerMaster" id="{64089994-f5c0-48bf-b912-a66b236a2323}">
 		<property name="volume">
-			<value>0.5</value>
+			<value>1.5</value>
 		</property>
 		<relationship name="modulators">
 			<destination>{cd633a26-a26b-48d3-b426-1a5bca9b1ee0}</destination>

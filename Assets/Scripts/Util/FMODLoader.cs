@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// TODO: Independent platform configuration (at least WebGL vs Desktop).
-
 public class FMODLoader : MonoBehaviour
 {
     public delegate void OnLoadHandler(FMODLoader self);
@@ -15,7 +13,7 @@ public class FMODLoader : MonoBehaviour
     [FMODUnity.BankRef]
     public string ambienceBank;
 
-    [Header("Banks")]
+    [Header("Events")]
     public FMODUnity.EventReference musicEvent;
 
     public FMODUnity.EventReference[] ambienceEvents;
@@ -58,7 +56,6 @@ public class FMODLoader : MonoBehaviour
     {
         // Need to run in background so that music/ambience can be paused.
         Application.runInBackground = true;
-        Debug.LogFormat("Platform: {0}", Application.platform);
     }
 
     private void Start()

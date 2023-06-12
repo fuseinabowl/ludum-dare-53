@@ -45,7 +45,7 @@ public class FMODLoader : MonoBehaviour
         {
             for (int i = 0; i < ambience.Length; i++)
             {
-                if (ambienceEvents[i].Path == ambienceRef.Path)
+                if (ambienceEvents[i].Guid == ambienceRef.Guid)
                 {
                     return ambience[i];
                 }

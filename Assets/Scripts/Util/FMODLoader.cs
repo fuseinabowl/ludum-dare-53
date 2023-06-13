@@ -68,6 +68,26 @@ public class FMODLoader : MonoBehaviour
         {
             StartCoroutine(LoadCoroutine());
         }
+
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        {
+            uint dspBufferLength;
+            int dspBufferCount;
+            FMODUnity.RuntimeManager.CoreSystem.getDSPBufferSize(
+                out dspBufferLength,
+                out dspBufferCount
+            );
+            if (dspBufferLength != webGLBufferLength)
+            {
+                Debug.LogWarningFormat(
+                    "WebGL buffer length is {0}, but it should be {1}. "
+                        + "Fix this via the FMOD menu > Edit Settings > Platform Specific > + > WebGL. "
+                        + "Then next to DSP Buffer Settings untick Auto and set DSP Buffer Length to {1}.",
+                    dspBufferLength,
+                    webGLBufferLength
+                );
+            }
+        }
     }
 
     private void OnApplicationFocus(bool hasFocus)

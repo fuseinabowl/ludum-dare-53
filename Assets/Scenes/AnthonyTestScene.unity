@@ -4083,10 +4083,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 986006700}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 106aca6544a8e415f840db0bd45b5c90, type: 3}
+  m_Script: {fileID: 11500000, guid: d741740c669c44ab3a3dd4827ffaa9a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseRaycast: 1
+  targetCollider: {fileID: 186066274}
+  hoverEvents: 0
 --- !u!1001 &994037438
 PrefabInstance:
   m_ObjectHideFlags: 0

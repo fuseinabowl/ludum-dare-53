@@ -120,7 +120,23 @@ public class VertexNetwork : MonoBehaviour
         }
     }
 
-    private void OnInputMouseButtonDown(SimpleInputManager.MouseEvent e)
+    // private void OnInputMouseButtonDown(SimpleInputManager.MouseEvent e)
+    // {
+    //     if (e.left)
+    //     {
+    //         var closestEdge = edgeGraph.ClosestEdge(e.raycastHit.Value.point);
+    //         if (CanPlaceEdge(closestEdge))
+    //         {
+    //             PlaceEdge(closestEdge);
+    //         }
+    //         else if (CanDeleteEdge(closestEdge))
+    //         {
+    //             DeleteEdge(closestEdge);
+    //         }
+    //     }
+    // }
+
+    private void OnMouseHitDown(MouseHitTarget.Event e)
     {
         if (e.left)
         {

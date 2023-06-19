@@ -66,6 +66,36 @@ public class GizmoRenderer : MonoBehaviour
     public Vector3 selfOffset = Vector3.zero;
     public Space selfSpace = Space.LOCAL;
 
+    private class GizmoData
+    {
+        public Transform tform;
+        public List<Vector3> positions;
+        public Variant variant;
+        public Shape shape;
+        public Vector3 size;
+        public Space space;
+        public float timer;
+
+        public GizmoData(
+            Transform tform,
+            List<Vector3> positions,
+            Variant variant,
+            Shape shape,
+            Vector3 size,
+            Space space,
+            float timer
+        )
+        {
+            this.tform = tform;
+            this.positions = positions;
+            this.variant = variant;
+            this.shape = shape;
+            this.size = size;
+            this.space = space;
+            this.timer = timer;
+        }
+    }
+
     private List<GizmoData> gizmos = new List<GizmoData>();
 
     public void DrawSphere(
@@ -88,7 +118,8 @@ public class GizmoRenderer : MonoBehaviour
         float radius = 0f,
         Variant variant = Variant.PRIMARY,
         Space space = Space.LOCAL,
-        bool wire = false
+        bool wire = false,
+        float timer = float.PositiveInfinity
     )
     {
         if (tform != null)
@@ -107,7 +138,8 @@ public class GizmoRenderer : MonoBehaviour
                 variant,
                 wire ? Shape.SPHERE_WIRE : Shape.SPHERE,
                 radius * Vector3.one,
-                space
+                space,
+                timer
             )
         );
     }
@@ -131,7 +163,8 @@ public class GizmoRenderer : MonoBehaviour
         Vector3 direction,
         bool arrow = false,
         Variant variant = Variant.PRIMARY,
-        Space space = Space.LOCAL
+        Space space = Space.LOCAL,
+        float timer = float.PositiveInfinity
     )
     {
         gizmos.Add(
@@ -141,7 +174,8 @@ public class GizmoRenderer : MonoBehaviour
                 variant,
                 arrow ? Shape.DIRECTION_ARROW : Shape.DIRECTION,
                 direction,
-                space
+                space,
+                timer
             )
         );
     }
@@ -165,7 +199,8 @@ public class GizmoRenderer : MonoBehaviour
         Vector3 to,
         bool arrow = false,
         Variant variant = Variant.PRIMARY,
-        Space space = Space.LOCAL
+        Space space = Space.LOCAL,
+        float timer = float.PositiveInfinity
     )
     {
         gizmos.Add(
@@ -175,7 +210,8 @@ public class GizmoRenderer : MonoBehaviour
                 variant,
                 arrow ? Shape.LINE_ARROW : Shape.LINE,
                 Vector3.zero, // size is irrelevant for a line
-                space
+                space,
+                timer
             )
         );
     }
@@ -516,33 +552,6 @@ public class GizmoRenderer : MonoBehaviour
         }
     }
 
-    private class GizmoData
-    {
-        public Transform tform;
-        public List<Vector3> positions;
-        public Variant variant;
-        public Shape shape;
-        public Vector3 size;
-        public Space space;
-
-        public GizmoData(
-            Transform tform,
-            List<Vector3> positions,
-            Variant variant,
-            Shape shape,
-            Vector3 size,
-            Space space
-        )
-        {
-            this.tform = tform;
-            this.positions = positions;
-            this.variant = variant;
-            this.shape = shape;
-            this.size = size;
-            this.space = space;
-        }
-    }
-
     private bool ShouldDraw(Variant variant)
     {
         return enabled
@@ -555,7 +564,18 @@ public class GizmoRenderer : MonoBehaviour
 
     private void LateUpdate()
     {
-        gizmos.Clear();
+        var remove = new List<GizmoData>();
+
+        foreach (var giz in gizmos) {
+            giz.timer -= Time.deltaTime;
+            if (giz.timer <= 0) {
+                remove.Add(giz);
+            }
+        }
+
+        foreach (var giz in remove) {
+            gizmos.Remove(giz);
+        }
     }
 
     private Camera Cam(out float cameraDistance)

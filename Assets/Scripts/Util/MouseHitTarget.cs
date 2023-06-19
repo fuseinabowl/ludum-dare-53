@@ -10,6 +10,10 @@ using UnityEngine;
 ///     of whether the mouse is currently over the object.
 ///   - OnMouseHitHover is generated only if hover events are enabled, and is sent whenever the
 ///     mouse is hovering over this collider.
+///   - OnMouseHitHoveStart is generated only if hover events are enabled, and is sent the first
+///     time the mouse hovers over the collider since it was last hovering.
+///   - OnMouseHitHoverEnd is generated only if hover events are enabled, and is sent after the
+///     mouse is no longer hovering over the collider after a series of OnMouseHitHover events.
 /// </summary>
 public class MouseHitTarget : MonoBehaviour
 {
@@ -45,6 +49,7 @@ public class MouseHitTarget : MonoBehaviour
     private static System.Nullable<RaycastHit> raycastHit;
 
     private bool down = false;
+    private bool hover = false;
 
     private void Awake()
     {
@@ -81,10 +86,7 @@ public class MouseHitTarget : MonoBehaviour
         {
             UpdateMouseUp();
         }
-        else if (
-            hoverEvents
-            && (Input.GetMouseButton(0) || Input.GetMouseButton(1) || Input.GetMouseButton(2))
-        )
+        else if (hoverEvents)
         {
             UpdateMouseHover();
         }
@@ -121,17 +123,23 @@ public class MouseHitTarget : MonoBehaviour
 
     private void UpdateMouseHover()
     {
-        if (!hoverEvents)
-        {
-            return;
-        }
-
         UpdateRaycast();
 
         if (raycastHit?.collider.gameObject == gameObject)
         {
+            string message = hover ? "OnMouseHitHover" : "OnMouseHitHoverStart";
+            hover = true;
             SendMessage(
-                "OnMouseHitHover",
+                message,
+                GetEvent(Input.GetMouseButton),
+                SendMessageOptions.DontRequireReceiver
+            );
+        }
+        else if (hover)
+        {
+            hover = false;
+            SendMessage(
+                "OnMouseHitHoverEnd",
                 GetEvent(Input.GetMouseButton),
                 SendMessageOptions.DontRequireReceiver
             );

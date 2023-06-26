@@ -898,6 +898,7 @@ MonoBehaviour:
   magnitude: 1.4
   complexity: 10
   direction: {x: 0, y: 1, z: 0}
+  multipleAnimations: []
   continuous: 0
   animateOnStart: 0
 --- !u!114 &7908331905365301918
@@ -918,6 +919,7 @@ MonoBehaviour:
   magnitude: 1.2
   complexity: 15
   direction: {x: 0, y: 1, z: 0}
+  multipleAnimations: []
   continuous: 0
   animateOnStart: 0
 --- !u!1 &5879547802644299674
@@ -1452,6 +1454,13 @@ MonoBehaviour:
   trackComplete: {fileID: 1929765083148159563}
   trackPlaced: {fileID: 1804076013611902101}
   trackDeleted: {fileID: 4559702553894711608}
+  trackHover:
+    Guid:
+      Data1: -337686195
+      Data2: 1276953471
+      Data3: 1588635063
+      Data4: 1153913248
+    Path: event:/SFX/TrackHover
   winJingle: {fileID: 5868319638941161914}
   birds:
     Guid:

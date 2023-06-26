@@ -4086,6 +4086,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d741740c669c44ab3a3dd4827ffaa9a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
   targetCollider: {fileID: 186066274}
   hoverEvents: 0
 --- !u!1001 &994037438

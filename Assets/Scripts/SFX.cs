@@ -9,6 +9,7 @@ public class SFX : MonoBehaviour
     public FMODUnity.StudioEventEmitter trackComplete;
     public FMODUnity.StudioEventEmitter trackPlaced;
     public FMODUnity.StudioEventEmitter trackDeleted;
+    public FMODUnity.EventReference trackHover;
     public FMODUnity.StudioEventEmitter winJingle;
 
     [Header("Ambience")]

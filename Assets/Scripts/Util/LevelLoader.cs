@@ -46,6 +46,15 @@ public class LevelLoader : MonoBehaviour
         return LoadLevel(nextLevel);
     }
 
+    /// <summary>
+    /// Like LoadNextLevel but returns void, useful for targets of event handlers since
+    /// LoadNextLevel returns a bool and can't be used.
+    /// </summary>
+    public void LoadNextLevelHandler()
+    {
+        LoadNextLevel();
+    }
+
     private bool LoadLevel(int levelIndex)
     {
         if (levelIndex >= 0 && levelIndex < levelPaths.Length)

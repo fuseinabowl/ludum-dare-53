@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 /// <summary>
 /// Generates OnMouseHitDown, OnMouseHitUp, and optionally OnMouseHitHover events.
@@ -8,6 +9,8 @@ using UnityEngine;
 ///     always eventually be sent.
 ///   - OnMouseHitUp is generated when the mouse event from OnMouseHitDown is released, regardless
 ///     of whether the mouse is currently over the object.
+///   - OnMouseHitClick is generated after an OnMouseHitUp if there was previously an
+///     OnMouseHitDown for that object.
 ///   - OnMouseHitHover is generated only if hover events are enabled, and is sent whenever the
 ///     mouse is hovering over this collider.
 ///   - OnMouseHitHoveStart is generated only if hover events are enabled, and is sent the first
@@ -26,6 +29,23 @@ public class MouseHitTarget : MonoBehaviour
         public System.Nullable<RaycastHit> raycastHit;
     }
 
+    public interface ButtonHandler
+    {
+        void OnMouseHitDown(MouseHitTarget.Event e);
+        void OnMouseHitUp(MouseHitTarget.Event e);
+        void OnMouseHitClick(MouseHitTarget.Event e);
+    }
+
+    public interface HoverHandler
+    {
+        void OnMouseHitHover(MouseHitTarget.Event e);
+        void OnMouseHitHoverStart(MouseHitTarget.Event e);
+        void OnMouseHitHoverEnd(MouseHitTarget.Event e);
+    }
+
+    [System.Serializable]
+    public class ClickEvent : UnityEvent<Event> { }
+
     public struct Modifiers
     {
         public bool shift;
@@ -37,16 +57,26 @@ public class MouseHitTarget : MonoBehaviour
     private delegate bool MouseButtonGetter(int button);
 
     [SerializeField]
+    [Tooltip("Filter mouse events to specific collider layers, default Everything")]
+    private LayerMask layerMask = -1;
+
+    [SerializeField]
+    [Tooltip("(Optional) Collider to trigger events from, if this object doesn't have one")]
     private Collider targetCollider;
 
     [SerializeField]
-    [Tooltip("Calculate hits while hovering (expensive!)")]
+    [Tooltip("Continuously calculate hits for hover events")]
     private bool hoverEvents = false;
+
+    [SerializeField]
+    [Tooltip("Functions to run when clicked, the argument is a MouseHitTarget.Event")]
+    private ClickEvent clicked = new ClickEvent();
 
     // Share the raycast result across all mouse handlers. There is no need for every handler
     // to recalculate it since it'll be the same every time.
     private static bool didRaycast = false;
-    private static System.Nullable<RaycastHit> raycastHit;
+    private static RaycastHit[] raycastHits = new RaycastHit[10];
+    private static int raycastHitsCount = 0;
 
     private bool down = false;
     private bool hover = false;
@@ -96,15 +126,19 @@ public class MouseHitTarget : MonoBehaviour
     {
         UpdateRaycast();
 
-        if (raycastHit?.collider == targetCollider)
+        for (int i = 0; i < raycastHitsCount; i++)
         {
-            down = true;
+            if (raycastHits[i].collider == targetCollider)
+            {
+                down = true;
 
-            SendMessage(
-                "OnMouseHitDown",
-                GetEvent(Input.GetMouseButtonDown),
-                SendMessageOptions.DontRequireReceiver
-            );
+                SendMessage(
+                    "OnMouseHitDown",
+                    GetEvent(Input.GetMouseButtonDown, raycastHits[i]),
+                    SendMessageOptions.DontRequireReceiver
+                );
+                break;
+            }
         }
     }
 
@@ -112,35 +146,56 @@ public class MouseHitTarget : MonoBehaviour
     {
         UpdateRaycast();
 
+        bool wasDown = down;
         down = false;
 
-        SendMessage(
-            "OnMouseHitUp",
-            GetEvent(Input.GetMouseButtonUp),
-            SendMessageOptions.DontRequireReceiver
-        );
+        var upEvent = GetEvent(Input.GetMouseButtonUp, null);
+        SendMessage("OnMouseHitUp", upEvent, SendMessageOptions.DontRequireReceiver);
+
+        if (wasDown)
+        {
+            SendMessage("OnMouseHitClick", upEvent, SendMessageOptions.DontRequireReceiver);
+            clicked.Invoke(upEvent);
+        }
     }
 
     private void UpdateMouseHover()
     {
         UpdateRaycast();
 
-        if (raycastHit?.collider.gameObject == gameObject)
+        bool wasHover = hover;
+        hover = false;
+
+        for (int i = 0; i < raycastHitsCount; i++)
         {
-            string message = hover ? "OnMouseHitHover" : "OnMouseHitHoverStart";
-            hover = true;
-            SendMessage(
-                message,
-                GetEvent(Input.GetMouseButton),
-                SendMessageOptions.DontRequireReceiver
-            );
+            if (raycastHits[i].collider.gameObject == gameObject)
+            {
+                hover = true;
+                if (wasHover)
+                {
+                    SendMessage(
+                        "OnMouseHitHover",
+                        GetEvent(Input.GetMouseButton, raycastHits[i]),
+                        SendMessageOptions.DontRequireReceiver
+                    );
+                }
+                else
+                {
+                    SendMessage(
+                        "OnMouseHitHoverStart",
+                        GetEvent(Input.GetMouseButton, raycastHits[i]),
+                        SendMessageOptions.DontRequireReceiver
+                    );
+                }
+                break;
+            }
         }
-        else if (hover)
+
+        if (!hover && wasHover)
         {
-            hover = false;
             SendMessage(
                 "OnMouseHitHoverEnd",
-                GetEvent(Input.GetMouseButton),
+                GetEvent(Input.GetMouseButton, null),
                 SendMessageOptions.DontRequireReceiver
             );
         }
@@ -149,7 +204,6 @@ public class MouseHitTarget : MonoBehaviour
     private void LateUpdate()
     {
         didRaycast = false;
-        raycastHit = null;
     }
 
     private void UpdateRaycast()
@@ -157,16 +211,17 @@ public class MouseHitTarget : MonoBehaviour
         if (!didRaycast)
         {
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit))
-            {
-                raycastHit = hit;
-            }
+            raycastHitsCount = Physics.RaycastNonAlloc(
+                ray,
+                raycastHits,
+                float.PositiveInfinity,
+                layerMask
+            );
             didRaycast = true;
         }
     }
 
-    private Event GetEvent(MouseButtonGetter getter)
+    private Event GetEvent(MouseButtonGetter getter, RaycastHit? raycastHit)
     {
         var e = new Event();
         e.modifiers = new Modifiers

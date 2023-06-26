@@ -26,21 +26,33 @@ public class TransformAnimator : MonoBehaviour
         NUDGE_HOLD
     }
 
+    [System.Serializable]
+    public class AnimationConfig
+    {
+        public bool enabled = true;
+        public Animation animation = Animation.PULSE;
+        public float magnitude = 2f;
+        public float complexity = 10f;
+        public Vector3 direction = Vector3.up;
+    }
+
     public Transform otherTransform = null;
 
+    [Header("Configuration")]
     public new Animation animation = Animation.PULSE;
 
-    [Range(0, 5)]
     public float duration = 1f;
 
-    [Range(0, 2)]
     public float magnitude = 2f;
 
-    [Range(0, 20)]
     public float complexity = 10f;
 
     public Vector3 direction = Vector3.up;
 
+    [Header("Multiple Animations")]
+    public List<AnimationConfig> multipleAnimations = new List<AnimationConfig>();
+
+    [Header("Behaviour")]
     public bool continuous = false;
 
     public bool animateOnStart = false;
@@ -61,7 +73,25 @@ public class TransformAnimator : MonoBehaviour
     {
         if (enabled && startIfAnimating)
         {
-            StartCoroutine(IAnimate());
+            StartCoroutine(
+                IAnimate(
+                    new AnimationConfig
+                    {
+                        animation = animation,
+                        magnitude = magnitude,
+                        complexity = complexity,
+                        direction = direction,
+                    }
+                )
+            );
+
+            foreach (var conf in multipleAnimations)
+            {
+                if (conf.enabled)
+                {
+                    StartCoroutine(IAnimate(conf));
+                }
+            }
         }
     }
 
@@ -89,7 +119,7 @@ public class TransformAnimator : MonoBehaviour
         }
     }
 
-    private IEnumerator IAnimate()
+    private IEnumerator IAnimate(AnimationConfig conf)
     {
         if (!AnyComponentIsAnimating())
         {
@@ -100,28 +130,28 @@ public class TransformAnimator : MonoBehaviour
 
         animationCount++;
 
-        switch (animation)
+        switch (conf.animation)
         {
             case Animation.PULSE:
-                yield return IPulse();
+                yield return IPulse(conf);
                 break;
             case Animation.PULSE_HOLD:
-                yield return IPulseHold();
+                yield return IPulseHold(conf);
                 break;
             case Animation.SPIN:
-                yield return ISpin();
+                yield return ISpin(conf);
                 break;
             case Animation.SHAKE:
-                yield return IShakeWiggle(true, false);
+                yield return IShakeWiggle(conf, true, false);
                 break;
             case Animation.WIGGLE:
-                yield return IShakeWiggle(false, true);
+                yield return IShakeWiggle(conf, false, true);
                 break;
             case Animation.NUDGE:
-                yield return INudge();
+                yield return INudge(conf);
                 break;
             case Animation.NUDGE_HOLD:
-                yield return INudgeHold();
+                yield return INudgeHold(conf);
                 break;
         }
 
@@ -140,7 +170,7 @@ public class TransformAnimator : MonoBehaviour
         }
     }
 
-    private IEnumerator IPulse()
+    private IEnumerator IPulse(AnimationConfig conf)
     {
         float elapsed = 0;
         float prevScale = 1f;
@@ -152,7 +182,7 @@ public class TransformAnimator : MonoBehaviour
                 elapsed -= duration;
             }
 
-            var currentScale = BiSmoothStep(1f, magnitude, elapsed / duration);
+            var currentScale = BiSmoothStep(1f, conf.magnitude, elapsed / duration);
             t.localScale *= 1 + currentScale - prevScale;
             prevScale = currentScale;
 
@@ -161,14 +191,14 @@ public class TransformAnimator : MonoBehaviour
         }
     }
 
-    private IEnumerator IPulseHold()
+    private IEnumerator IPulseHold(AnimationConfig conf)
     {
         float elapsed = 0;
         float prevScale = 1f;
 
         while (continuous)
         {
-            var currentScale = BiSmoothStep(1f, magnitude, elapsed / duration);
+            var currentScale = BiSmoothStep(1f, conf.magnitude, elapsed / duration);
             t.localScale *= 1 + currentScale - prevScale;
             prevScale = currentScale;
 
@@ -185,7 +215,7 @@ public class TransformAnimator : MonoBehaviour
 
         while (elapsed < duration)
         {
-            var currentScale = BiSmoothStep(1f, magnitude, elapsed / duration);
+            var currentScale = BiSmoothStep(1f, conf.magnitude, elapsed / duration);
             t.localScale *= 1 + currentScale - prevScale;
             prevScale = currentScale;
 
@@ -194,7 +224,7 @@ public class TransformAnimator : MonoBehaviour
         }
     }
 
-    private IEnumerator ISpin()
+    private IEnumerator ISpin(AnimationConfig conf)
     {
         float elapsed = 0;
         float prevRotation = 0f;
@@ -215,7 +245,7 @@ public class TransformAnimator : MonoBehaviour
         }
     }
 
-    private IEnumerator IShakeWiggle(bool shake, bool wiggle)
+    private IEnumerator IShakeWiggle(AnimationConfig conf, bool shake, bool wiggle)
     {
         var seed = UnityEngine.Random.value;
 
@@ -226,8 +256,8 @@ public class TransformAnimator : MonoBehaviour
         while (continuous || elapsed < duration)
         {
             var magnitudeStep = continuous
-                ? magnitude
-                : BiSmoothStep(0, magnitude, elapsed / duration);
+                ? conf.magnitude
+                : BiSmoothStep(0, conf.magnitude, elapsed / duration);
 
             if (shake)
             {
@@ -235,9 +265,9 @@ public class TransformAnimator : MonoBehaviour
                     5f
                     * magnitudeStep
                     * new Vector3(
-                        Mathf.PerlinNoise(seed, elapsed * complexity) * 2 - 1,
-                        Mathf.PerlinNoise(seed + 1, elapsed * complexity) * 2 - 1,
-                        Mathf.PerlinNoise(seed + 2, elapsed * complexity) * 2 - 1
+                        Mathf.PerlinNoise(seed, elapsed * conf.complexity) * 2 - 1,
+                        Mathf.PerlinNoise(seed + 1, elapsed * conf.complexity) * 2 - 1,
+                        Mathf.PerlinNoise(seed + 2, elapsed * conf.complexity) * 2 - 1
                     );
                 t.localPosition += currentLocalPosition - prevLocalPosition;
                 prevLocalPosition = currentLocalPosition;
@@ -249,9 +279,9 @@ public class TransformAnimator : MonoBehaviour
                     15f
                     * magnitudeStep
                     * new Vector3(
-                        Mathf.PerlinNoise(seed + 3, elapsed * complexity) * 2 - 1,
-                        Mathf.PerlinNoise(seed + 4, elapsed * complexity) * 2 - 1,
-                        Mathf.PerlinNoise(seed + 5, elapsed * complexity) * 2 - 1
+                        Mathf.PerlinNoise(seed + 3, elapsed * conf.complexity) * 2 - 1,
+                        Mathf.PerlinNoise(seed + 4, elapsed * conf.complexity) * 2 - 1,
+                        Mathf.PerlinNoise(seed + 5, elapsed * conf.complexity) * 2 - 1
                     );
                 t.localRotation = Quaternion.Euler(
                     t.localRotation.eulerAngles + currentLocalRotation - prevLocalRotation
@@ -264,7 +294,7 @@ public class TransformAnimator : MonoBehaviour
         }
     }
 
-    private IEnumerator INudge()
+    private IEnumerator INudge(AnimationConfig conf)
     {
         float elapsed = 0;
         float prevExtent = 0;
@@ -276,7 +306,7 @@ public class TransformAnimator : MonoBehaviour
                 elapsed -= duration;
             }
 
-            var currentExtent = BiSmoothStep(0f, magnitude, elapsed / duration);
+            var currentExtent = BiSmoothStep(0f, conf.magnitude, elapsed / duration);
             t.localPosition += (currentExtent - prevExtent) * direction.normalized;
             prevExtent = currentExtent;
 
@@ -285,14 +315,14 @@ public class TransformAnimator : MonoBehaviour
         }
     }
 
-    private IEnumerator INudgeHold()
+    private IEnumerator INudgeHold(AnimationConfig conf)
     {
         float elapsed = 0;
         float prevExtent = 0;
 
         while (continuous)
         {
-            var currentExtent = BiSmoothStep(0f, magnitude, elapsed / duration);
+            var currentExtent = BiSmoothStep(0f, conf.magnitude, elapsed / duration);
             t.localPosition += (currentExtent - prevExtent) * direction.normalized;
             prevExtent = currentExtent;
 
@@ -309,7 +339,7 @@ public class TransformAnimator : MonoBehaviour
 
         while (elapsed < duration)
         {
-            var currentExtent = BiSmoothStep(0f, magnitude, elapsed / duration);
+            var currentExtent = BiSmoothStep(0f, conf.magnitude, elapsed / duration);
             t.localPosition += (currentExtent - prevExtent) * direction.normalized;
             prevExtent = currentExtent;
 

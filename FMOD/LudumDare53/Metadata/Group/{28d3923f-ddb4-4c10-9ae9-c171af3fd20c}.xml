@@ -30,20 +30,17 @@
 	<object class="MixerBusPanner" id="{97c49857-d84c-419e-9b5c-e1b1c2e0dee5}" />
 	<object class="MixerBusFader" id="{42ff6c0d-e43e-46e1-a969-ebc714edc82e}" />
 	<object class="CompressorEffect" id="{37ce993b-c8d6-4215-b228-b4fbeb0c72b4}">
-		<property name="bypass">
-			<value>true</value>
-		</property>
 		<property name="threshold">
-			<value>-20</value>
+			<value>-25</value>
 		</property>
 		<property name="ratio">
-			<value>1.30000007</value>
+			<value>1.5</value>
 		</property>
 		<property name="attackTime">
-			<value>7.5999999</value>
+			<value>0.100000001</value>
 		</property>
 		<property name="releaseTime">
-			<value>96</value>
+			<value>10</value>
 		</property>
 		<relationship name="sidechains">
 			<destination>{638b5601-be09-4475-9fdf-8ac9ea36f156}</destination>
@@ -51,7 +48,7 @@
 	</object>
 	<object class="MixerSend" id="{9a2731aa-0b18-4ee5-9f29-e85533a13ee5}">
 		<property name="level">
-			<value>-10.5</value>
+			<value>-9</value>
 		</property>
 		<property name="inputFormat">
 			<value>1</value>

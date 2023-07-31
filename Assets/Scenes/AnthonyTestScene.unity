@@ -719,15 +719,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 31.77
+      value: 24.5
       objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 15.74
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -14.99
+      value: -7.51
       objectReference: {fileID: 0}
     - target: {fileID: 5480740264826367822, guid: 739ddd8634b134d94931723d71589852, type: 3}
       propertyPath: m_LocalRotation.w
@@ -4091,6 +4091,9 @@ MonoBehaviour:
     m_Bits: 4294967295
   targetCollider: {fileID: 186066274}
   hoverEvents: 0
+  clicked:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &994037438
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -97,8 +97,8 @@ public class FrameRateLimiter : MonoBehaviour
 
     private void ApplyCurrentlySelectedRate()
     {
-        Debug.Log($"Applying VSync of {currentRateIndex}");
-        QualitySettings.vSyncCount = currentRateIndex;
+        // Debug.Log($"Applying VSync of {currentRateIndex}");
+        // QualitySettings.vSyncCount = currentRateIndex;
     }
 
     public void IncrementAndApplyFrameRate()

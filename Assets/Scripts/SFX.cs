@@ -24,7 +24,9 @@ public class SFX : MonoBehaviour
 
     public void DidNextLevel()
     {
+        Debug.Log("NextLevel");
         SingletonProvider.Get<FMODLoader>().music.setParameterByName("NextLevel", 1);
+        SingletonProvider.Get<AdaptiveMusic>().SetParameter("NextLevel", 1);
     }
 
     public void DidGameOver()

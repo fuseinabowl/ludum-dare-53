@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 100deb91717254022b53a0b57280c42c, type: 3}
+  m_Name: MusicB
+  m_EditorClassIdentifier: 
+  bpm: 66
+  bars: 8
+  beatsPerBar: 3
+  clips:
+  - clip: {fileID: 8300000, guid: e37d95c18bec34ee5b79ec778f9f7c20, type: 3}
+    alternateClips: []
+    playOrder: 0
+    condition:
+      parameter: 
+      op: 0
+      value: 0
+    beatOffset: 0
+  - clip: {fileID: 8300000, guid: 0114d1d8200604498be85558674d4e5a, type: 3}
+    alternateClips:
+    - {fileID: 8300000, guid: 24e04492d87b348449617f4d130a2529, type: 3}
+    playOrder: 0
+    condition:
+      parameter: 
+      op: 0
+      value: 0
+    beatOffset: 0
+  - clip: {fileID: 8300000, guid: c7c72a1b32456448887afdb648f65b57, type: 3}
+    alternateClips: []
+    playOrder: 0
+    condition:
+      parameter: 
+      op: 0
+      value: 0
+    beatOffset: 0
+  - clip: {fileID: 8300000, guid: 39fc2404e2dbf41e48ba0a5b856a2d2c, type: 3}
+    alternateClips: []
+    playOrder: 0
+    condition:
+      parameter: 
+      op: 0
+      value: 0
+    beatOffset: 1
+  - clip: {fileID: 8300000, guid: 0cdcb516ef3884dc38417bb046db89af, type: 3}
+    alternateClips: []
+    playOrder: 0
+    condition:
+      parameter: 
+      op: 0
+      value: 0
+    beatOffset: 0
+  transitions:
+  - sequence: {fileID: 11400000, guid: 8e33c0a7b59b04e5084e080bf214aedf, type: 2}
+    condition:
+      parameter: 
+      op: 0
+      value: 0
+    interrupt: 0
+    quantizeBars: 0
+    quantizeBeats: 0
+  clearParameters: []

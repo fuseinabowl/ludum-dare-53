@@ -6,6 +6,8 @@ public class FMODLoader : MonoBehaviour
 {
     public delegate void OnLoadHandler(FMODLoader self);
 
+    public bool disableMusic = false;
+
     [Header("Banks")]
     [FMODUnity.BankRef]
     public string musicBank;
@@ -152,7 +154,7 @@ public class FMODLoader : MonoBehaviour
             return;
         }
 
-        if (!musicEvent.IsNull && !music.isValid())
+        if (!musicEvent.IsNull && !music.isValid() && !disableMusic)
         {
             music = SFX.Start(musicEvent, gameObject);
         }

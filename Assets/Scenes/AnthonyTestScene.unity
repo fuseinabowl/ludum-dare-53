@@ -4642,6 +4642,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1064724949740613725, guid: 3023d932a3eae42d4b7843ada503300b, type: 3}
+      propertyPath: bpm
+      value: 66
+      objectReference: {fileID: 0}
+    - target: {fileID: 1064724949740613725, guid: 3023d932a3eae42d4b7843ada503300b, type: 3}
+      propertyPath: bars
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1064724949740613725, guid: 3023d932a3eae42d4b7843ada503300b, type: 3}
+      propertyPath: timeSignatureBeats
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 1487169217843230670, guid: 3023d932a3eae42d4b7843ada503300b, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0

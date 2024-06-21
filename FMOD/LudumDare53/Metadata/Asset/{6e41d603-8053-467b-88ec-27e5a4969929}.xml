@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="EncodableAsset" id="{6e41d603-8053-467b-88ec-27e5a4969929}">
+		<property name="assetPath">
+			<value>trackComplete/</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{5a6b5b7f-4faa-4489-944f-b6bf50169d09}</destination>
+		</relationship>
+	</object>
+</objects>

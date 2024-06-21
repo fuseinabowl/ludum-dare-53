@@ -6,15 +6,22 @@ public class SFX : MonoBehaviour
 {
     [Header("SFX")]
     public FMODUnity.EventReference trackCompleteKnocks;
+    public FMODUnity.EventReference trackCompleteFinalKnock;
+    public FMODUnity.EventReference trainTurnStart;
+    public FMODUnity.EventReference trainTurnEnd;
     public FMODUnity.StudioEventEmitter trackComplete;
     public FMODUnity.StudioEventEmitter trackPlaced;
     public FMODUnity.StudioEventEmitter trackDeleted;
-    public FMODUnity.EventReference trackHover;
     public FMODUnity.StudioEventEmitter winJingle;
 
-    [Header("Ambience")]
-    public FMODUnity.EventReference birds;
-    public FMODUnity.EventReference wind;
+    // [Header("Ambience")]
+    // public FMODUnity.EventReference birds;
+    // public FMODUnity.EventReference wind;
+
+    [Header("Music")]
+    public FMODUnity.StudioEventEmitter musicEmitter;
+
+    bool mute = false;
 
     public static SFX singleton
     {
@@ -25,7 +32,8 @@ public class SFX : MonoBehaviour
     public void DidNextLevel()
     {
         Debug.Log("NextLevel");
-        SingletonProvider.Get<FMODLoader>().music.setParameterByName("NextLevel", 1);
+        musicEmitter.SetParameter("NextLevel", 1);
+        // SingletonProvider.Get<FMODLoader>().music.setParameterByName("NextLevel", 1);
         SingletonProvider.Get<AdaptiveMusic>().SetParameter("NextLevel", 1);
     }
 
@@ -131,16 +139,30 @@ public class SFX : MonoBehaviour
     {
         switch (timer.timerName)
         {
-            case "Ambience":
-                var fmod = SingletonProvider.Get<FMODLoader>();
-                fmod.GetAmbienceInstance(birds)
-                    .setParameterByName("BirdsVolume", Mathf.Sqrt(Random.Range(0f, 1f)));
-                fmod.GetAmbienceInstance(wind)
-                    .setParameterByName("WindSpeed", Mathf.Pow(Random.Range(0f, 1f), 2f));
-                break;
+            // case "Ambience":
+            //     var fmod = SingletonProvider.Get<FMODLoader>();
+            //     fmod.GetAmbienceInstance(birds)
+            //         .setParameterByName("BirdsVolume", Mathf.Sqrt(Random.Range(0f, 1f)));
+            //     fmod.GetAmbienceInstance(wind)
+            //         .setParameterByName("WindSpeed", Mathf.Pow(Random.Range(0f, 1f), 2f));
+            //     break;
             case "NextLevel":
                 DidNextLevel();
                 break;
+        }
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            mute = !mute;
+            var vca = FMODUnity.RuntimeManager.GetVCA("vca:/Music");
+            vca.setVolume(mute ? 0f : 1f);
+            if (SingletonProvider.TryGet<AdaptiveMusic>(out var music))
+            {
+                music.SetPaused(!mute);
+            }
         }
     }
 }

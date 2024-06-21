@@ -268,7 +268,7 @@ public class VertexPath : MonoBehaviour
     {
         // This method skips the first/last edge because each train station takes up 2 edges.
         for (
-            int i = 0, tapsRemaining = edges.Count - 2;
+            int i = 0, tapsRemaining = edges.Count - 1;
             tapsRemaining > 0;
             i += net.trackCompletedFmodMaxSpawn
         )
@@ -277,6 +277,8 @@ public class VertexPath : MonoBehaviour
             StartCoroutine(PlayTrackCompleteKnocks(net.trackCompletedAnimPeriod * i, taps));
             tapsRemaining -= taps;
         }
+
+        StartCoroutine(PlayTrackCompleteFinalKnock(net.trackCompletedAnimPeriod * (edges.Count - 2)));
 
         for (int i = 0; i < edges.Count - 2; i++)
         {
@@ -298,6 +300,15 @@ public class VertexPath : MonoBehaviour
             "SpawnTotal",
             spawnTotal
         );
+    }
+
+    private IEnumerator PlayTrackCompleteFinalKnock(float delay)
+    {
+        if (delay > 0)
+        {
+            yield return new WaitForSeconds(delay);
+        }
+        SFX.PlayOneShot(gameObject, SFX.singleton.trackCompleteFinalKnock);
     }
 
     private IEnumerator AnimateTrack(float delay, EdgeAndInstanceData edge)

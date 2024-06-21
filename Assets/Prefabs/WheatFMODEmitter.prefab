@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5480740264826367822}
-  - component: {fileID: 2048879573168130516}
   - component: {fileID: 4471775303604244026}
   m_Layer: 0
   m_Name: WheatFMODEmitter
@@ -33,20 +32,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2048879573168130516
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 517629123968774574}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 534ef3251a39c460e91219fdaecafc11, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  color: {r: 0.17661981, g: 0.2566419, b: 0.46226418, a: 0.50980395}
-  radius: 1
 --- !u!114 &4471775303604244026
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -75,6 +60,6 @@ MonoBehaviour:
   Preload: 0
   AllowNonRigidbodyDoppler: 0
   Params: []
-  OverrideAttenuation: 0
+  OverrideAttenuation: 1
   OverrideMinDistance: 3
-  OverrideMaxDistance: 20
+  OverrideMaxDistance: 15

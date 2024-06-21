@@ -26,6 +26,9 @@ public class AdaptiveMusic : MonoBehaviour
     [SerializeField]
     AudioMixerGroup mixer;
 
+    [SerializeField, Range(0, 1)]
+    float volume = 1;
+
     AdaptiveMusicSequence currentSequence;
 
     Dictionary<AudioClip, AudioSource> activeSources = new Dictionary<AudioClip, AudioSource>();
@@ -40,6 +43,8 @@ public class AdaptiveMusic : MonoBehaviour
     Dictionary<string, float> parameters = new Dictionary<string, float>();
 
     bool paused;
+
+    float volumeLastUpdate = float.NaN;
 
     public void SetParameter(string name, float value)
     {
@@ -67,12 +72,20 @@ public class AdaptiveMusic : MonoBehaviour
         }
     }
 
-    void SetPaused(bool paused)
+    // void SetPausedIfWebGL(bool paused)
+    // {
+    //     if (Application.platform != RuntimePlatform.WebGLPlayer)
+    //     {
+    //         SetPaused(paused);
+    //     }
+    // }
+
+    public void SetPaused(bool paused)
     {
-        if (Application.platform != RuntimePlatform.WebGLPlayer)
-        {
-            return;
-        }
+        // if (Application.platform != RuntimePlatform.WebGLPlayer)
+        // {
+        //     return;
+        // }
 
         this.paused = paused;
 
@@ -192,6 +205,7 @@ public class AdaptiveMusic : MonoBehaviour
                 audioSource.mute =
                     !CheckCondition(musicClip.condition) || !musicClipData.IsPlayingClip(audioClip);
                 audioSource.time = playhead;
+                audioSource.volume = volume;
 
                 if (musicClip.beatOffset > 0)
                 {
@@ -305,6 +319,34 @@ public class AdaptiveMusic : MonoBehaviour
         audioSource.clip = clip;
         audioSource.outputAudioMixerGroup = mixer;
         return audioSource;
+    }
+
+    void Start()
+    {
+        UpdateVolume();
+    }
+
+    void Update()
+    {
+        UpdateVolume();
+    }
+
+    void UpdateVolume()
+    {
+        if (volume != volumeLastUpdate)
+        {
+            volumeLastUpdate = volume;
+
+            foreach (var source in sources1)
+            {
+                source.Value.volume = volume;
+            }
+
+            foreach (var source in sources2)
+            {
+                source.Value.volume = volume;
+            }
+        }
     }
 }
 

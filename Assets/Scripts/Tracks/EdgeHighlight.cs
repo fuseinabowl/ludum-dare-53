@@ -16,8 +16,6 @@ public class EdgeHighlight : MonoBehaviour, MouseHitTarget.HoverHandler
         var meshRenderer = GetComponentInChildren<MeshRenderer>();
         defaultMaterial = meshRenderer.material;
         meshRenderer.material = hoverMaterial;
-
-        SFX.PlayOneShot(gameObject, SFX.singleton.trackHover);
     }
 
     public void OnMouseHitHoverEnd(MouseHitTarget.Event e)

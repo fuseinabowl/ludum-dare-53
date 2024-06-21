@@ -32,10 +32,10 @@
 	<object class="Sidechain" id="{638b5601-be09-4475-9fdf-8ac9ea36f156}" />
 	<object class="MixerSend" id="{95ee1d11-a79f-42ec-88a6-6ba99c74bcc3}">
 		<property name="level">
-			<value>-17</value>
+			<value>-15</value>
 		</property>
 		<property name="inputFormat">
-			<value>1</value>
+			<value>2</value>
 		</property>
 		<relationship name="mixerReturn">
 			<destination>{f1c79f88-1fff-4688-b537-70c89039ccc7}</destination>

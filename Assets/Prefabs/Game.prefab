@@ -1005,6 +1005,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   component: {fileID: 4793475907421144919}
+  dontDestroyOnLoad: 0
 --- !u!114 &960939533529426506
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1038,6 +1039,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   component: {fileID: 960939533529426506}
+  dontDestroyOnLoad: 0
 --- !u!114 &6646662994295827174
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1065,6 +1067,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   component: {fileID: 6646662994295827174}
+  dontDestroyOnLoad: 0
 --- !u!114 &3784429722314286329
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1149,6 +1152,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   component: {fileID: 8022440523950939025}
+  dontDestroyOnLoad: 0
 --- !u!1 &7074423465863420603
 GameObject:
   m_ObjectHideFlags: 0
@@ -1462,6 +1466,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   component: {fileID: 1064724949740613725}
+  dontDestroyOnLoad: 0
 --- !u!1 &9194359120225049468
 GameObject:
   m_ObjectHideFlags: 0
@@ -1522,31 +1527,45 @@ MonoBehaviour:
       Data3: 721962149
       Data4: 736986461
     Path: event:/SFX/TrackCompleteKnocks
+  trackCompleteFinalKnock:
+    Guid:
+      Data1: -1212579229
+      Data2: 1200925995
+      Data3: -538984541
+      Data4: -532173652
+    Path: event:/SFX/TrackCompleteKnocksFinished
+  trainTurnStart:
+    Guid:
+      Data1: 700544523
+      Data2: 1095393891
+      Data3: -550832757
+      Data4: 1353565198
+    Path: event:/Train/TrainTurnStart
+  trainTurnEnd:
+    Guid:
+      Data1: -975646196
+      Data2: 1270451970
+      Data3: 1028780732
+      Data4: 1435368113
+    Path: event:/Train/TrainTurnEnd
   trackComplete: {fileID: 1929765083148159563}
   trackPlaced: {fileID: 1804076013611902101}
   trackDeleted: {fileID: 4559702553894711608}
-  trackHover:
-    Guid:
-      Data1: -337686195
-      Data2: 1276953471
-      Data3: 1588635063
-      Data4: 1153913248
-    Path: event:/SFX/TrackHover
   winJingle: {fileID: 5868319638941161914}
   birds:
     Guid:
-      Data1: -1406156618
-      Data2: 1093445955
-      Data3: 1099812537
-      Data4: -787571455
-    Path: event:/Ambience/Birds
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
   wind:
     Guid:
-      Data1: 1098739745
-      Data2: 1273944513
-      Data3: -2030541914
-      Data4: -499696261
-    Path: event:/Ambience/Wind
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
 --- !u!114 &3835560196627777632
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1560,6 +1579,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   component: {fileID: 4798421159898735055}
+  dontDestroyOnLoad: 0
 --- !u!114 &1804076013611902101
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8000140693969800002}
   - component: {fileID: 343326052991923404}
   - component: {fileID: 3644146088436809926}
+  - component: {fileID: 4058276624143386174}
   m_Layer: 0
   m_Name: Locomotive
   m_TagString: Untagged
@@ -87,7 +88,7 @@ MonoBehaviour:
   Params: []
   OverrideAttenuation: 0
   OverrideMinDistance: 5
-  OverrideMaxDistance: 25
+  OverrideMaxDistance: 40
 --- !u!114 &343326052991923404
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -117,8 +118,8 @@ MonoBehaviour:
   AllowNonRigidbodyDoppler: 0
   Params: []
   OverrideAttenuation: 0
-  OverrideMinDistance: 3
-  OverrideMaxDistance: 40
+  OverrideMinDistance: 2
+  OverrideMaxDistance: 50
 --- !u!114 &3644146088436809926
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -149,7 +150,19 @@ MonoBehaviour:
   Params: []
   OverrideAttenuation: 0
   OverrideMinDistance: 5
-  OverrideMaxDistance: 25
+  OverrideMaxDistance: 40
+--- !u!114 &4058276624143386174
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4263812648893780629}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd24280392a234da99835a6a68f92ea0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &3351160836169504740
 PrefabInstance:
   m_ObjectHideFlags: 0

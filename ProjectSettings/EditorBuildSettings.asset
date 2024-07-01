@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/LoadScene.unity
+    guid: fa9effed5f5214da1af63b980af9512f
+  - enabled: 1
     path: Assets/Scenes/AnthonyTestScene.unity
     guid: f0c55ef7f57426d41ba9f1edcef06e15
   m_configObjects: {}

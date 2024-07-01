@@ -365,7 +365,7 @@ MonoBehaviour:
   BankRefreshCooldown: 1
   ShowBankRefreshWindow: 0
   AutomaticEventLoading: 0
-  BankLoadType: 0
+  BankLoadType: 2
   AutomaticSampleLoading: 1
   EncryptionKey: 
   ImportType: 0
@@ -383,9 +383,7 @@ MonoBehaviour:
   Plugins: []
   MasterBanks:
   - Master
-  Banks:
-  - Ambience
-  - Music
+  Banks: []
   BanksToLoad: []
   LiveUpdatePort: 9264
   EnableMemoryTracking: 0

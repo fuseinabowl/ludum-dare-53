@@ -941,6 +941,7 @@ GameObject:
   - component: {fileID: 2378315572097592388}
   - component: {fileID: 8022440523950939025}
   - component: {fileID: 4805882065986532261}
+  - component: {fileID: 4156467750760767346}
   m_Layer: 0
   m_Name: Game
   m_TagString: Untagged
@@ -1116,7 +1117,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   disableMusic: 1
   musicBank: 
-  ambienceBank: Ambience
+  ambienceBank: 
   musicEvent:
     Guid:
       Data1: 0
@@ -1153,6 +1154,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   component: {fileID: 8022440523950939025}
   dontDestroyOnLoad: 0
+--- !u!114 &4156467750760767346
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5879547802644299674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96aec34ed627145749df70e35deb6ac4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7074423465863420603
 GameObject:
   m_ObjectHideFlags: 0
@@ -1445,6 +1458,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startSequence: {fileID: 11400000, guid: b537a9dc5c99f494db8c84a0c378915d, type: 2}
   mixer: {fileID: 24300002, guid: 48c5ada6745e64eafab683a42cefa60e, type: 2}
+  volume: 0.061
 --- !u!81 &92509136712563319
 AudioListener:
   m_ObjectHideFlags: 0
@@ -1552,20 +1566,7 @@ MonoBehaviour:
   trackPlaced: {fileID: 1804076013611902101}
   trackDeleted: {fileID: 4559702553894711608}
   winJingle: {fileID: 5868319638941161914}
-  birds:
-    Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
-  wind:
-    Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
+  musicEmitter: {fileID: 0}
 --- !u!114 &3835560196627777632
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1719,7 +1720,7 @@ MonoBehaviour:
   Params: []
   OverrideAttenuation: 0
   OverrideMinDistance: 5
-  OverrideMaxDistance: 40
+  OverrideMaxDistance: 25
 --- !u!114 &5868319638941161914
 MonoBehaviour:
   m_ObjectHideFlags: 0
